@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Your Order | Cambridge Digital Catalogue</title>
+
+<link rel="stylesheet" href="css/catalogue.css">
+
+<style>
+
+.order-hero{
+    padding:45px 6% 30px;
+    background:#fff;
+}
+
+.order-wrap{
+    max-width:1050px;
+    margin:auto;
+}
+
+.back-link{
+    display:inline-block;
+    margin-bottom:20px;
+    color:var(--navy);
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+}
+
+.order-hero h1{
+    margin:0;
+    font-size:clamp(34px,5vw,50px);
+    letter-spacing:-1.5px;
+}
+
+.order-intro{
+    margin:10px 0 0;
+    color:var(--muted);
+    font-size:13px;
+}
+
+
+/* ORDER AREA */
+
+.order-section{
+    max-width:1050px;
+    margin:auto;
+    padding:30px 6% 60px;
+}
+
+.order-card{
+    margin-bottom:14px;
+    padding:22px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.order-main{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:25px;
+    align-items:center;
+}
+
+.item-label{
+    margin-bottom:5px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:750;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+}
+
+.item-title{
+    margin:0;
+    font-size:17px;
+}
+
+.item-meta{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+
+/* QUANTITY */
+
+.quantity{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.quantity button{
+    width:32px;
+    height:32px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:#fff;
+    cursor:pointer;
+    font-size:17px;
+}
+
+.quantity-value{
+    min-width:25px;
+    text-align:center;
+    font-weight:750;
+}
+
+
+/* ACTIONS */
+
+.remove-button{
+    padding:8px 10px;
+    border:0;
+    background:transparent;
+    color:#8b3b3b;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:700;
+}
+
+
+/* KIT DETAILS */
+
+.view-books{
+    margin-top:15px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--navy);
+    cursor:pointer;
+    font-size:11px;
+    font-weight:750;
+}
+
+.kit-books{
+    display:none;
+    margin-top:16px;
+    padding:16px 18px;
+    background:#f7f8fa;
+    border-radius:8px;
+}
+
+.kit-books.visible{
+    display:block;
+}
+
+.kit-books ol{
+    margin:0;
+    padding-left:20px;
+}
+
+.kit-books li{
+    margin:6px 0;
+    color:#555f6b;
+    font-size:11px;
+}
+
+
+/* EMPTY CART */
+
+.empty-order{
+    padding:60px 20px;
+    text-align:center;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.empty-order h2{
+    margin:0 0 8px;
+}
+
+.empty-order p{
+    margin:0 0 25px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+
+/* SUMMARY */
+
+.order-summary{
+    margin-top:25px;
+    padding:22px;
+    background:var(--navy);
+    color:#fff;
+    border-radius:12px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.summary-row strong{
+    font-size:18px;
+}
+
+.summary-note{
+    margin-top:7px;
+    color:rgba(255,255,255,.65);
+    font-size:11px;
+}
+
+
+/* FOOT ACTIONS */
+
+.order-actions{
+    margin-top:18px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.continue-button,
+.checkout-button{
+    padding:13px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:750;
+    text-align:center;
+}
+
+.continue-button{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--navy);
+}
+
+.checkout-button{
+    border:0;
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+}
+
+.checkout-button:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+    .order-hero{
+        padding:35px 18px 25px;
+    }
+
+    .order-section{
+        padding:25px 18px 45px;
+    }
+
+    .order-card{
+        padding:17px;
+    }
+
+    .order-main{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .quantity{
+        justify-content:flex-start;
+    }
+
+    .remove-button{
+        padding-left:0;
+        text-align:left;
+    }
+
+    .order-actions{
+        flex-direction:column;
+    }
+
+    .continue-button,
+    .checkout-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<header class="catalogue-header">
+
+    <div class="brand">
+
+        <div class="brand-name">
+            CAMBRIDGE
+        </div>
+
+        <div class="brand-company">
+            PUBLISHING COMPANY PVT. LTD.
+        </div>
+
+    </div>
+
+    <div class="catalogue-year">
+        DIGITAL CATALOGUE · 2026–27
+    </div>
+
+</header>
+
+
+<section class="order-hero">
+
+    <div class="order-wrap">
+
+        <a href="index.html" class="back-link">
+            ← Continue browsing catalogue
+        </a>
+
+        <p class="eyebrow">
+            ORDER LIST
+        </p>
+
+        <h1>Your Order</h1>
+
+        <p class="order-intro">
+            Review the books and kits you have selected before proceeding.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main class="order-section">
+
+    <div id="orderItems"></div>
+
+    <div id="orderSummary"></div>
+
+</main>
+
+
+<script>
+
+/* ========================================
+   LOAD ORDER
+======================================== */
+
+let order =
+    JSON.parse(
+        localStorage.getItem(
+            "cambridgeOrder"
+        ) || "[]"
+    );
+
+
+/* ========================================
+   SAVE
+======================================== */
+
+function saveOrder(){
+
+    localStorage.setItem(
+        "cambridgeOrder",
+        JSON.stringify(order)
+    );
+
+}
+
+
+/* ========================================
+   RENDER ORDER
+======================================== */
+
+function renderOrder(){
+
+    const itemsContainer =
+        document.getElementById(
+            "orderItems"
+        );
+
+    const summaryContainer =
+        document.getElementById(
+            "orderSummary"
+        );
+
+
+    itemsContainer.innerHTML = "";
+    summaryContainer.innerHTML = "";
+
+
+    /* EMPTY ORDER */
+
+    if(order.length === 0){
+
+        itemsContainer.innerHTML = `
+
+            <div class="empty-order">
+
+                <h2>Your order is empty.</h2>
+
+                <p>
+                    Browse the catalogue and add books
+                    or kits to start your order.
+                </p>
+
+                <a
+                    href="index.html"
+                    class="continue-button"
+                >
+                    Browse Catalogue →
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* ITEMS */
+
+    order.forEach((item,index) => {
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+        card.className =
+            "order-card";
+
+
+        let title =
+            item.title ||
+            (
+                item.levelName
+                ? item.levelName +
+                  " Custom Kit"
+                : "Selected Item"
+            );
+
+
+        let meta = "";
+
+
+        if(item.type === "custom-kit"){
+
+            meta =
+                item.bookCount +
+                " books in this kit";
+
+        }else if(item.levelName){
+
+            meta =
+                item.levelName;
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="order-main">
+
+                <div>
+
+                    <div class="item-label">
+                        ${
+                            item.type ===
+                            "custom-kit"
+                            ? "Custom Kit"
+                            : "Book"
+                        }
+                    </div>
+
+                    <h2 class="item-title">
+                        ${title}
+                    </h2>
+
+                    <div class="item-meta">
+                        ${meta}
+                    </div>
+
+                </div>
+
+
+                <div class="quantity">
+
+                    <button
+                        onclick="changeQuantity(
+                            ${index},
+                            -1
+                        )"
+                        aria-label="Decrease quantity"
+                    >
+                        −
+                    </button>
+
+                    <div class="quantity-value">
+                        ${item.quantity || 1}
+                    </div>
+
+                    <button
+                        onclick="changeQuantity(
+                            ${index},
+                            1
+                        )"
+                        aria-label="Increase quantity"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+
+                <button
+                    class="remove-button"
+                    onclick="removeItem(${index})"
+                >
+                    Remove
+                </button>
+
+            </div>
+
+        `;
+
+
+        /* CUSTOM KIT BOOKS */
+
+        if(
+            item.type === "custom-kit" &&
+            Array.isArray(item.books)
+        ){
+
+            const viewButton =
+                document.createElement(
+                    "button"
+                );
+
+            viewButton.className =
+                "view-books";
+
+            viewButton.textContent =
+                "View books ↓";
+
+
+            const booksBox =
+                document.createElement(
+                    "div"
+                );
+
+            booksBox.className =
+                "kit-books";
+
+
+            const list =
+                document.createElement(
+                    "ol"
+                );
+
+
+            item.books.forEach(book => {
+
+                const li =
+                    document.createElement(
+                        "li"
+                    );
+
+                li.textContent =
+                    book.title;
+
+                list.appendChild(li);
+
+            });
+
+
+            booksBox.appendChild(list);
+
+
+            viewButton.addEventListener(
+                "click",
+                function(){
+
+                    const open =
+                        booksBox.classList
+                        .toggle("visible");
+
+                    this.textContent =
+                        open
+                        ? "Hide books ↑"
+                        : "View books ↓";
+
+                }
+            );
+
+
+            card.appendChild(
+                viewButton
+            );
+
+            card.appendChild(
+                booksBox
+            );
+
+        }
+
+
+        itemsContainer.appendChild(
+            card
+        );
+
+    });
+
+
+    renderSummary();
+
+}
+
+
+/* ========================================
+   QUANTITY
+======================================== */
+
+function changeQuantity(index,change){
+
+    const item =
+        order[index];
+
+
+    item.quantity =
+        item.quantity || 1;
+
+
+    item.quantity += change;
+
+
+    if(item.quantity < 1){
+
+        item.quantity = 1;
+
+    }
+
+
+    saveOrder();
+
+    renderOrder();
+
+}
+
+
+/* ========================================
+   REMOVE ITEM
+======================================== */
+
+function removeItem(index){
+
+    order.splice(
+        index,
+        1
+    );
+
+
+    saveOrder();
+
+    renderOrder();
+
+}
+
+
+/* ========================================
+   SUMMARY
+======================================== */
+
+function renderSummary(){
+
+    const container =
+        document.getElementById(
+            "orderSummary"
+        );
+
+
+    const totalLines =
+        order.length;
+
+
+    const totalQuantity =
+        order.reduce(
+            (sum,item) =>
+                sum +
+                (item.quantity || 1),
+            0
+        );
+
+
+    container.innerHTML = `
+
+        <div class="order-summary">
+
+            <div class="summary-row">
+
+                <span>
+                    Order Summary
+                </span>
+
+                <strong>
+                    ${totalQuantity}
+                    ${
+                        totalQuantity === 1
+                        ? "item"
+                        : "items"
+                    }
+                </strong>
+
+            </div>
+
+            <div class="summary-note">
+                ${totalLines}
+                ${
+                    totalLines === 1
+                    ? "selection"
+                    : "selections"
+                }
+                in your order.
+                Pricing will be confirmed
+                before the order is finalised.
+            </div>
+
+        </div>
+
+
+        <div class="order-actions">
+
+            <a
+                href="index.html"
+                class="continue-button"
+            >
+                ← Continue Browsing
+            </a>
+
+            <button
+                class="checkout-button"
+                onclick="proceedToOrder()"
+            >
+                Proceed to Order →
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================
+   PROCEED
+======================================== */
+
+function proceedToOrder(){
+
+    /*
+    Next stage:
+    customer / institution details.
+    */
+
+    alert(
+        "Next we will add the customer and institution details page."
+    );
+
+}
+
+
+/* ========================================
+   START
+======================================== */
+
+renderOrder();
+
+</script>
+
+</body>
+</html>
