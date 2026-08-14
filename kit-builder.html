@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Build Your Own Kit | Cambridge Digital Catalogue</title>
+
+<link rel="stylesheet" href="css/catalogue.css">
+
+<style>
+
+.kit-hero{
+    background:white;
+    padding:48px 6% 34px;
+}
+
+.kit-wrap{
+    max-width:1180px;
+    margin:auto;
+}
+
+.kit-back{
+    display:inline-block;
+    margin-bottom:18px;
+    text-decoration:none;
+    color:var(--navy);
+    font-size:12px;
+    font-weight:700;
+}
+
+.kit-hero h1{
+    margin:0;
+    font-size:clamp(34px,5vw,52px);
+    letter-spacing:-1.5px;
+}
+
+.kit-intro{
+    max-width:650px;
+    margin:12px 0 0;
+    color:var(--muted);
+    font-size:14px;
+}
+
+.minimum-box{
+    margin-top:25px;
+    padding:16px 18px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#f7f9fb;
+}
+
+.minimum-box strong{
+    color:var(--navy);
+}
+
+
+/* CATEGORY */
+
+.kit-section{
+    max-width:1180px;
+    margin:auto;
+    padding:35px 6%;
+}
+
+.category-block{
+    margin-bottom:45px;
+}
+
+.category-heading{
+    margin-bottom:18px;
+}
+
+.category-heading h2{
+    margin:0 0 4px;
+    font-size:23px;
+}
+
+.category-heading p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+}
+
+
+/* BOOK GRID */
+
+.kit-books{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+}
+
+.kit-book{
+    position:relative;
+
+    padding:18px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:white;
+
+    cursor:pointer;
+
+    transition:.18s ease;
+}
+
+.kit-book:hover{
+    border-color:#bcc6d3;
+    transform:translateY(-2px);
+}
+
+.kit-book.selected{
+    border:2px solid var(--navy);
+    background:#f4f7fb;
+}
+
+.kit-book input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.book-check{
+    width:24px;
+    height:24px;
+
+    margin-bottom:28px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid #ccd2da;
+    border-radius:50%;
+
+    color:white;
+
+    font-size:13px;
+    font-weight:bold;
+}
+
+.kit-book.selected .book-check{
+    background:var(--navy);
+    border-color:var(--navy);
+}
+
+.kit-book h3{
+    margin:0 0 6px;
+    font-size:15px;
+    line-height:1.35;
+}
+
+.kit-book p{
+    margin:0;
+    color:var(--muted);
+    font-size:11px;
+}
+
+
+/* STICKY SUMMARY */
+
+.kit-summary{
+    position:sticky;
+    bottom:0;
+
+    z-index:20;
+
+    padding:15px 6%;
+
+    background:rgba(255,255,255,.96);
+
+    border-top:1px solid var(--border);
+
+    backdrop-filter:blur(12px);
+}
+
+.summary-inner{
+    max-width:1180px;
+    margin:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:20px;
+}
+
+.summary-left strong{
+    display:block;
+    font-size:15px;
+}
+
+.summary-message{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.progress{
+    width:240px;
+    height:6px;
+
+    margin-top:9px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:#e8ebef;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+
+    border-radius:999px;
+
+    background:var(--navy);
+
+    transition:.2s ease;
+}
+
+.add-kit{
+    min-width:190px;
+
+    padding:13px 20px;
+
+    border:0;
+    border-radius:8px;
+
+    background:var(--navy);
+
+    color:white;
+
+    font-weight:750;
+
+    cursor:pointer;
+}
+
+.add-kit:disabled{
+    background:#bcc3cc;
+    cursor:not-allowed;
+}
+
+
+/* SELECTED LIST */
+
+.selected-preview{
+    display:none;
+
+    max-width:1180px;
+    margin:0 auto 35px;
+
+    padding:0 6%;
+}
+
+.selected-preview.visible{
+    display:block;
+}
+
+.selected-box{
+    padding:22px;
+
+    border:1px solid var(--border);
+    border-radius:12px;
+
+    background:white;
+}
+
+.selected-box h3{
+    margin:0 0 15px;
+}
+
+.selected-items{
+    margin:0;
+    padding-left:19px;
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    line-height:1.8;
+}
+
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .kit-books{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+}
+
+@media(max-width:650px){
+
+    .kit-hero{
+        padding:35px 18px 25px;
+    }
+
+    .kit-section{
+        padding:28px 18px;
+    }
+
+    .kit-books{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:9px;
+    }
+
+    .kit-book{
+        padding:14px;
+    }
+
+    .book-check{
+        margin-bottom:22px;
+    }
+
+    .kit-book h3{
+        font-size:13px;
+    }
+
+    .kit-summary{
+        padding:12px 14px;
+    }
+
+    .summary-inner{
+        align-items:stretch;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .progress{
+        width:100%;
+    }
+
+    .add-kit{
+        width:100%;
+    }
+
+    .selected-preview{
+        padding:0 18px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header class="catalogue-header">
+
+<div class="brand">
+
+<div class="brand-name">
+CAMBRIDGE
+</div>
+
+<div class="brand-company">
+PUBLISHING COMPANY PVT. LTD.
+</div>
+
+</div>
+
+<div class="catalogue-year">
+DIGITAL CATALOGUE · 2026–27
+</div>
+
+</header>
+
+
+<section class="kit-hero">
+
+<div class="kit-wrap">
+
+<a
+href="early-learning.html"
+class="kit-back"
+>
+← Early Learning
+</a>
+
+<p class="eyebrow">
+BUILD YOUR OWN KIT
+</p>
+
+<h1 id="kitTitle">
+Build Your LKG Kit
+</h1>
+
+<p class="kit-intro">
+
+Choose books from our Early Learning range
+and create a combination that suits your school.
+
+</p>
+
+<div class="minimum-box">
+
+<strong id="minimumText">
+Choose a minimum of 8 books.
+</strong>
+
+You can add as many additional books as you need.
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<main class="kit-section">
+
+
+<!-- ENGLISH -->
+
+<section class="category-block">
+
+<div class="category-heading">
+
+<h2>English</h2>
+
+<p>
+Readers, writing and activity books.
+</p>
+
+</div>
+
+
+<div class="kit-books">
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's ABC Book"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Little Master's ABC Book</h3>
+
+<p>English · Early Learning</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="My Book of Alphabet"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>My Book of Alphabet</h3>
+
+<p>English · Early Learning</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="My Book of Words"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>My Book of Words</h3>
+
+<p>English · Early Learning</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Capital Letter Writing"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Capital Letter Writing</h3>
+
+<p>English Writing</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Small Letter Writing"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Small Letter Writing</h3>
+
+<p>English Writing</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's English Capital Activity"
+data-category="English"
+>
+
+<div class="book-check">✓</div>
+
+<h3>English Capital Activity</h3>
+
+<p>English Activity</p>
+
+</label>
+
+
+</div>
+
+</section>
+
+
+
+<!-- MATHEMATICS -->
+
+<section class="category-block">
+
+<div class="category-heading">
+
+<h2>Mathematics & Numbers</h2>
+
+<p>
+Numbers, counting and early mathematics.
+</p>
+
+</div>
+
+
+<div class="kit-books">
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Rising Kid's Numbers 0-9"
+data-category="Mathematics"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Numbers 0–9</h3>
+
+<p>Early Mathematics</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Counting Numbers 1 to 20"
+data-category="Mathematics"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Counting Numbers 1 to 20</h3>
+
+<p>Early Mathematics</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Play & Learn Numbers 1 to 20"
+data-category="Mathematics"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Play & Learn Numbers 1 to 20</h3>
+
+<p>Numbers · Writing</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Play & Learn Numbers with Activities 0 to 50"
+data-category="Mathematics"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Numbers with Activities 0 to 50</h3>
+
+<p>Numbers · Activity</p>
+
+</label>
+
+
+</div>
+
+</section>
+
+
+
+<!-- KANNADA -->
+
+<section class="category-block">
+
+<div class="category-heading">
+
+<h2>Kannada</h2>
+
+<p>
+Reading, alphabet and writing books.
+</p>
+
+</div>
+
+
+<div class="kit-books">
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Akshara Parichaya"
+data-category="Kannada"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Akshara Parichaya</h3>
+
+<p>Kannada Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Kannada Varnamale"
+data-category="Kannada"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Kannada Varnamale</h3>
+
+<p>Kannada Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Siri Kannada Varnamale"
+data-category="Kannada"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Siri Kannada Varnamale</h3>
+
+<p>Kannada Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Kannada Akshara Baravanige"
+data-category="Kannada"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Kannada Akshara Baravanige</h3>
+
+<p>Kannada Writing</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Kannada Akshara Male Activity Book"
+data-category="Kannada"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Kannada Aksharamale Activity Book</h3>
+
+<p>Kannada Activity</p>
+
+</label>
+
+
+</div>
+
+</section>
+
+
+
+<!-- HINDI -->
+
+<section class="category-block">
+
+<div class="category-heading">
+
+<h2>Hindi</h2>
+
+<p>
+Reading, alphabet and activity books.
+</p>
+
+</div>
+
+
+<div class="kit-books">
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Akshar Jyothi"
+data-category="Hindi"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Akshar Jyothi</h3>
+
+<p>Hindi Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Shabdh Jyothi"
+data-category="Hindi"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Shabdh Jyothi</h3>
+
+<p>Hindi Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Akshar Gnan"
+data-category="Hindi"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Akshar Gnan</h3>
+
+<p>Hindi Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Swar Gnan"
+data-category="Hindi"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Swar Gnan</h3>
+
+<p>Hindi Reader</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Hindi Bharhakadi Activity Book"
+data-category="Hindi"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Hindi Bharhakadi</h3>
+
+<p>Hindi Activity Book</p>
+
+</label>
+
+
+</div>
+
+</section>
+
+
+
+<!-- CREATIVE -->
+
+<section class="category-block">
+
+<div class="category-heading">
+
+<h2>Creative Learning</h2>
+
+<p>
+Drawing, colouring, art, rhymes and patterns.
+</p>
+
+</div>
+
+
+<div class="kit-books">
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="My Book of Draw & Colour - A"
+data-category="Creative Learning"
+>
+
+<div class="book-check">✓</div>
+
+<h3>My Book of Draw & Colour – A</h3>
+
+<p>Drawing & Colouring</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's Art and Craft - A"
+data-category="Creative Learning"
+>
+
+<div class="book-check">✓</div>
+
+<h3>Art & Craft – A</h3>
+
+<p>Art & Craft</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="My Book of Rhymes - A"
+data-category="Creative Learning"
+>
+
+<div class="book-check">✓</div>
+
+<h3>My Book of Rhymes – A</h3>
+
+<p>Rhymes</p>
+
+</label>
+
+
+<label class="kit-book">
+
+<input
+type="checkbox"
+value="Little Master's My First Book of Patterns"
+data-category="Creative Learning"
+>
+
+<div class="book-check">✓</div>
+
+<h3>My First Book of Patterns</h3>
+
+<p>Patterns</p>
+
+</label>
+
+
+</div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- SELECTION PREVIEW -->
+
+<section
+class="selected-preview"
+id="selectedPreview"
+>
+
+<div class="selected-box">
+
+<h3>
+Selected Books
+</h3>
+
+<ol
+class="selected-items"
+id="selectedItems"
+>
+</ol>
+
+</div>
+
+</section>
+
+
+
+<!-- STICKY KIT STATUS -->
+
+<div class="kit-summary">
+
+<div class="summary-inner">
+
+<div class="summary-left
