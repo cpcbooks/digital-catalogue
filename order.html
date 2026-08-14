@@ -113,6 +113,21 @@
 
 /* ACTIONS */
 
+.clear-order-button{
+    padding:13px 18px;
+    border:1px solid #d8bcbc;
+    border-radius:8px;
+    background:#fff;
+    color:#8b3b3b;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:750;
+}
+
+.clear-order-button:hover{
+    background:#fff7f7;
+}
+    
 .remove-button{
     padding:8px 10px;
     border:0;
@@ -747,12 +762,25 @@ function renderSummary(){
                 ← Continue Browsing
             </a>
 
-            <button
-                class="checkout-button"
-                onclick="proceedToOrder()"
-            >
-                Proceed to Order →
-            </button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+    
+
+    <button
+        class="clear-order-button"
+        onclick="clearOrder()"
+    >
+        Clear Order
+    </button>
+
+</div>
+
+<button
+    class="checkout-button"
+    onclick="proceedToOrder()"
+>
+    Proceed to Order →
+</button>
 
         </div>
 
@@ -765,6 +793,24 @@ function renderSummary(){
    PROCEED
 ======================================== */
 
+function clearOrder(){
+
+    const confirmed =
+        confirm(
+            "Clear all items from this order?\n\nThis cannot be undone."
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+    order = [];
+
+    saveOrder();
+
+    renderOrder();
+}
+    
 function proceedToOrder(){
 
     /*
