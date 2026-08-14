@@ -9,976 +9,853 @@
 <link rel="stylesheet" href="css/catalogue.css">
 
 <style>
-
 .kit-hero{
-    background:white;
-    padding:48px 6% 34px;
+    padding:45px 6% 32px;
+    background:#fff;
 }
-
-.kit-wrap{
+.kit-wrap,.kit-content{
     max-width:1180px;
     margin:auto;
 }
-
 .kit-back{
     display:inline-block;
-    margin-bottom:18px;
-    text-decoration:none;
+    margin-bottom:20px;
     color:var(--navy);
+    text-decoration:none;
     font-size:12px;
     font-weight:700;
 }
-
 .kit-hero h1{
     margin:0;
     font-size:clamp(34px,5vw,52px);
     letter-spacing:-1.5px;
 }
-
 .kit-intro{
     max-width:650px;
     margin:12px 0 0;
     color:var(--muted);
-    font-size:14px;
 }
-
 .minimum-box{
-    margin-top:25px;
-    padding:16px 18px;
+    margin-top:24px;
+    padding:15px 18px;
+    background:#f6f8fa;
     border:1px solid var(--border);
     border-radius:10px;
-    background:#f7f9fb;
+    font-size:13px;
 }
-
 .minimum-box strong{
     color:var(--navy);
 }
 
-
-/* CATEGORY */
-
-.kit-section{
-    max-width:1180px;
-    margin:auto;
-    padding:35px 6%;
+.kit-content{
+    padding:35px 6% 130px;
 }
 
-.category-block{
-    margin-bottom:45px;
+.category{
+    margin-bottom:42px;
 }
-
-.category-heading{
-    margin-bottom:18px;
+.category h2{
+    margin:0 0 5px;
+    font-size:22px;
 }
-
-.category-heading h2{
-    margin:0 0 4px;
-    font-size:23px;
-}
-
-.category-heading p{
-    margin:0;
+.category-subtitle{
+    margin:0 0 17px;
     color:var(--muted);
     font-size:12px;
 }
 
-
-/* BOOK GRID */
-
-.kit-books{
+.book-grid{
     display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:14px;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
 }
 
-.kit-book{
+.book-card{
     position:relative;
-
-    padding:18px;
-
+    min-height:125px;
+    padding:17px;
+    background:#fff;
     border:1px solid var(--border);
-    border-radius:12px;
-
-    background:white;
-
+    border-radius:11px;
     cursor:pointer;
-
     transition:.18s ease;
 }
-
-.kit-book:hover{
-    border-color:#bcc6d3;
+.book-card:hover{
     transform:translateY(-2px);
 }
-
-.kit-book.selected{
+.book-card.selected{
     border:2px solid var(--navy);
     background:#f4f7fb;
 }
-
-.kit-book input{
-    position:absolute;
-    opacity:0;
-    pointer-events:none;
+.book-card h3{
+    margin:26px 0 5px;
+    font-size:14px;
+    line-height:1.35;
+}
+.book-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:10px;
 }
 
-.book-check{
-    width:24px;
-    height:24px;
-
-    margin-bottom:28px;
-
+.check{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:22px;
+    height:22px;
     display:flex;
     align-items:center;
     justify-content:center;
-
-    border:1px solid #ccd2da;
+    border:1px solid #c9d0d8;
     border-radius:50%;
-
-    color:white;
-
-    font-size:13px;
-    font-weight:bold;
+    font-size:12px;
+    color:transparent;
 }
-
-.kit-book.selected .book-check{
+.book-card.selected .check{
+    color:#fff;
     background:var(--navy);
     border-color:var(--navy);
 }
 
-.kit-book h3{
-    margin:0 0 6px;
-    font-size:15px;
-    line-height:1.35;
-}
-
-.kit-book p{
-    margin:0;
-    color:var(--muted);
-    font-size:11px;
-}
-
-
-/* STICKY SUMMARY */
-
 .kit-summary{
-    position:sticky;
+    position:fixed;
+    left:0;
+    right:0;
     bottom:0;
-
-    z-index:20;
-
-    padding:15px 6%;
-
-    background:rgba(255,255,255,.96);
-
+    z-index:100;
+    padding:14px 6%;
+    background:rgba(255,255,255,.97);
     border-top:1px solid var(--border);
-
-    backdrop-filter:blur(12px);
+    box-shadow:0 -8px 25px rgba(0,0,0,.05);
 }
-
 .summary-inner{
     max-width:1180px;
     margin:auto;
-
     display:flex;
-    justify-content:space-between;
     align-items:center;
-
+    justify-content:space-between;
     gap:20px;
 }
-
-.summary-left strong{
-    display:block;
+.summary-title{
+    font-weight:750;
     font-size:15px;
 }
-
 .summary-message{
     margin-top:3px;
     color:var(--muted);
     font-size:11px;
 }
-
 .progress{
     width:240px;
-    height:6px;
-
-    margin-top:9px;
-
+    height:5px;
+    margin-top:8px;
+    background:#e6e9ed;
+    border-radius:999px;
     overflow:hidden;
-
-    border-radius:999px;
-
-    background:#e8ebef;
 }
-
 .progress-fill{
+    width:0;
     height:100%;
-    width:0%;
-
-    border-radius:999px;
-
     background:var(--navy);
-
     transition:.2s ease;
 }
-
-.add-kit{
+.add-button{
     min-width:190px;
-
-    padding:13px 20px;
-
+    padding:13px 18px;
     border:0;
     border-radius:8px;
-
     background:var(--navy);
-
-    color:white;
-
+    color:#fff;
     font-weight:750;
-
     cursor:pointer;
 }
-
-.add-kit:disabled{
-    background:#bcc3cc;
+.add-button:disabled{
+    background:#b9c0c9;
     cursor:not-allowed;
 }
 
-
-/* SELECTED LIST */
-
-.selected-preview{
-    display:none;
-
-    max-width:1180px;
-    margin:0 auto 35px;
-
-    padding:0 6%;
-}
-
-.selected-preview.visible{
-    display:block;
-}
-
-.selected-box{
-    padding:22px;
-
-    border:1px solid var(--border);
-    border-radius:12px;
-
-    background:white;
-}
-
-.selected-box h3{
-    margin:0 0 15px;
-}
-
-.selected-items{
-    margin:0;
-    padding-left:19px;
-
-    color:var(--muted);
-
-    font-size:12px;
-
-    line-height:1.8;
-}
-
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-    .kit-books{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+@media(max-width:850px){
+    .book-grid{
+        grid-template-columns:repeat(3,1fr);
     }
-
 }
 
-@media(max-width:650px){
-
+@media(max-width:600px){
     .kit-hero{
-        padding:35px 18px 25px;
+        padding:35px 18px 26px;
     }
-
-    .kit-section{
-        padding:28px 18px;
+    .kit-content{
+        padding:28px 18px 155px;
     }
-
-    .kit-books{
-        grid-template-columns:repeat(2,minmax(0,1fr));
+    .book-grid{
+        grid-template-columns:repeat(2,1fr);
         gap:9px;
     }
-
-    .kit-book{
+    .book-card{
+        min-height:115px;
         padding:14px;
     }
-
-    .book-check{
-        margin-bottom:22px;
-    }
-
-    .kit-book h3{
+    .book-card h3{
         font-size:13px;
     }
-
     .kit-summary{
         padding:12px 14px;
     }
-
     .summary-inner{
-        align-items:stretch;
         flex-direction:column;
+        align-items:stretch;
         gap:10px;
     }
-
     .progress{
         width:100%;
     }
-
-    .add-kit{
+    .add-button{
         width:100%;
     }
-
-    .selected-preview{
-        padding:0 18px;
-    }
-
 }
-
 </style>
 </head>
 
-
 <body>
 
-
 <header class="catalogue-header">
+    <div class="brand">
+        <div class="brand-name">CAMBRIDGE</div>
+        <div class="brand-company">
+            PUBLISHING COMPANY PVT. LTD.
+        </div>
+    </div>
 
-<div class="brand">
-
-<div class="brand-name">
-CAMBRIDGE
-</div>
-
-<div class="brand-company">
-PUBLISHING COMPANY PVT. LTD.
-</div>
-
-</div>
-
-<div class="catalogue-year">
-DIGITAL CATALOGUE · 2026–27
-</div>
-
+    <div class="catalogue-year">
+        DIGITAL CATALOGUE · 2026–27
+    </div>
 </header>
 
 
 <section class="kit-hero">
+    <div class="kit-wrap">
 
-<div class="kit-wrap">
+        <a href="early-learning.html" class="kit-back">
+            ← Early Learning
+        </a>
 
-<a
-href="early-learning.html"
-class="kit-back"
->
-← Early Learning
-</a>
+        <p class="eyebrow">BUILD YOUR OWN KIT</p>
 
-<p class="eyebrow">
-BUILD YOUR OWN KIT
-</p>
+        <h1 id="pageTitle">Build Your Kit</h1>
 
-<h1 id="kitTitle">
-Build Your LKG Kit
-</h1>
+        <p class="kit-intro">
+            Choose books from our Early Learning range and
+            create a combination that suits your requirement.
+        </p>
 
-<p class="kit-intro">
+        <div class="minimum-box">
+            <strong id="minimumText"></strong>
+            You can add more books after reaching the minimum.
+        </div>
 
-Choose books from our Early Learning range
-and create a combination that suits your school.
-
-</p>
-
-<div class="minimum-box">
-
-<strong id="minimumText">
-Choose a minimum of 8 books.
-</strong>
-
-You can add as many additional books as you need.
-
-</div>
-
-</div>
-
+    </div>
 </section>
 
 
+<main class="kit-content" id="catalogue"></main>
 
-<main class="kit-section">
-
-
-<!-- ENGLISH -->
-
-<section class="category-block">
-
-<div class="category-heading">
-
-<h2>English</h2>
-
-<p>
-Readers, writing and activity books.
-</p>
-
-</div>
-
-
-<div class="kit-books">
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's ABC Book"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>Little Master's ABC Book</h3>
-
-<p>English · Early Learning</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="My Book of Alphabet"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>My Book of Alphabet</h3>
-
-<p>English · Early Learning</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="My Book of Words"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>My Book of Words</h3>
-
-<p>English · Early Learning</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Capital Letter Writing"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>Capital Letter Writing</h3>
-
-<p>English Writing</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Small Letter Writing"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>Small Letter Writing</h3>
-
-<p>English Writing</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's English Capital Activity"
-data-category="English"
->
-
-<div class="book-check">✓</div>
-
-<h3>English Capital Activity</h3>
-
-<p>English Activity</p>
-
-</label>
-
-
-</div>
-
-</section>
-
-
-
-<!-- MATHEMATICS -->
-
-<section class="category-block">
-
-<div class="category-heading">
-
-<h2>Mathematics & Numbers</h2>
-
-<p>
-Numbers, counting and early mathematics.
-</p>
-
-</div>
-
-
-<div class="kit-books">
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Rising Kid's Numbers 0-9"
-data-category="Mathematics"
->
-
-<div class="book-check">✓</div>
-
-<h3>Numbers 0–9</h3>
-
-<p>Early Mathematics</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Counting Numbers 1 to 20"
-data-category="Mathematics"
->
-
-<div class="book-check">✓</div>
-
-<h3>Counting Numbers 1 to 20</h3>
-
-<p>Early Mathematics</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Play & Learn Numbers 1 to 20"
-data-category="Mathematics"
->
-
-<div class="book-check">✓</div>
-
-<h3>Play & Learn Numbers 1 to 20</h3>
-
-<p>Numbers · Writing</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Play & Learn Numbers with Activities 0 to 50"
-data-category="Mathematics"
->
-
-<div class="book-check">✓</div>
-
-<h3>Numbers with Activities 0 to 50</h3>
-
-<p>Numbers · Activity</p>
-
-</label>
-
-
-</div>
-
-</section>
-
-
-
-<!-- KANNADA -->
-
-<section class="category-block">
-
-<div class="category-heading">
-
-<h2>Kannada</h2>
-
-<p>
-Reading, alphabet and writing books.
-</p>
-
-</div>
-
-
-<div class="kit-books">
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Akshara Parichaya"
-data-category="Kannada"
->
-
-<div class="book-check">✓</div>
-
-<h3>Akshara Parichaya</h3>
-
-<p>Kannada Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Kannada Varnamale"
-data-category="Kannada"
->
-
-<div class="book-check">✓</div>
-
-<h3>Kannada Varnamale</h3>
-
-<p>Kannada Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Siri Kannada Varnamale"
-data-category="Kannada"
->
-
-<div class="book-check">✓</div>
-
-<h3>Siri Kannada Varnamale</h3>
-
-<p>Kannada Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Kannada Akshara Baravanige"
-data-category="Kannada"
->
-
-<div class="book-check">✓</div>
-
-<h3>Kannada Akshara Baravanige</h3>
-
-<p>Kannada Writing</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Kannada Akshara Male Activity Book"
-data-category="Kannada"
->
-
-<div class="book-check">✓</div>
-
-<h3>Kannada Aksharamale Activity Book</h3>
-
-<p>Kannada Activity</p>
-
-</label>
-
-
-</div>
-
-</section>
-
-
-
-<!-- HINDI -->
-
-<section class="category-block">
-
-<div class="category-heading">
-
-<h2>Hindi</h2>
-
-<p>
-Reading, alphabet and activity books.
-</p>
-
-</div>
-
-
-<div class="kit-books">
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Akshar Jyothi"
-data-category="Hindi"
->
-
-<div class="book-check">✓</div>
-
-<h3>Akshar Jyothi</h3>
-
-<p>Hindi Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Shabdh Jyothi"
-data-category="Hindi"
->
-
-<div class="book-check">✓</div>
-
-<h3>Shabdh Jyothi</h3>
-
-<p>Hindi Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Akshar Gnan"
-data-category="Hindi"
->
-
-<div class="book-check">✓</div>
-
-<h3>Akshar Gnan</h3>
-
-<p>Hindi Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Swar Gnan"
-data-category="Hindi"
->
-
-<div class="book-check">✓</div>
-
-<h3>Swar Gnan</h3>
-
-<p>Hindi Reader</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Hindi Bharhakadi Activity Book"
-data-category="Hindi"
->
-
-<div class="book-check">✓</div>
-
-<h3>Hindi Bharhakadi</h3>
-
-<p>Hindi Activity Book</p>
-
-</label>
-
-
-</div>
-
-</section>
-
-
-
-<!-- CREATIVE -->
-
-<section class="category-block">
-
-<div class="category-heading">
-
-<h2>Creative Learning</h2>
-
-<p>
-Drawing, colouring, art, rhymes and patterns.
-</p>
-
-</div>
-
-
-<div class="kit-books">
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="My Book of Draw & Colour - A"
-data-category="Creative Learning"
->
-
-<div class="book-check">✓</div>
-
-<h3>My Book of Draw & Colour – A</h3>
-
-<p>Drawing & Colouring</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's Art and Craft - A"
-data-category="Creative Learning"
->
-
-<div class="book-check">✓</div>
-
-<h3>Art & Craft – A</h3>
-
-<p>Art & Craft</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="My Book of Rhymes - A"
-data-category="Creative Learning"
->
-
-<div class="book-check">✓</div>
-
-<h3>My Book of Rhymes – A</h3>
-
-<p>Rhymes</p>
-
-</label>
-
-
-<label class="kit-book">
-
-<input
-type="checkbox"
-value="Little Master's My First Book of Patterns"
-data-category="Creative Learning"
->
-
-<div class="book-check">✓</div>
-
-<h3>My First Book of Patterns</h3>
-
-<p>Patterns</p>
-
-</label>
-
-
-</div>
-
-</section>
-
-
-</main>
-
-
-
-<!-- SELECTION PREVIEW -->
-
-<section
-class="selected-preview"
-id="selectedPreview"
->
-
-<div class="selected-box">
-
-<h3>
-Selected Books
-</h3>
-
-<ol
-class="selected-items"
-id="selectedItems"
->
-</ol>
-
-</div>
-
-</section>
-
-
-
-<!-- STICKY KIT STATUS -->
 
 <div class="kit-summary">
 
-<div class="summary-inner">
+    <div class="summary-inner">
 
-<div class="summary-left
+        <div>
+            <div class="summary-title" id="countText">
+                Your Kit · 0 books
+            </div>
+
+            <div class="summary-message" id="message">
+            </div>
+
+            <div class="progress">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </div>
+
+        <button
+            class="add-button"
+            id="addButton"
+            disabled
+        >
+            Select books
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ========================================
+   KIT CONFIGURATION
+======================================== */
+
+const kitConfig = {
+
+    nursery:{
+        name:"Nursery",
+        minimum:8
+    },
+
+    lkg:{
+        name:"LKG",
+        minimum:8
+    },
+
+    ukg:{
+        name:"UKG",
+        minimum:8
+    }
+
+};
+
+
+/* ========================================
+   TEMPORARY PRODUCT DATA
+
+   Later this will move into our central
+   product master.
+======================================== */
+
+const books = [
+
+    /* ENGLISH */
+
+    {
+        title:"Little Master's ABC Book",
+        category:"English",
+        type:"Reader"
+    },
+
+    {
+        title:"My Book of Alphabet",
+        category:"English",
+        type:"Reader"
+    },
+
+    {
+        title:"My Book of Words",
+        category:"English",
+        type:"Reader"
+    },
+
+    {
+        title:"Capital Letter Writing",
+        category:"English",
+        type:"Writing"
+    },
+
+    {
+        title:"Small Letter Writing",
+        category:"English",
+        type:"Writing"
+    },
+
+    {
+        title:"English Capital Activity",
+        category:"English",
+        type:"Activity"
+    },
+
+
+    /* MATHEMATICS */
+
+    {
+        title:"Numbers 0–9",
+        category:"Mathematics",
+        type:"Numbers"
+    },
+
+    {
+        title:"Counting Numbers 1 to 20",
+        category:"Mathematics",
+        type:"Numbers"
+    },
+
+    {
+        title:"Play & Learn Numbers 1 to 20",
+        category:"Mathematics",
+        type:"Writing"
+    },
+
+    {
+        title:"Numbers with Activities 0 to 50",
+        category:"Mathematics",
+        type:"Activity"
+    },
+
+
+    /* KANNADA */
+
+    {
+        title:"Akshara Parichaya",
+        category:"Kannada",
+        type:"Reader"
+    },
+
+    {
+        title:"Kannada Varnamale",
+        category:"Kannada",
+        type:"Reader"
+    },
+
+    {
+        title:"Siri Kannada Varnamale",
+        category:"Kannada",
+        type:"Reader"
+    },
+
+    {
+        title:"Kannada Akshara Baravanige",
+        category:"Kannada",
+        type:"Writing"
+    },
+
+    {
+        title:"Kannada Aksharamale Activity Book",
+        category:"Kannada",
+        type:"Activity"
+    },
+
+
+    /* HINDI */
+
+    {
+        title:"Akshar Jyothi",
+        category:"Hindi",
+        type:"Reader"
+    },
+
+    {
+        title:"Shabdh Jyothi",
+        category:"Hindi",
+        type:"Reader"
+    },
+
+    {
+        title:"Akshar Gnan",
+        category:"Hindi",
+        type:"Reader"
+    },
+
+    {
+        title:"Swar Gnan",
+        category:"Hindi",
+        type:"Reader"
+    },
+
+    {
+        title:"Hindi Bharhakadi",
+        category:"Hindi",
+        type:"Activity"
+    },
+
+
+    /* CREATIVE */
+
+    {
+        title:"My Book of Draw & Colour – A",
+        category:"Creative Learning",
+        type:"Drawing & Colouring"
+    },
+
+    {
+        title:"Art & Craft – A",
+        category:"Creative Learning",
+        type:"Art & Craft"
+    },
+
+    {
+        title:"My Book of Rhymes – A",
+        category:"Creative Learning",
+        type:"Rhymes"
+    },
+
+    {
+        title:"My First Book of Patterns",
+        category:"Creative Learning",
+        type:"Patterns"
+    }
+
+];
+
+
+/* ========================================
+   GET SELECTED LEVEL
+======================================== */
+
+const params =
+    new URLSearchParams(window.location.search);
+
+let level =
+    params.get("level") || "lkg";
+
+if(!kitConfig[level]){
+    level = "lkg";
+}
+
+const config =
+    kitConfig[level];
+
+const selectedBooks =
+    new Set();
+
+
+/* ========================================
+   PAGE HEADING
+======================================== */
+
+document.getElementById("pageTitle").textContent =
+    "Build Your " + config.name + " Kit";
+
+document.getElementById("minimumText").textContent =
+    "Choose a minimum of " +
+    config.minimum +
+    " books. ";
+
+
+/* ========================================
+   CATEGORY INFORMATION
+======================================== */
+
+const categories = {
+
+    "English":
+        "Readers, writing and activity books.",
+
+    "Mathematics":
+        "Numbers, counting and early mathematics.",
+
+    "Kannada":
+        "Reading, alphabet and writing books.",
+
+    "Hindi":
+        "Reading, alphabet and activity books.",
+
+    "Creative Learning":
+        "Drawing, colouring, art, rhymes and patterns."
+
+};
+
+
+/* ========================================
+   BUILD CATALOGUE
+======================================== */
+
+function renderCatalogue(){
+
+    const container =
+        document.getElementById("catalogue");
+
+    container.innerHTML = "";
+
+
+    Object.keys(categories).forEach(category => {
+
+        const categoryBooks =
+            books.filter(
+                book =>
+                book.category === category
+            );
+
+
+        const section =
+            document.createElement("section");
+
+        section.className = "category";
+
+
+        section.innerHTML = `
+            <h2>${category}</h2>
+
+            <p class="category-subtitle">
+                ${categories[category]}
+            </p>
+
+            <div class="book-grid"></div>
+        `;
+
+
+        const grid =
+            section.querySelector(".book-grid");
+
+
+        categoryBooks.forEach(book => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "book-card";
+
+
+            card.innerHTML = `
+                <div class="check">✓</div>
+
+                <h3>${book.title}</h3>
+
+                <p>${book.type}</p>
+            `;
+
+
+            card.addEventListener(
+                "click",
+                () => toggleBook(
+                    book,
+                    card
+                )
+            );
+
+
+            grid.appendChild(card);
+
+        });
+
+
+        container.appendChild(section);
+
+    });
+
+}
+
+
+/* ========================================
+   SELECT / DESELECT BOOK
+======================================== */
+
+function toggleBook(book,card){
+
+    if(selectedBooks.has(book.title)){
+
+        selectedBooks.delete(
+            book.title
+        );
+
+        card.classList.remove(
+            "selected"
+        );
+
+    }else{
+
+        selectedBooks.add(
+            book.title
+        );
+
+        card.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    updateSummary();
+
+}
+
+
+/* ========================================
+   UPDATE KIT SUMMARY
+======================================== */
+
+function updateSummary(){
+
+    const count =
+        selectedBooks.size;
+
+    const remaining =
+        Math.max(
+            config.minimum - count,
+            0
+        );
+
+
+    document.getElementById(
+        "countText"
+    ).textContent =
+        "Your " +
+        config.name +
+        " Kit · " +
+        count +
+        (
+            count === 1
+            ? " book"
+            : " books"
+        );
+
+
+    const percentage =
+        Math.min(
+            count /
+            config.minimum *
+            100,
+            100
+        );
+
+
+    document.getElementById(
+        "progress"
+    ).style.width =
+        percentage + "%";
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    const button =
+        document.getElementById(
+            "addButton"
+        );
+
+
+    if(count >= config.minimum){
+
+        message.textContent =
+            "✓ Minimum requirement reached. " +
+            "You can continue adding books.";
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Add Kit to Order →";
+
+    }else{
+
+        message.textContent =
+            "Select " +
+            remaining +
+            " more " +
+            (
+                remaining === 1
+                ? "book"
+                : "books"
+            ) +
+            " to create your kit.";
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Select " +
+            remaining +
+            " more";
+
+    }
+
+}
+
+
+/* ========================================
+   ADD KIT
+======================================== */
+
+document.getElementById(
+    "addButton"
+).addEventListener(
+    "click",
+    addKit
+);
+
+
+function addKit(){
+
+    if(
+        selectedBooks.size <
+        config.minimum
+    ){
+        return;
+    }
+
+
+    const selected =
+        books.filter(
+            book =>
+            selectedBooks.has(
+                book.title
+            )
+        );
+
+
+    const kit = {
+
+        id:
+            "KIT-" +
+            Date.now(),
+
+        type:
+            "custom-kit",
+
+        level:
+            level,
+
+        levelName:
+            config.name,
+
+        quantity:
+            1,
+
+        books:
+            selected,
+
+        bookCount:
+            selected.length
+
+    };
+
+
+    /*
+       TEMPORARY ORDER STORAGE
+
+       Later this will be replaced by the
+       common Cambridge Order List.
+    */
+
+    let order =
+        JSON.parse(
+            localStorage.getItem(
+                "cambridgeOrder"
+            ) || "[]"
+        );
+
+
+    order.push(kit);
+
+
+    localStorage.setItem(
+        "cambridgeOrder",
+        JSON.stringify(order)
+    );
+
+
+    alert(
+        config.name +
+        " Custom Kit added to your order.\n\n" +
+        selected.length +
+        " books selected."
+    );
+
+}
+
+
+/* ========================================
+   START
+======================================== */
+
+renderCatalogue();
+
+updateSummary();
+
+</script>
+
+</body>
+</html>
