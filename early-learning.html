@@ -372,10 +372,11 @@ const earlyLearning = {
 
 };
 
-
+let selectedLevel = null;
 function selectLevel(level,button){
 
     const data = earlyLearning[level];
+    selectedLevel = level;
 
     document
     .querySelectorAll(".early-level")
