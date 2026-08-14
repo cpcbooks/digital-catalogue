@@ -290,7 +290,7 @@ that suits your school.
 Minimum books apply
 </div>
 
-<button onclick="comingSoon()">
+<button onclick="openKitBuilder()">
 Build My Kit →
 </button>
 
@@ -433,7 +433,35 @@ function comingSoon(){
     );
 
 }
+function openKitBuilder(){
 
+    if(!selectedLevel){
+
+        alert(
+            "Please select Nursery, LKG or UKG first."
+        );
+
+        return;
+
+    }
+
+
+    if(selectedLevel === "playgroup"){
+
+        alert(
+            "Playgroup kit options will be added once the range is finalised."
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
+    "kit-builder.html?level=" +
+    selectedLevel;
+
+}
 </script>
 
 
