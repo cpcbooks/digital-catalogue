@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -35,21 +36,28 @@
 .back-link{
     display:inline-block;
     margin-bottom:20px;
+
     color:var(--navy);
+
     text-decoration:none;
+
     font-size:12px;
     font-weight:700;
 }
 
 .page-hero h1{
     margin:0;
+
     font-size:clamp(34px,5vw,50px);
+
     letter-spacing:-1.5px;
 }
 
 .page-intro{
     margin:10px 0 0;
+
     color:var(--muted);
+
     font-size:13px;
     line-height:1.6;
 }
@@ -67,8 +75,9 @@
 .selection-strip{
     display:flex;
     justify-content:space-between;
-    gap:20px;
     align-items:center;
+
+    gap:20px;
 
     margin-bottom:18px;
     padding:16px 18px;
@@ -85,16 +94,22 @@
 
 .selection-strip span{
     display:block;
+
     margin-top:3px;
+
     color:rgba(255,255,255,.7);
+
     font-size:11px;
 }
 
 .selection-strip a{
     color:#fff;
+
     font-size:11px;
     font-weight:750;
+
     text-decoration:none;
+
     white-space:nowrap;
 }
 
@@ -103,30 +118,39 @@
 
 .form-card{
     padding:24px;
+
     background:#fff;
+
     border:1px solid var(--border);
     border-radius:12px;
 }
 
 .section-title{
     margin:0 0 6px;
+
     font-size:18px;
 }
 
 .section-note{
     margin:0 0 20px;
+
     color:var(--muted);
+
     font-size:11px;
     line-height:1.5;
 }
 
 
-/* CUSTOMER TYPE */
+/* CUSTOMER TYPES */
 
 .customer-types{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+
+    grid-template-columns:
+        repeat(2,1fr);
+
     gap:10px;
+
     margin-bottom:8px;
 }
 
@@ -136,12 +160,15 @@
 
 .type-option input{
     position:absolute;
+
     opacity:0;
+
     pointer-events:none;
 }
 
 .type-option label{
     display:block;
+
     padding:14px;
 
     border:1px solid var(--border);
@@ -152,13 +179,18 @@
     font-size:12px;
     font-weight:700;
     line-height:1.35;
+
+    touch-action:manipulation;
 }
 
 .type-option input:checked + label{
     border-color:var(--navy);
-    box-shadow:
-        inset 0 0 0 1px var(--navy);
+
     background:#f7f8fa;
+
+    box-shadow:
+        inset 0 0 0 1px
+        var(--navy);
 }
 
 
@@ -166,7 +198,9 @@
 
 .form-grid{
     display:grid;
+
     grid-template-columns:1fr 1fr;
+
     gap:17px;
 
     margin-top:22px;
@@ -178,6 +212,7 @@
 
 .field label{
     display:block;
+
     margin-bottom:6px;
 
     font-size:11px;
@@ -191,6 +226,7 @@
 .field input,
 .field textarea{
     width:100%;
+
     box-sizing:border-box;
 
     border:1px solid var(--border);
@@ -208,6 +244,7 @@
 
 .field textarea{
     min-height:100px;
+
     resize:vertical;
 }
 
@@ -219,6 +256,7 @@
 .field.invalid input,
 .field.invalid textarea{
     border-color:#b84646;
+
     background:#fff8f8;
 }
 
@@ -227,6 +265,7 @@
 
 .error{
     min-height:14px;
+
     margin-top:5px;
 
     color:#a33b3b;
@@ -236,34 +275,42 @@
 }
 
 
-/* WHATSAPP CHECKBOX */
+/* CHECKBOX */
 
 .checkbox-row{
     display:flex;
+
     align-items:flex-start;
+
     gap:9px;
+
     margin-top:2px;
 }
 
 .checkbox-row input{
     width:auto;
+
     margin-top:2px;
 }
 
 .checkbox-row label{
     margin:0;
+
     font-size:11px;
     font-weight:650;
     line-height:1.45;
+
     cursor:pointer;
 }
 
 
-/* PREFERRED CONTACT */
+/* CONTACT OPTIONS */
 
 .contact-options{
     display:flex;
+
     gap:9px;
+
     flex-wrap:wrap;
 }
 
@@ -273,7 +320,9 @@
 
 .contact-option input{
     position:absolute;
+
     opacity:0;
+
     pointer-events:none;
 }
 
@@ -289,14 +338,18 @@
 
     font-size:11px;
     font-weight:700;
+
+    touch-action:manipulation;
 }
 
 .contact-option input:checked + label{
     border-color:var(--navy);
+
     background:#f7f8fa;
 
     box-shadow:
-        inset 0 0 0 1px var(--navy);
+        inset 0 0 0 1px
+        var(--navy);
 }
 
 
@@ -311,8 +364,11 @@
 
 .form-actions{
     display:flex;
+
     justify-content:space-between;
+
     gap:12px;
+
     margin-top:22px;
 }
 
@@ -331,15 +387,22 @@
 
 .secondary{
     border:1px solid var(--border);
+
     background:#fff;
+
     color:var(--navy);
 }
 
 .primary{
     border:0;
+
     background:var(--navy);
+
     color:#fff;
+
     cursor:pointer;
+
+    touch-action:manipulation;
 }
 
 
@@ -436,18 +499,25 @@
             ← Back to Selection
         </a>
 
+
         <p class="eyebrow">
             ORDER REQUEST
         </p>
+
 
         <h1>
             Request Details
         </h1>
 
+
         <p class="page-intro">
-            Tell us who you are and how our team should
-            contact you. Your selection is only a request
-            at this stage, not a confirmed order.
+
+            Tell us who you are and how our team
+            should contact you.
+
+            Your selection is only a request at
+            this stage, not a confirmed order.
+
         </p>
 
     </div>
@@ -477,8 +547,10 @@
 
 
         <p class="section-note">
+
             Only the information needed for Cambridge
             to understand and respond to your request.
+
         </p>
 
 
@@ -554,7 +626,6 @@
 
             </div>
 
-
         </div>
 
 
@@ -567,7 +638,7 @@
         <div class="form-grid">
 
 
-            <!-- CONTACT NAME -->
+            <!-- CONTACT -->
 
             <div
                 class="field"
@@ -575,9 +646,15 @@
             >
 
                 <label for="contactName">
+
                     Contact Name
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     id="contactName"
@@ -586,6 +663,7 @@
                     maxlength="80"
                     autocomplete="name"
                 >
+
 
                 <div class="error"></div>
 
@@ -600,9 +678,15 @@
             >
 
                 <label for="organisationName">
+
                     Organisation / Institution Name
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     id="organisationName"
@@ -611,6 +695,7 @@
                     maxlength="120"
                     autocomplete="organization"
                 >
+
 
                 <div class="error"></div>
 
@@ -625,19 +710,28 @@
             >
 
                 <label for="mobile">
+
                     Mobile Number
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     id="mobile"
                     name="mobile"
                     type="tel"
                     inputmode="numeric"
+                    pattern="[0-9]*"
                     maxlength="10"
                     autocomplete="tel"
+                    enterkeyhint="next"
                     placeholder="10-digit mobile number"
                 >
+
 
                 <div class="error"></div>
 
@@ -657,9 +751,12 @@
                         checked
                     >
 
+
                     <label for="whatsappSame">
+
                         WhatsApp number is the same as
                         mobile number
+
                     </label>
 
                 </div>
@@ -667,7 +764,7 @@
             </div>
 
 
-            <!-- DIFFERENT WHATSAPP -->
+            <!-- ALTERNATE WHATSAPP -->
 
             <div
                 class="field hidden"
@@ -675,19 +772,28 @@
             >
 
                 <label for="whatsapp">
+
                     WhatsApp Number
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     id="whatsapp"
                     name="whatsapp"
                     type="tel"
                     inputmode="numeric"
+                    pattern="[0-9]*"
                     maxlength="10"
                     autocomplete="tel"
+                    enterkeyhint="next"
                     placeholder="10-digit WhatsApp number"
                 >
+
 
                 <div class="error"></div>
 
@@ -702,9 +808,15 @@
             >
 
                 <label for="city">
+
                     City / Place
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     id="city"
@@ -713,6 +825,7 @@
                     maxlength="80"
                     autocomplete="address-level2"
                 >
+
 
                 <div class="error"></div>
 
@@ -741,6 +854,7 @@
 
                 </label>
 
+
                 <input
                     id="email"
                     name="email"
@@ -748,6 +862,7 @@
                     maxlength="120"
                     autocomplete="email"
                 >
+
 
                 <div class="error"></div>
 
@@ -814,7 +929,6 @@
 
                     </div>
 
-
                 </div>
 
 
@@ -861,7 +975,6 @@
 
             </div>
 
-
         </div>
 
 
@@ -872,8 +985,7 @@
 
             They are not submitted from this page.
 
-            You will review the request before
-            sending it.
+            You will review the request before sending it.
 
         </p>
 
@@ -897,9 +1009,7 @@
 
         </div>
 
-
     </form>
-
 
 </main>
 
@@ -910,7 +1020,7 @@
    SETTINGS
 ======================================== */
 
-const STORAGE_KEY =
+const REQUEST_KEY =
     "cambridgeRequestDetails";
 
 const ORDER_KEY =
@@ -929,7 +1039,7 @@ let order = [];
 
 try{
 
-    const storedOrder =
+    const stored =
         JSON.parse(
             localStorage.getItem(
                 ORDER_KEY
@@ -937,8 +1047,8 @@ try{
         );
 
 
-    if(Array.isArray(storedOrder)){
-        order = storedOrder;
+    if(Array.isArray(stored)){
+        order = stored;
     }
 
 }catch(error){
@@ -952,7 +1062,7 @@ try{
 
 
 /* ========================================
-   EMPTY SELECTION PROTECTION
+   NO SELECTION
 ======================================== */
 
 if(order.length === 0){
@@ -993,7 +1103,7 @@ const whatsappField =
 
 
 /* ========================================
-   DIGITS ONLY
+   HELPERS
 ======================================== */
 
 function digitsOnly(
@@ -1003,13 +1113,46 @@ function digitsOnly(
 
     return String(value || "")
         .replace(/\D/g,"")
-        .slice(0,maxLength);
+        .slice(
+            0,
+            maxLength
+        );
+
+}
+
+
+function selectedValue(name){
+
+    const checked =
+        form.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+
+    return checked
+        ? checked.value
+        : "";
+
+}
+
+
+function isOrganisationRequired(){
+
+    return [
+        "school",
+        "dealer",
+        "other"
+    ].includes(
+        selectedValue(
+            "customerType"
+        )
+    );
 
 }
 
 
 /* ========================================
-   SELECTION TOTAL
+   SUMMARY
 ======================================== */
 
 function getTotalQuantity(){
@@ -1018,16 +1161,21 @@ function getTotalQuantity(){
         (sum,item) => {
 
             const quantity =
-                Number(item.quantity);
+                Number(
+                    item.quantity
+                );
 
 
             if(
                 Number.isInteger(quantity) &&
-                quantity > 0 &&
+                quantity >= 1 &&
                 quantity <= 10000
             ){
 
-                return sum + quantity;
+                return (
+                    sum +
+                    quantity
+                );
 
             }
 
@@ -1040,10 +1188,6 @@ function getTotalQuantity(){
 
 }
 
-
-/* ========================================
-   SELECTION SUMMARY
-======================================== */
 
 function renderSelectionSummary(){
 
@@ -1098,61 +1242,275 @@ function renderSelectionSummary(){
 
 
 /* ========================================
-   RADIO VALUE
-======================================== */
-
-function selectedValue(name){
-
-    const checked =
-        form.querySelector(
-            `input[name="${name}"]:checked`
-        );
-
-
-    return checked
-        ? checked.value
-        : "";
-
-}
-
-
-/* ========================================
-   ORGANISATION REQUIREMENT
-======================================== */
-
-function isOrganisationRequired(){
-
-    return [
-        "school",
-        "dealer",
-        "other"
-    ].includes(
-        selectedValue(
-            "customerType"
-        )
-    );
-
-}
-
-
-/* ========================================
    ADAPTIVE FIELDS
 ======================================== */
 
 function updateAdaptiveFields(){
 
     organisationField
-        .classList.toggle(
+        .classList
+        .toggle(
             "hidden",
             !isOrganisationRequired()
         );
 
 
     whatsappField
-        .classList.toggle(
+        .classList
+        .toggle(
             "hidden",
             whatsappSame.checked
         );
+
+}
+
+
+/* ========================================
+   ERROR HELPERS
+======================================== */
+
+function clearFieldError(inputId){
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    if(!input){
+        return;
+    }
+
+
+    const field =
+        input.closest(
+            ".field"
+        );
+
+
+    if(!field){
+        return;
+    }
+
+
+    field.classList.remove(
+        "invalid"
+    );
+
+
+    const error =
+        field.querySelector(
+            ".error"
+        );
+
+
+    if(error){
+
+        error.textContent = "";
+
+    }
+
+}
+
+
+function setFieldError(
+    inputId,
+    message
+){
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    if(!input){
+        return;
+    }
+
+
+    const field =
+        input.closest(
+            ".field"
+        );
+
+
+    if(!field){
+        return;
+    }
+
+
+    field.classList.add(
+        "invalid"
+    );
+
+
+    const error =
+        field.querySelector(
+            ".error"
+        );
+
+
+    if(error){
+
+        error.textContent =
+            message;
+
+    }
+
+}
+
+
+function clearAllErrors(){
+
+    form
+        .querySelectorAll(
+            ".field"
+        )
+        .forEach(
+            field => {
+
+                field.classList.remove(
+                    "invalid"
+                );
+
+            }
+        );
+
+
+    form
+        .querySelectorAll(
+            ".error"
+        )
+        .forEach(
+            error => {
+
+                error.textContent = "";
+
+            }
+        );
+
+}
+
+
+/* ========================================
+   PHONE VALIDATION
+======================================== */
+
+function validatePhone(
+    inputId,
+    showError = true
+){
+
+    /*
+       Separate WhatsApp validation is
+       unnecessary while checkbox is selected.
+    */
+
+    if(
+        inputId === "whatsapp" &&
+        whatsappSame.checked
+    ){
+
+        clearFieldError(
+            "whatsapp"
+        );
+
+
+        return true;
+
+    }
+
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+
+    const value =
+        digitsOnly(
+            input.value,
+            10
+        );
+
+
+    input.value =
+        value;
+
+
+    if(value.length === 0){
+
+        if(showError){
+
+            setFieldError(
+                inputId,
+                inputId === "mobile"
+                ? "Mobile number is required."
+                : "WhatsApp number is required."
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+
+    if(value.length !== 10){
+
+        if(showError){
+
+            setFieldError(
+                inputId,
+                inputId === "mobile"
+                ? "Mobile number must be 10 digits."
+                : "WhatsApp number must be 10 digits."
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+
+    /*
+       Indian mobile numbers normally begin
+       with 6, 7, 8 or 9.
+    */
+
+    if(
+        !/^[6-9]\d{9}$/.test(
+            value
+        )
+    ){
+
+        if(showError){
+
+            setFieldError(
+                inputId,
+                inputId === "mobile"
+                ? "Enter a valid Indian mobile number."
+                : "Enter a valid Indian WhatsApp number."
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+
+    clearFieldError(
+        inputId
+    );
+
+
+    return true;
 
 }
 
@@ -1172,8 +1530,15 @@ function collectData(){
         );
 
 
-    const same =
-        whatsappSame.checked;
+    const whatsapp =
+        whatsappSame.checked
+        ? mobile
+        : digitsOnly(
+            document.getElementById(
+                "whatsapp"
+            ).value,
+            10
+        );
 
 
     return {
@@ -1199,17 +1564,10 @@ function collectData(){
             mobile,
 
         whatsappSameAsMobile:
-            same,
+            whatsappSame.checked,
 
         whatsapp:
-            same
-            ? mobile
-            : digitsOnly(
-                document.getElementById(
-                    "whatsapp"
-                ).value,
-                10
-              ),
+            whatsapp,
 
         city:
             document.getElementById(
@@ -1245,7 +1603,7 @@ function saveDraft(){
     try{
 
         localStorage.setItem(
-            STORAGE_KEY,
+            REQUEST_KEY,
             JSON.stringify(
                 collectData()
             )
@@ -1277,7 +1635,7 @@ function loadDraft(){
         const stored =
             JSON.parse(
                 localStorage.getItem(
-                    STORAGE_KEY
+                    REQUEST_KEY
                 ) || "{}"
             );
 
@@ -1311,7 +1669,10 @@ function loadDraft(){
 
 
         if(type){
-            type.checked = true;
+
+            type.checked =
+                true;
+
         }
 
     }
@@ -1339,7 +1700,8 @@ function loadDraft(){
 
 
     whatsappSame.checked =
-        data.whatsappSameAsMobile !== false;
+        data.whatsappSameAsMobile !==
+        false;
 
 
     document.getElementById(
@@ -1378,7 +1740,10 @@ function loadDraft(){
 
 
         if(preferred){
-            preferred.checked = true;
+
+            preferred.checked =
+                true;
+
         }
 
     }
@@ -1390,237 +1755,10 @@ function loadDraft(){
 
 
 /* ========================================
-   CLEAR ERRORS
+   NORMAL FIELD VALIDATION
 ======================================== */
 
-function clearErrors(){
-
-    form
-        .querySelectorAll(".field")
-        .forEach(field => {
-
-            field.classList.remove(
-                "invalid"
-            );
-
-        });
-
-
-    form
-        .querySelectorAll(".error")
-        .forEach(error => {
-
-            error.textContent = "";
-
-        });
-
-}
-
-
-/* ========================================
-   CLEAR ONE FIELD ERROR
-======================================== */
-
-function clearFieldError(inputId){
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-
-    if(!input){
-        return;
-    }
-
-
-    const field =
-        input.closest(".field");
-
-
-    if(!field){
-        return;
-    }
-
-
-    field.classList.remove(
-        "invalid"
-    );
-
-
-    const error =
-        field.querySelector(
-            ".error"
-        );
-
-
-    if(error){
-        error.textContent = "";
-    }
-
-}
-
-
-/* ========================================
-   FIELD ERROR
-======================================== */
-
-function setFieldError(
-    inputId,
-    message
-){
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-
-    const field =
-        input.closest(".field");
-
-
-    if(!field){
-        return;
-    }
-
-
-    field.classList.add(
-        "invalid"
-    );
-
-
-    const error =
-        field.querySelector(
-            ".error"
-        );
-
-
-    if(error){
-        error.textContent =
-            message;
-    }
-
-}
-
-
-/* ========================================
-   PHONE VALIDATION
-======================================== */
-
-function validatePhoneField(inputId){
-
-    const input =
-        document.getElementById(
-            inputId
-        );
-
-
-    const value =
-        digitsOnly(
-            input.value,
-            10
-        );
-
-
-    /*
-       No separate WhatsApp validation
-       when WhatsApp is the same as mobile.
-    */
-
-    if(
-        inputId === "whatsapp" &&
-        whatsappSame.checked
-    ){
-
-        clearFieldError(
-            "whatsapp"
-        );
-
-
-        return true;
-
-    }
-
-
-    /* EMPTY */
-
-    if(value === ""){
-
-        setFieldError(
-            inputId,
-
-            inputId === "mobile"
-            ? "Mobile number is required."
-            : "WhatsApp number is required."
-        );
-
-
-        return false;
-
-    }
-
-
-    /* LESS THAN 10 DIGITS */
-
-    if(value.length < 10){
-
-        setFieldError(
-            inputId,
-
-            inputId === "mobile"
-            ? "Mobile number must be 10 digits."
-            : "WhatsApp number must be 10 digits."
-        );
-
-
-        return false;
-
-    }
-
-
-    /* INVALID INDIAN MOBILE NUMBER */
-
-    if(
-        !/^[6-9]\d{9}$/.test(
-            value
-        )
-    ){
-
-        setFieldError(
-            inputId,
-
-            inputId === "mobile"
-            ? "Enter a valid Indian mobile number."
-            : "Enter a valid Indian WhatsApp number."
-        );
-
-
-        return false;
-
-    }
-
-
-    /* VALID */
-
-    clearFieldError(
-        inputId
-    );
-
-
-    return true;
-
-}
-
-
-/* ========================================
-   VALIDATE COMPLETE FORM
-======================================== */
-
-function validate(){
-
-    clearErrors();
-
+function validateTextFields(){
 
     const data =
         collectData();
@@ -1630,8 +1768,6 @@ function validate(){
         true;
 
 
-    /* CUSTOMER TYPE */
-
     if(!data.customerType){
 
         document.getElementById(
@@ -1639,30 +1775,34 @@ function validate(){
         ).textContent =
             "Please select who you are requesting for.";
 
-        valid = false;
+
+        valid =
+            false;
 
     }
 
 
-    /* CONTACT NAME */
-
-    if(data.contactName.length < 2){
+    if(
+        data.contactName.length <
+        2
+    ){
 
         setFieldError(
             "contactName",
             "Please enter a valid contact name."
         );
 
-        valid = false;
+
+        valid =
+            false;
 
     }
 
 
-    /* ORGANISATION */
-
     if(
         isOrganisationRequired() &&
-        data.organisationName.length < 2
+        data.organisationName.length <
+        2
     ){
 
         setFieldError(
@@ -1670,57 +1810,34 @@ function validate(){
             "Please enter the organisation or institution name."
         );
 
-        valid = false;
+
+        valid =
+            false;
 
     }
 
-
-    /* MOBILE */
 
     if(
-        !validatePhoneField(
-            "mobile"
-        )
+        data.city.length <
+        2
     ){
-
-        valid = false;
-
-    }
-
-
-    /* DIFFERENT WHATSAPP */
-
-    if(
-        !data.whatsappSameAsMobile &&
-        !validatePhoneField(
-            "whatsapp"
-        )
-    ){
-
-        valid = false;
-
-    }
-
-
-    /* CITY */
-
-    if(data.city.length < 2){
 
         setFieldError(
             "city",
             "Please enter your city or place."
         );
 
-        valid = false;
+
+        valid =
+            false;
 
     }
 
 
-    /* EMAIL */
-
     if(
         data.email &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(
             data.email
         )
     ){
@@ -1730,21 +1847,16 @@ function validate(){
             "Please enter a valid email address."
         );
 
-        valid = false;
+
+        valid =
+            false;
 
     }
 
 
-    /*
-       EMAIL CONTACT METHOD
-
-       If Email is selected as the
-       preferred contact method,
-       an email address is required.
-    */
-
     if(
-        data.preferredContact === "email" &&
+        data.preferredContact ===
+        "email" &&
         !data.email
     ){
 
@@ -1753,32 +1865,9 @@ function validate(){
         ).textContent =
             "Add an email address or choose WhatsApp/Call.";
 
-        valid = false;
 
-    }
-
-
-    /* SCROLL TO FIRST ERROR */
-
-    if(!valid){
-
-        const firstInvalidField =
-            form.querySelector(
-                ".field.invalid"
-            );
-
-
-        if(
-            firstInvalidField &&
-            firstInvalidField.scrollIntoView
-        ){
-
-            firstInvalidField.scrollIntoView({
-                behavior:"smooth",
-                block:"center"
-            });
-
-        }
+        valid =
+            false;
 
     }
 
@@ -1789,117 +1878,197 @@ function validate(){
 
 
 /* ========================================
-   MOBILE / WHATSAPP INPUT
+   COMPLETE VALIDATION
+======================================== */
+
+function validateForm(){
+
+    clearAllErrors();
+
+
+    let valid =
+        validateTextFields();
+
+
+    /*
+       These checks run ALWAYS.
+
+       Therefore no browser can bypass the
+       phone validation by failing to fire
+       blur/change/keyboard events.
+    */
+
+    if(
+        !validatePhone(
+            "mobile",
+            true
+        )
+    ){
+
+        valid =
+            false;
+
+    }
+
+
+    if(
+        !whatsappSame.checked &&
+        !validatePhone(
+            "whatsapp",
+            true
+        )
+    ){
+
+        valid =
+            false;
+
+    }
+
+
+    return valid;
+
+}
+
+
+/* ========================================
+   PHONE INPUT EVENTS
 ======================================== */
 
 [
     "mobile",
     "whatsapp"
-].forEach(id => {
+].forEach(
+    id => {
 
-    const input =
-        document.getElementById(id);
-
-
-    /*
-       WHILE TYPING
-
-       Clean input and save it.
-
-       Do not display a "must be 10 digits"
-       warning while the customer is still
-       typing.
-    */
-
-    input.addEventListener(
-        "input",
-        () => {
-
-            input.value =
-                digitsOnly(
-                    input.value,
-                    10
-                );
-
-
-            /*
-               Once a valid number is reached,
-               remove an earlier warning
-               immediately.
-            */
-
-            if(
-                /^[6-9]\d{9}$/.test(
-                    input.value
-                )
-            ){
-
-                clearFieldError(
-                    id
-                );
-
-            }
-
-
-            saveDraft();
-
-        }
-    );
-
-
-    /*
-       WHEN USER LEAVES FIELD
-
-       Validate the completed number.
-    */
-
-    input.addEventListener(
-        "blur",
-        () => {
-
-            validatePhoneField(
+        const input =
+            document.getElementById(
                 id
             );
 
-        }
-    );
 
-});
+        /*
+           INPUT:
+           digits only + autosave.
 
+           No premature error message while
+           customer is entering digits.
+        */
 
-/* ========================================
-   AUTOSAVE NORMAL FIELDS
-======================================== */
-
-form
-    .querySelectorAll(
-        'input:not(#mobile):not(#whatsapp), textarea'
-    )
-    .forEach(control => {
-
-
-        control.addEventListener(
+        input.addEventListener(
             "input",
-            saveDraft
-        );
-
-
-        control.addEventListener(
-            "change",
             () => {
 
-                updateAdaptiveFields();
+                input.value =
+                    digitsOnly(
+                        input.value,
+                        10
+                    );
+
+
+                /*
+                   Valid number immediately
+                   clears an old warning.
+                */
+
+                if(
+                    /^[6-9]\d{9}$/
+                    .test(
+                        input.value
+                    )
+                ){
+
+                    clearFieldError(
+                        id
+                    );
+
+                }
+
 
                 saveDraft();
 
             }
         );
 
-    });
+
+        /*
+           CHANGE:
+           Supported reliably on desktop
+           and mobile when value editing
+           is completed.
+        */
+
+        input.addEventListener(
+            "change",
+            () => {
+
+                validatePhone(
+                    id,
+                    true
+                );
+
+
+                saveDraft();
+
+            }
+        );
+
+
+        /*
+           BLUR:
+           Helpful feedback when supported,
+           but NOT relied on for correctness.
+        */
+
+        input.addEventListener(
+            "blur",
+            () => {
+
+                validatePhone(
+                    id,
+                    true
+                );
+
+
+                saveDraft();
+
+            }
+        );
+
+
+        /*
+           ENTER:
+           Desktop keyboards and mobile
+           browsers that expose Enter/Done.
+        */
+
+        input.addEventListener(
+            "keydown",
+            event => {
+
+                if(
+                    event.key ===
+                    "Enter"
+                ){
+
+                    validatePhone(
+                        id,
+                        true
+                    );
+
+
+                    saveDraft();
+
+                }
+
+            }
+        );
+
+    }
+);
 
 
 /* ========================================
-   WHATSAPP SAME AS MOBILE
+   WHATSAPP CHECKBOX
 ======================================== */
 
 whatsappSame.addEventListener(
@@ -1909,13 +2078,9 @@ whatsappSame.addEventListener(
         updateAdaptiveFields();
 
 
-        /*
-           If WhatsApp becomes same as
-           mobile, remove any old WhatsApp
-           validation warning.
-        */
-
-        if(whatsappSame.checked){
+        if(
+            whatsappSame.checked
+        ){
 
             clearFieldError(
                 "whatsapp"
@@ -1938,24 +2103,58 @@ form
     .querySelectorAll(
         'input[name="customerType"]'
     )
-    .forEach(input => {
+    .forEach(
+        input => {
 
-        input.addEventListener(
-            "change",
-            () => {
+            input.addEventListener(
+                "change",
+                () => {
 
-                updateAdaptiveFields();
+                    updateAdaptiveFields();
 
-                saveDraft();
 
-            }
-        );
+                    document.getElementById(
+                        "customerTypeError"
+                    ).textContent = "";
 
-    });
+
+                    saveDraft();
+
+                }
+            );
+
+        }
+    );
 
 
 /* ========================================
-   REVIEW REQUEST
+   AUTOSAVE OTHER FIELDS
+======================================== */
+
+form
+    .querySelectorAll(
+        'input:not(#mobile):not(#whatsapp), textarea'
+    )
+    .forEach(
+        control => {
+
+            control.addEventListener(
+                "input",
+                saveDraft
+            );
+
+
+            control.addEventListener(
+                "change",
+                saveDraft
+            );
+
+        }
+    );
+
+
+/* ========================================
+   SUBMIT / REVIEW
 ======================================== */
 
 form.addEventListener(
@@ -1965,18 +2164,41 @@ form.addEventListener(
         event.preventDefault();
 
 
-        if(!validate()){
+        /*
+           FINAL VALIDATION GATE
+        */
+
+        if(
+            !validateForm()
+        ){
+
+            const firstInvalid =
+                form.querySelector(
+                    ".field.invalid"
+                );
+
+
+            if(
+                firstInvalid &&
+                firstInvalid.scrollIntoView
+            ){
+
+                firstInvalid
+                    .scrollIntoView({
+                        behavior:"smooth",
+                        block:"center"
+                    });
+
+            }
+
+
             return;
+
         }
 
 
         saveDraft();
 
-
-        /*
-           Review page is the next page
-           in the catalogue request flow.
-        */
 
         window.location.href =
             REVIEW_PAGE;
@@ -1997,4 +2219,5 @@ loadDraft();
 
 
 </body>
+
 </html>
