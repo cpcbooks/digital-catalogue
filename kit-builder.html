@@ -118,6 +118,24 @@
     border-color:var(--navy);
 }
 
+.data-message{
+    padding:32px 24px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:#fff;
+    text-align:center;
+}
+.data-message h2{
+    margin:0 0 8px;
+    font-size:20px;
+}
+.data-message p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
 .kit-summary{
     position:fixed;
     left:0;
@@ -232,7 +250,6 @@
     </div>
 </header>
 
-
 <section class="kit-hero">
     <div class="kit-wrap">
 
@@ -257,21 +274,16 @@
     </div>
 </section>
 
-
 <main class="kit-content" id="catalogue"></main>
 
-
 <div class="kit-summary">
-
     <div class="summary-inner">
-
         <div>
             <div class="summary-title" id="countText">
                 Your Kit · 0 books
             </div>
 
-            <div class="summary-message" id="message">
-            </div>
+            <div class="summary-message" id="message"></div>
 
             <div class="progress">
                 <div class="progress-fill" id="progress"></div>
@@ -285,17 +297,19 @@
         >
             Select books
         </button>
-
     </div>
-
 </div>
 
+<script src="js/catalogue-data.js"></script>
 
 <script>
 
 /* ========================================
    KIT CONFIGURATION
 ======================================== */
+
+const ORDER_KEY =
+    "cambridgeOrder";
 
 const kitConfig = {
 
@@ -316,215 +330,6 @@ const kitConfig = {
 
 };
 
-
-/* ========================================
-   TEMPORARY PRODUCT DATA
-
-   Later this will move into our central
-   product master.
-======================================== */
-
-const books = [
-
-    /* ENGLISH */
-
-    {
-        title:"Little Master's ABC Book",
-        category:"English",
-        type:"Reader"
-    },
-
-    {
-        title:"My Book of Alphabet",
-        category:"English",
-        type:"Reader"
-    },
-
-    {
-        title:"My Book of Words",
-        category:"English",
-        type:"Reader"
-    },
-
-    {
-        title:"Capital Letter Writing",
-        category:"English",
-        type:"Writing"
-    },
-
-    {
-        title:"Small Letter Writing",
-        category:"English",
-        type:"Writing"
-    },
-
-    {
-        title:"English Capital Activity",
-        category:"English",
-        type:"Activity"
-    },
-
-
-    /* MATHEMATICS */
-
-    {
-        title:"Numbers 0–9",
-        category:"Mathematics",
-        type:"Numbers"
-    },
-
-    {
-        title:"Counting Numbers 1 to 20",
-        category:"Mathematics",
-        type:"Numbers"
-    },
-
-    {
-        title:"Play & Learn Numbers 1 to 20",
-        category:"Mathematics",
-        type:"Writing"
-    },
-
-    {
-        title:"Numbers with Activities 0 to 50",
-        category:"Mathematics",
-        type:"Activity"
-    },
-
-
-    /* KANNADA */
-
-    {
-        title:"Akshara Parichaya",
-        category:"Kannada",
-        type:"Reader"
-    },
-
-    {
-        title:"Kannada Varnamale",
-        category:"Kannada",
-        type:"Reader"
-    },
-
-    {
-        title:"Siri Kannada Varnamale",
-        category:"Kannada",
-        type:"Reader"
-    },
-
-    {
-        title:"Kannada Akshara Baravanige",
-        category:"Kannada",
-        type:"Writing"
-    },
-
-    {
-        title:"Kannada Aksharamale Activity Book",
-        category:"Kannada",
-        type:"Activity"
-    },
-
-
-    /* HINDI */
-
-    {
-        title:"Akshar Jyothi",
-        category:"Hindi",
-        type:"Reader"
-    },
-
-    {
-        title:"Shabdh Jyothi",
-        category:"Hindi",
-        type:"Reader"
-    },
-
-    {
-        title:"Akshar Gnan",
-        category:"Hindi",
-        type:"Reader"
-    },
-
-    {
-        title:"Swar Gnan",
-        category:"Hindi",
-        type:"Reader"
-    },
-
-    {
-        title:"Hindi Bharhakadi",
-        category:"Hindi",
-        type:"Activity"
-    },
-
-
-    /* CREATIVE */
-
-    {
-        title:"My Book of Draw & Colour – A",
-        category:"Creative Learning",
-        type:"Drawing & Colouring"
-    },
-
-    {
-        title:"Art & Craft – A",
-        category:"Creative Learning",
-        type:"Art & Craft"
-    },
-
-    {
-        title:"My Book of Rhymes – A",
-        category:"Creative Learning",
-        type:"Rhymes"
-    },
-
-    {
-        title:"My First Book of Patterns",
-        category:"Creative Learning",
-        type:"Patterns"
-    }
-
-];
-
-
-/* ========================================
-   GET SELECTED LEVEL
-======================================== */
-
-const params =
-    new URLSearchParams(window.location.search);
-
-let level =
-    params.get("level") || "lkg";
-
-if(!kitConfig[level]){
-    level = "lkg";
-}
-
-const config =
-    kitConfig[level];
-
-const selectedBooks =
-    new Set();
-
-
-/* ========================================
-   PAGE HEADING
-======================================== */
-
-document.getElementById("pageTitle").textContent =
-    "Build Your " + config.name + " Kit";
-
-document.getElementById("minimumText").textContent =
-    "Choose a minimum of " +
-    config.minimum +
-    " books. ";
-
-
-/* ========================================
-   CATEGORY INFORMATION
-======================================== */
-
 const categories = {
 
     "English":
@@ -544,108 +349,322 @@ const categories = {
 
 };
 
+/* ========================================
+   GET SELECTED LEVEL
+======================================== */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+let level =
+    params.get("level") ||
+    "lkg";
+
+if(!kitConfig[level]){
+    level = "lkg";
+}
+
+const config =
+    kitConfig[level];
+
+const selectedBookIds =
+    new Set();
+
+let books = [];
+
+/* ========================================
+   PAGE HEADING
+======================================== */
+
+document.getElementById(
+    "pageTitle"
+).textContent =
+    "Build Your " +
+    config.name +
+    " Kit";
+
+document.getElementById(
+    "minimumText"
+).textContent =
+    "Choose a minimum of " +
+    config.minimum +
+    " books. ";
+
+/* ========================================
+   CENTRAL CATALOGUE DATA
+======================================== */
+
+function getEarlyLearningBooks(){
+
+    if(
+        !Array.isArray(
+            window.CAMBRIDGE_CATALOGUE
+        )
+    ){
+        return [];
+    }
+
+    return window.CAMBRIDGE_CATALOGUE
+        .filter(function(book){
+
+            if(
+                !book ||
+                typeof book !== "object" ||
+                book.active === false ||
+                book.category !== "early-learning"
+            ){
+                return false;
+            }
+
+            const levels =
+                Array.isArray(book.levels)
+                    ? book.levels
+                    : [];
+
+            return (
+                levels.length === 0 ||
+                levels.includes(level)
+            );
+
+        });
+
+}
 
 /* ========================================
    BUILD CATALOGUE
 ======================================== */
 
-function renderCatalogue(){
+function showDataMessage(
+    heading,
+    text
+){
 
     const container =
-        document.getElementById("catalogue");
+        document.getElementById(
+            "catalogue"
+        );
 
     container.innerHTML = "";
 
+    const box =
+        document.createElement(
+            "div"
+        );
 
-    Object.keys(categories).forEach(category => {
+    box.className =
+        "data-message";
 
-        const categoryBooks =
-            books.filter(
-                book =>
-                book.category === category
-            );
+    const title =
+        document.createElement(
+            "h2"
+        );
 
+    title.textContent =
+        heading;
 
-        const section =
-            document.createElement("section");
+    const paragraph =
+        document.createElement(
+            "p"
+        );
 
-        section.className = "category";
+    paragraph.textContent =
+        text;
 
+    box.appendChild(title);
+    box.appendChild(paragraph);
 
-        section.innerHTML = `
-            <h2>${category}</h2>
-
-            <p class="category-subtitle">
-                ${categories[category]}
-            </p>
-
-            <div class="book-grid"></div>
-        `;
-
-
-        const grid =
-            section.querySelector(".book-grid");
-
-
-        categoryBooks.forEach(book => {
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "book-card";
-
-
-            card.innerHTML = `
-                <div class="check">✓</div>
-
-                <h3>${book.title}</h3>
-
-                <p>${book.type}</p>
-            `;
-
-
-            card.addEventListener(
-                "click",
-                () => toggleBook(
-                    book,
-                    card
-                )
-            );
-
-
-            grid.appendChild(card);
-
-        });
-
-
-        container.appendChild(section);
-
-    });
+    container.appendChild(box);
 
 }
 
+function createBookCard(book){
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+    card.className =
+        "book-card";
+
+    if(
+        selectedBookIds.has(
+            book.id
+        )
+    ){
+        card.classList.add(
+            "selected"
+        );
+    }
+
+    const check =
+        document.createElement(
+            "div"
+        );
+
+    check.className =
+        "check";
+
+    check.textContent =
+        "✓";
+
+    const heading =
+        document.createElement(
+            "h3"
+        );
+
+    heading.textContent =
+        book.title ||
+        "Untitled Book";
+
+    const type =
+        document.createElement(
+            "p"
+        );
+
+    type.textContent =
+        book.type ||
+        "Book";
+
+    card.appendChild(check);
+    card.appendChild(heading);
+    card.appendChild(type);
+
+    card.addEventListener(
+        "click",
+        function(){
+            toggleBook(
+                book,
+                card
+            );
+        }
+    );
+
+    return card;
+
+}
+
+function renderCatalogue(){
+
+    const container =
+        document.getElementById(
+            "catalogue"
+        );
+
+    container.innerHTML = "";
+
+    if(books.length === 0){
+
+        showDataMessage(
+            "Books are not available yet",
+            "No Early Learning books are currently available for this level."
+        );
+
+        return;
+    }
+
+    Object.keys(categories)
+        .forEach(function(category){
+
+            const categoryBooks =
+                books.filter(
+                    function(book){
+                        return (
+                            book.subject ===
+                            category
+                        );
+                    }
+                );
+
+            if(
+                categoryBooks.length === 0
+            ){
+                return;
+            }
+
+            const section =
+                document.createElement(
+                    "section"
+                );
+
+            section.className =
+                "category";
+
+            const heading =
+                document.createElement(
+                    "h2"
+                );
+
+            heading.textContent =
+                category;
+
+            const subtitle =
+                document.createElement(
+                    "p"
+                );
+
+            subtitle.className =
+                "category-subtitle";
+
+            subtitle.textContent =
+                categories[category];
+
+            const grid =
+                document.createElement(
+                    "div"
+                );
+
+            grid.className =
+                "book-grid";
+
+            categoryBooks.forEach(
+                function(book){
+                    grid.appendChild(
+                        createBookCard(book)
+                    );
+                }
+            );
+
+            section.appendChild(heading);
+            section.appendChild(subtitle);
+            section.appendChild(grid);
+
+            container.appendChild(section);
+
+        });
+
+}
 
 /* ========================================
    SELECT / DESELECT BOOK
 ======================================== */
 
-function toggleBook(book,card){
+function toggleBook(
+    book,
+    card
+){
 
-    if(selectedBooks.has(book.title)){
+    if(
+        selectedBookIds.has(
+            book.id
+        )
+    ){
 
-        selectedBooks.delete(
-            book.title
+        selectedBookIds.delete(
+            book.id
         );
 
         card.classList.remove(
             "selected"
         );
 
-    }else{
+    }
+    else{
 
-        selectedBooks.add(
-            book.title
+        selectedBookIds.add(
+            book.id
         );
 
         card.classList.add(
@@ -654,11 +673,9 @@ function toggleBook(book,card){
 
     }
 
-
     updateSummary();
 
 }
-
 
 /* ========================================
    UPDATE KIT SUMMARY
@@ -667,14 +684,13 @@ function toggleBook(book,card){
 function updateSummary(){
 
     const count =
-        selectedBooks.size;
+        selectedBookIds.size;
 
     const remaining =
         Math.max(
             config.minimum - count,
             0
         );
-
 
     document.getElementById(
         "countText"
@@ -685,10 +701,9 @@ function updateSummary(){
         count +
         (
             count === 1
-            ? " book"
-            : " books"
+                ? " book"
+                : " books"
         );
-
 
     const percentage =
         Math.min(
@@ -698,26 +713,39 @@ function updateSummary(){
             100
         );
 
-
     document.getElementById(
         "progress"
     ).style.width =
         percentage + "%";
-
 
     const message =
         document.getElementById(
             "message"
         );
 
-
     const button =
         document.getElementById(
             "addButton"
         );
 
+    if(books.length === 0){
 
-    if(count >= config.minimum){
+        message.textContent =
+            "Catalogue data is unavailable for this level.";
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Books unavailable";
+
+        return;
+    }
+
+    if(
+        count >=
+        config.minimum
+    ){
 
         message.textContent =
             "✓ Minimum requirement reached. " +
@@ -727,9 +755,10 @@ function updateSummary(){
             false;
 
         button.textContent =
-            "Add Kit to Order →";
+            "Add Kit to Selection →";
 
-    }else{
+    }
+    else{
 
         message.textContent =
             "Select " +
@@ -737,8 +766,8 @@ function updateSummary(){
             " more " +
             (
                 remaining === 1
-                ? "book"
-                : "books"
+                    ? "book"
+                    : "books"
             ) +
             " to create your kit.";
 
@@ -754,6 +783,60 @@ function updateSummary(){
 
 }
 
+/* ========================================
+   SHARED SELECTION STORAGE
+======================================== */
+
+function getStoredOrder(){
+
+    try{
+
+        const raw =
+            localStorage.getItem(
+                ORDER_KEY
+            );
+
+        if(!raw){
+            return [];
+        }
+
+        const value =
+            JSON.parse(raw);
+
+        return Array.isArray(value)
+            ? value
+            : [];
+
+    }
+    catch(error){
+        return [];
+    }
+
+}
+
+function saveOrder(order){
+
+    try{
+
+        localStorage.setItem(
+            ORDER_KEY,
+            JSON.stringify(order)
+        );
+
+        return true;
+
+    }
+    catch(error){
+
+        alert(
+            "Your selection could not be saved on this device. Please try again."
+        );
+
+        return false;
+
+    }
+
+}
 
 /* ========================================
    ADD KIT
@@ -766,25 +849,23 @@ document.getElementById(
     addKit
 );
 
-
 function addKit(){
 
     if(
-        selectedBooks.size <
+        selectedBookIds.size <
         config.minimum
     ){
         return;
     }
 
-
     const selected =
         books.filter(
-            book =>
-            selectedBooks.has(
-                book.title
-            )
+            function(book){
+                return selectedBookIds.has(
+                    book.id
+                );
+            }
         );
-
 
     const kit = {
 
@@ -801,8 +882,7 @@ function addKit(){
         levelName:
             config.name,
 
-        quantity:
-            1,
+        quantity:1,
 
         books:
             selected,
@@ -812,44 +892,38 @@ function addKit(){
 
     };
 
-
-    /*
-       TEMPORARY ORDER STORAGE
-
-       Later this will be replaced by the
-       common Cambridge Order List.
-    */
-
-    let order =
-        JSON.parse(
-            localStorage.getItem(
-                "cambridgeOrder"
-            ) || "[]"
-        );
-
+    const order =
+        getStoredOrder();
 
     order.push(kit);
 
-
-    localStorage.setItem(
-        "cambridgeOrder",
-        JSON.stringify(order)
-    );
-
-
-    window.location.href =
-    "order.html";
+    if(
+        saveOrder(order)
+    ){
+        window.location.href =
+            "order.html";
+    }
 
 }
-
 
 /* ========================================
    START
 ======================================== */
 
-renderCatalogue();
+function initialise(){
 
-updateSummary();
+    books =
+        getEarlyLearningBooks();
+
+    renderCatalogue();
+    updateSummary();
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialise
+);
 
 </script>
 
