@@ -163,13 +163,51 @@
 
 
 /* ========================================
-   SERIES GROUP
+   SUBJECT SECTION
 ======================================== */
 
-.series-list{
+.subject-section{
     display:grid;
-    gap:18px;
+    gap:12px;
 }
+
+.subject-section + .subject-section{
+    margin-top:30px;
+}
+
+.subject-heading{
+    padding:0 2px 8px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:end;
+
+    gap:20px;
+
+    border-bottom:2px solid var(--navy);
+}
+
+.subject-heading h3{
+    margin:0;
+
+    font-size:20px;
+    line-height:1.2;
+}
+
+.subject-heading span{
+    flex:0 0 auto;
+
+    color:var(--muted);
+
+    font-size:10px;
+}
+
+
+/* ========================================
+   SERIES GROUP
+======================================== */
 
 .series-group{
     overflow:hidden;
@@ -182,7 +220,7 @@
 }
 
 .series-header{
-    padding:21px 23px;
+    padding:18px 23px;
 
     display:flex;
 
@@ -193,13 +231,15 @@
     gap:20px;
 
     border-bottom:1px solid var(--border);
+
+    background:#fafbfc;
 }
 
 .series-heading{
     min-width:0;
 }
 
-.series-subject{
+.series-label{
     margin:0 0 5px;
 
     color:var(--navy);
@@ -212,10 +252,10 @@
     text-transform:uppercase;
 }
 
-.series-header h3{
+.series-header h4{
     margin:0;
 
-    font-size:18px;
+    font-size:17px;
 }
 
 .series-count{
@@ -281,7 +321,7 @@
     min-width:0;
 }
 
-.book-details h4{
+.book-details h5{
     margin:0 0 6px;
 
     font-size:14px;
@@ -403,8 +443,16 @@
         gap:5px;
     }
 
+    .subject-section + .subject-section{
+        margin-top:26px;
+    }
+
+    .subject-heading{
+        align-items:start;
+    }
+
     .series-header{
-        padding:18px;
+        padding:17px 18px;
     }
 
     .catalogue-book{
@@ -507,7 +555,7 @@
                 <input
                     type="search"
                     id="bookSearch"
-                    placeholder="Search books or series..."
+                    placeholder="Search books, series or subjects..."
                     autocomplete="off"
                     aria-label="Search books"
                 >
@@ -561,8 +609,7 @@
 
 
             <div
-                class="series-list"
-                id="seriesList"
+                id="subjectList"
             ></div>
 
         </div>
@@ -596,6 +643,163 @@
 <script src="js/catalogue-data.js"></script>
 
 <script>
+
+/* ========================================
+   DISPLAY ORDER
+======================================== */
+
+/*
+    This controls only how subjects appear.
+
+    It does NOT alter the catalogue data.
+
+    New/unrecognised subjects are displayed
+    automatically after the subjects below.
+*/
+
+const SUBJECT_ORDER = [
+
+    "Semester Books",
+
+    "English",
+    "English Grammar",
+    "English Writing",
+
+    "Kannada",
+    "Kannada Writing",
+
+    "Hindi",
+    "Hindi Writing",
+
+    "Mathematics",
+
+    "Environmental Studies",
+
+    "Science",
+
+    "Social Science",
+
+    "Computer Science",
+
+    "General Knowledge",
+
+    "Moral Science",
+
+    "Drawing",
+
+    "Art & Craft"
+
+];
+
+
+/*
+    Friendly headings allow related catalogue
+    subjects to be shown under one main subject.
+
+    Example:
+    English + English Grammar + English Writing
+    all appear inside the English section.
+*/
+
+const SUBJECT_GROUPS = [
+
+    {
+        name:"Semester Books",
+        subjects:[
+            "Semester Books"
+        ]
+    },
+
+    {
+        name:"English",
+        subjects:[
+            "English",
+            "English Grammar",
+            "English Writing"
+        ]
+    },
+
+    {
+        name:"Kannada",
+        subjects:[
+            "Kannada",
+            "Kannada Writing"
+        ]
+    },
+
+    {
+        name:"Hindi",
+        subjects:[
+            "Hindi",
+            "Hindi Writing"
+        ]
+    },
+
+    {
+        name:"Mathematics",
+        subjects:[
+            "Mathematics"
+        ]
+    },
+
+    {
+        name:"Environmental Studies",
+        subjects:[
+            "Environmental Studies"
+        ]
+    },
+
+    {
+        name:"Science",
+        subjects:[
+            "Science"
+        ]
+    },
+
+    {
+        name:"Social Science",
+        subjects:[
+            "Social Science"
+        ]
+    },
+
+    {
+        name:"Computer Science",
+        subjects:[
+            "Computer Science"
+        ]
+    },
+
+    {
+        name:"General Knowledge",
+        subjects:[
+            "General Knowledge"
+        ]
+    },
+
+    {
+        name:"Moral Science",
+        subjects:[
+            "Moral Science"
+        ]
+    },
+
+    {
+        name:"Drawing",
+        subjects:[
+            "Drawing"
+        ]
+    },
+
+    {
+        name:"Art & Craft",
+        subjects:[
+            "Art & Craft"
+        ]
+    }
+
+];
+
 
 /* ========================================
    STATE
@@ -748,6 +952,30 @@ function showMessage(
 
 
 /* ========================================
+   SUBJECT POSITION
+======================================== */
+
+function getSubjectPosition(subject){
+
+    const index =
+        SUBJECT_ORDER.indexOf(
+            subject
+        );
+
+
+    if(index === -1){
+
+        return Number.MAX_SAFE_INTEGER;
+
+    }
+
+
+    return index;
+
+}
+
+
+/* ========================================
    SUBJECT FILTER
 ======================================== */
 
@@ -768,12 +996,34 @@ function populateSubjects(){
                     })
                     .filter(Boolean)
             )
-        )
-        .sort(function(a,b){
+        );
+
+
+    subjects.sort(
+        function(a,b){
+
+            const positionA =
+                getSubjectPosition(a);
+
+
+            const positionB =
+                getSubjectPosition(b);
+
+
+            if(positionA !== positionB){
+
+                return (
+                    positionA -
+                    positionB
+                );
+
+            }
+
 
             return a.localeCompare(b);
 
-        });
+        }
+    );
 
 
     select.innerHTML =
@@ -877,7 +1127,7 @@ function getFilteredBooks(){
 
 
 /* ========================================
-   GROUP BY SERIES
+   GROUP BOOKS BY SERIES
 ======================================== */
 
 function groupBooksBySeries(books){
@@ -915,14 +1165,193 @@ function groupBooksBySeries(books){
     return Array.from(
         groups.entries()
     )
-    .sort(function(a,b){
+    .sort(
+        function(a,b){
 
-        return a[0]
-            .localeCompare(
-                b[0]
+            /*
+                Within the same subject section,
+                preserve educational subject order
+                before falling back to series name.
+            */
+
+            const subjectA =
+                a[1][0] &&
+                a[1][0].subject
+                    ? a[1][0].subject
+                    : "";
+
+
+            const subjectB =
+                b[1][0] &&
+                b[1][0].subject
+                    ? b[1][0].subject
+                    : "";
+
+
+            const positionA =
+                getSubjectPosition(
+                    subjectA
+                );
+
+
+            const positionB =
+                getSubjectPosition(
+                    subjectB
+                );
+
+
+            if(positionA !== positionB){
+
+                return (
+                    positionA -
+                    positionB
+                );
+
+            }
+
+
+            return a[0]
+                .localeCompare(
+                    b[0]
+                );
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   GET DISPLAY SECTIONS
+======================================== */
+
+function getDisplaySections(books){
+
+    const sections = [];
+
+    const usedSubjects =
+        new Set();
+
+
+    SUBJECT_GROUPS.forEach(
+        function(group){
+
+            const groupBooks =
+                books.filter(
+                    function(book){
+
+                        return group.subjects
+                            .includes(
+                                book.subject
+                            );
+
+                    }
+                );
+
+
+            if(groupBooks.length === 0){
+
+                return;
+
+            }
+
+
+            group.subjects.forEach(
+                function(subject){
+
+                    usedSubjects.add(
+                        subject
+                    );
+
+                }
             );
 
-    });
+
+            sections.push({
+
+                name:
+                    group.name,
+
+                books:
+                    groupBooks
+
+            });
+
+        }
+    );
+
+
+    /*
+        Future-proof fallback.
+
+        If a new subject is added to
+        catalogue-data.js but we forget to add
+        it to SUBJECT_GROUPS, it is NOT hidden.
+
+        It automatically appears at the end.
+    */
+
+    const remainingSubjects =
+        Array.from(
+            new Set(
+                books
+                    .map(
+                        function(book){
+
+                            return book.subject;
+
+                        }
+                    )
+                    .filter(
+                        function(subject){
+
+                            return (
+                                subject &&
+                                !usedSubjects.has(
+                                    subject
+                                )
+                            );
+
+                        }
+                    )
+            )
+        )
+        .sort(
+            function(a,b){
+
+                return a.localeCompare(b);
+
+            }
+        );
+
+
+    remainingSubjects.forEach(
+        function(subject){
+
+            sections.push({
+
+                name:
+                    subject,
+
+                books:
+                    books.filter(
+                        function(book){
+
+                            return (
+                                book.subject ===
+                                subject
+                            );
+
+                        }
+                    )
+
+            });
+
+        }
+    );
+
+
+    return sections;
 
 }
 
@@ -969,7 +1398,7 @@ function createBookRow(book){
 
     const heading =
         document.createElement(
-            "h4"
+            "h5"
         );
 
 
@@ -991,15 +1420,19 @@ function createBookRow(book){
     [
         book.subject,
         book.medium,
+
         book.sku
             ? "SKU: " + book.sku
             : "",
+
         book.isbn
             ? "ISBN: " + book.isbn
             : "",
+
         Number.isFinite(book.mrp)
             ? "MRP ₹" + book.mrp
             : ""
+
     ]
     .filter(Boolean)
     .forEach(
@@ -1082,6 +1515,149 @@ function createBookRow(book){
 
 
 /* ========================================
+   CREATE SERIES GROUP
+======================================== */
+
+function createSeriesGroup(
+    series,
+    books
+){
+
+    const group =
+        document.createElement(
+            "section"
+        );
+
+
+    group.className =
+        "series-group";
+
+
+    const header =
+        document.createElement(
+            "div"
+        );
+
+
+    header.className =
+        "series-header";
+
+
+    const headingBox =
+        document.createElement(
+            "div"
+        );
+
+
+    headingBox.className =
+        "series-heading";
+
+
+    const label =
+        document.createElement(
+            "p"
+        );
+
+
+    label.className =
+        "series-label";
+
+
+    label.textContent =
+        books[0] &&
+        books[0].subject
+            ? books[0].subject
+            : "PUBLICATION";
+
+
+    const heading =
+        document.createElement(
+            "h4"
+        );
+
+
+    heading.textContent =
+        series;
+
+
+    const seriesCount =
+        document.createElement(
+            "div"
+        );
+
+
+    seriesCount.className =
+        "series-count";
+
+
+    seriesCount.textContent =
+        books.length +
+        (
+            books.length === 1
+                ? " title"
+                : " titles"
+        );
+
+
+    headingBox.appendChild(
+        label
+    );
+
+
+    headingBox.appendChild(
+        heading
+    );
+
+
+    header.appendChild(
+        headingBox
+    );
+
+
+    header.appendChild(
+        seriesCount
+    );
+
+
+    const bookList =
+        document.createElement(
+            "div"
+        );
+
+
+    bookList.className =
+        "book-list";
+
+
+    books.forEach(
+        function(book){
+
+            bookList.appendChild(
+                createBookRow(
+                    book
+                )
+            );
+
+        }
+    );
+
+
+    group.appendChild(
+        header
+    );
+
+
+    group.appendChild(
+        bookList
+    );
+
+
+    return group;
+
+}
+
+
+/* ========================================
    RENDER
 ======================================== */
 
@@ -1091,13 +1667,13 @@ function renderBooks(){
         getFilteredBooks();
 
 
-    const list =
+    const container =
         document.getElementById(
-            "seriesList"
+            "subjectList"
         );
 
 
-    list.innerHTML = "";
+    container.innerHTML = "";
 
 
     const count =
@@ -1157,7 +1733,7 @@ function renderBooks(){
         );
 
 
-        list.appendChild(
+        container.appendChild(
             box
         );
 
@@ -1167,67 +1743,33 @@ function renderBooks(){
     }
 
 
-    const groups =
-        groupBooksBySeries(
+    const sections =
+        getDisplaySections(
             books
         );
 
 
-    groups.forEach(
-        function(entry){
+    sections.forEach(
+        function(section){
 
-            const series =
-                entry[0];
-
-
-            const booksInSeries =
-                entry[1];
-
-
-            const group =
+            const subjectSection =
                 document.createElement(
                     "section"
                 );
 
 
-            group.className =
-                "series-group";
+            subjectSection.className =
+                "subject-section";
 
 
-            const header =
+            const subjectHeading =
                 document.createElement(
                     "div"
                 );
 
 
-            header.className =
-                "series-header";
-
-
-            const headingBox =
-                document.createElement(
-                    "div"
-                );
-
-
-            headingBox.className =
-                "series-heading";
-
-
-            const subject =
-                document.createElement(
-                    "p"
-                );
-
-
-            subject.className =
-                "series-subject";
-
-
-            subject.textContent =
-                booksInSeries[0]
-                    .subject ||
-                "PUBLICATION";
+            subjectHeading.className =
+                "subject-heading";
 
 
             const heading =
@@ -1237,83 +1779,62 @@ function renderBooks(){
 
 
             heading.textContent =
-                series;
+                section.name;
 
 
-            const seriesCount =
+            const subjectCount =
                 document.createElement(
-                    "div"
+                    "span"
                 );
 
 
-            seriesCount.className =
-                "series-count";
-
-
-            seriesCount.textContent =
-                booksInSeries.length +
+            subjectCount.textContent =
+                section.books.length +
                 (
-                    booksInSeries.length === 1
-                        ? " title"
-                        : " titles"
+                    section.books.length === 1
+                        ? " book"
+                        : " books"
                 );
 
 
-            headingBox.appendChild(
-                subject
-            );
-
-
-            headingBox.appendChild(
+            subjectHeading.appendChild(
                 heading
             );
 
 
-            header.appendChild(
-                headingBox
+            subjectHeading.appendChild(
+                subjectCount
             );
 
 
-            header.appendChild(
-                seriesCount
+            subjectSection.appendChild(
+                subjectHeading
             );
 
 
-            const bookList =
-                document.createElement(
-                    "div"
+            const seriesGroups =
+                groupBooksBySeries(
+                    section.books
                 );
 
 
-            bookList.className =
-                "book-list";
+            seriesGroups.forEach(
+                function(entry){
 
-
-            booksInSeries.forEach(
-                function(book){
-
-                    bookList.appendChild(
-                        createBookRow(
-                            book
-                        )
-                    );
+                    subjectSection
+                        .appendChild(
+                            createSeriesGroup(
+                                entry[0],
+                                entry[1]
+                            )
+                        );
 
                 }
             );
 
 
-            group.appendChild(
-                header
-            );
-
-
-            group.appendChild(
-                bookList
-            );
-
-
-            list.appendChild(
-                group
+            container.appendChild(
+                subjectSection
             );
 
         }
@@ -1329,11 +1850,10 @@ function renderBooks(){
 function viewBook(book){
 
     /*
-       Book-detail page will be implemented
-       after the catalogue browsing structure
-       is stable.
+        Book-detail page comes later.
 
-       Do not add to cart here yet.
+        This intentionally does NOT touch
+        the existing cart or ordering flow.
     */
 
     alert(
@@ -1448,12 +1968,14 @@ function initialise(){
 
     document.getElementById(
         "catalogueControls"
-    ).hidden = false;
+    ).hidden =
+        false;
 
 
     document.getElementById(
         "catalogueContent"
-    ).hidden = false;
+    ).hidden =
+        false;
 
 
     populateSubjects();
