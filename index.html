@@ -8,6 +8,61 @@
     <title>Cambridge Digital Catalogue</title>
 
     <link rel="stylesheet" href="css/catalogue.css">
+
+    <style>
+
+        /* =========================================
+           CLICKABLE LEVEL SHORTCUTS
+        ========================================= */
+
+        .level-tags a{
+            display:inline-block;
+            padding:6px 9px;
+
+            border-radius:999px;
+
+            background:#f2f4f7;
+
+            color:#566173;
+
+            font-size:10px;
+            font-weight:650;
+
+            text-decoration:none;
+
+            cursor:pointer;
+
+            transition:
+                background-color .18s ease,
+                color .18s ease,
+                transform .18s ease;
+
+            touch-action:manipulation;
+        }
+
+        .level-tags a:hover{
+            background:var(--navy);
+            color:white;
+            transform:translateY(-1px);
+        }
+
+        .level-tags a:focus-visible{
+            outline:2px solid var(--navy);
+            outline-offset:2px;
+        }
+
+        @media(hover:none){
+
+            .level-tags a:hover{
+                background:#f2f4f7;
+                color:#566173;
+                transform:none;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -32,9 +87,13 @@
 
     <section class="catalogue-intro">
 
-        <p class="eyebrow">CAMBRIDGE PUBLISHING COMPANY PVT LTD</p>
+        <p class="eyebrow">
+            CAMBRIDGE PUBLISHING COMPANY PVT LTD
+        </p>
 
-        <h1>Find the right book.</h1>
+        <h1>
+            Find the right book.
+        </h1>
 
         <p class="intro-text">
             Explore our complete range of educational publications.
@@ -63,8 +122,13 @@
         <div class="section-heading">
 
             <div>
-                <p class="section-label">FIND YOUR BOOKS</p>
-                <h2>Browse by Level</h2>
+                <p class="section-label">
+                    FIND YOUR BOOKS
+                </p>
+
+                <h2>
+                    Browse by Level
+                </h2>
             </div>
 
         </div>
@@ -73,44 +137,70 @@
         <div class="level-grid">
 
 
+            <!-- EARLY LEARNING -->
+
             <article class="level-card early-learning">
 
-                <div class="level-number">01</div>
+                <div class="level-number">
+                    01
+                </div>
 
                 <div class="level-content">
 
-                    <h3>Early Learning</h3>
+                    <h3>
+                        Early Learning
+                    </h3>
 
                     <p>
                         Playgroup · Nursery · LKG · UKG
                     </p>
 
                     <div class="level-tags">
-                        <span>Playgroup</span>
-                        <span>Nursery</span>
-                        <span>LKG</span>
-                        <span>UKG</span>
+
+                        <a href="early-learning.html?level=playgroup">
+                            Playgroup
+                        </a>
+
+                        <a href="early-learning.html?level=nursery">
+                            Nursery
+                        </a>
+
+                        <a href="early-learning.html?level=lkg">
+                            LKG
+                        </a>
+
+                        <a href="early-learning.html?level=ukg">
+                            UKG
+                        </a>
+
                     </div>
 
                 </div>
 
                 <button
-    class="level-action"
-    onclick="window.location.href='early-learning.html'"
->
-    Explore Early Learning →
+                    type="button"
+                    class="level-action"
+                    onclick="window.location.href='early-learning.html'"
+                >
+                    Explore Early Learning →
                 </button>
 
             </article>
 
 
+            <!-- SCHOOL EDUCATION -->
+
             <article class="level-card">
 
-                <div class="level-number">02</div>
+                <div class="level-number">
+                    02
+                </div>
 
                 <div class="level-content">
 
-                    <h3>School Education</h3>
+                    <h3>
+                        School Education
+                    </h3>
 
                     <p>
                         Cambridge publications for Classes 1–10.
@@ -131,20 +221,29 @@
 
                 </div>
 
-                <button class="level-action">
+                <button
+                    type="button"
+                    class="level-action"
+                >
                     Explore School Books →
                 </button>
 
             </article>
 
 
+            <!-- HIGHER EDUCATION -->
+
             <article class="level-card">
 
-                <div class="level-number">03</div>
+                <div class="level-number">
+                    03
+                </div>
 
                 <div class="level-content">
 
-                    <h3>Higher Education</h3>
+                    <h3>
+                        Higher Education
+                    </h3>
 
                     <p>
                         Publications for Pre-University and Degree.
@@ -158,20 +257,29 @@
 
                 </div>
 
-                <button class="level-action">
+                <button
+                    type="button"
+                    class="level-action"
+                >
                     Explore Higher Education →
                 </button>
 
             </article>
 
 
+            <!-- COMPETITIVE EXAMS -->
+
             <article class="level-card">
 
-                <div class="level-number">04</div>
+                <div class="level-number">
+                    04
+                </div>
 
                 <div class="level-content">
 
-                    <h3>Competitive Exams</h3>
+                    <h3>
+                        Competitive Exams
+                    </h3>
 
                     <p>
                         Focused preparation resources for competitive examinations.
@@ -183,7 +291,10 @@
 
                 </div>
 
-                <button class="level-action">
+                <button
+                    type="button"
+                    class="level-action"
+                >
                     Explore Competitive Exams →
                 </button>
 
@@ -202,8 +313,13 @@
         <div class="section-heading">
 
             <div>
-                <p class="section-label">EXPLORE YOUR WAY</p>
-                <h2>Already know what you're looking for?</h2>
+                <p class="section-label">
+                    EXPLORE YOUR WAY
+                </p>
+
+                <h2>
+                    Already know what you're looking for?
+                </h2>
             </div>
 
         </div>
@@ -214,11 +330,15 @@
 
             <article class="discovery-card">
 
-                <div class="discovery-icon">A–Z</div>
+                <div class="discovery-icon">
+                    A–Z
+                </div>
 
                 <div>
 
-                    <h3>Browse All Series</h3>
+                    <h3>
+                        Browse All Series
+                    </h3>
 
                     <p>
                         Explore complete book ranges across levels in one place.
@@ -226,7 +346,7 @@
 
                 </div>
 
-                <button>
+                <button type="button">
                     View Series →
                 </button>
 
@@ -235,11 +355,15 @@
 
             <article class="discovery-card">
 
-                <div class="discovery-icon">SUB</div>
+                <div class="discovery-icon">
+                    SUB
+                </div>
 
                 <div>
 
-                    <h3>Subjects & Book Types</h3>
+                    <h3>
+                        Subjects & Book Types
+                    </h3>
 
                     <p>
                         Browse by subject, language, writing, activity,
@@ -248,7 +372,7 @@
 
                 </div>
 
-                <button>
+                <button type="button">
                     Explore Subjects →
                 </button>
 
@@ -267,8 +391,13 @@
         <div class="section-heading">
 
             <div>
-                <p class="section-label">DISCOVER</p>
-                <h2>Featured Books</h2>
+                <p class="section-label">
+                    DISCOVER
+                </p>
+
+                <h2>
+                    Featured Books
+                </h2>
             </div>
 
             <p class="book-count">
@@ -293,7 +422,9 @@
                         INSPIRING SERIES
                     </p>
 
-                    <h3>Inspiring Mathematics</h3>
+                    <h3>
+                        Inspiring Mathematics
+                    </h3>
 
                     <p class="book-meta">
                         School Education
@@ -301,9 +432,14 @@
 
                     <div class="book-footer">
 
-                        <span class="book-price">₹—</span>
+                        <span class="book-price">
+                            ₹—
+                        </span>
 
-                        <button class="view-book">
+                        <button
+                            type="button"
+                            class="view-book"
+                        >
                             View Book
                         </button>
 
@@ -326,7 +462,9 @@
                         INSPIRING SERIES
                     </p>
 
-                    <h3>Inspiring Science</h3>
+                    <h3>
+                        Inspiring Science
+                    </h3>
 
                     <p class="book-meta">
                         School Education
@@ -334,9 +472,14 @@
 
                     <div class="book-footer">
 
-                        <span class="book-price">₹—</span>
+                        <span class="book-price">
+                            ₹—
+                        </span>
 
-                        <button class="view-book">
+                        <button
+                            type="button"
+                            class="view-book"
+                        >
                             View Book
                         </button>
 
@@ -359,7 +502,9 @@
                         HONEST SUCCESS
                     </p>
 
-                    <h3>Honest Success</h3>
+                    <h3>
+                        Honest Success
+                    </h3>
 
                     <p class="book-meta">
                         Guides & Exam Preparation
@@ -367,9 +512,14 @@
 
                     <div class="book-footer">
 
-                        <span class="book-price">₹—</span>
+                        <span class="book-price">
+                            ₹—
+                        </span>
 
-                        <button class="view-book">
+                        <button
+                            type="button"
+                            class="view-book"
+                        >
                             View Book
                         </button>
 
@@ -392,7 +542,9 @@
                         LITTLE MASTER'S
                     </p>
 
-                    <h3>Draw & Colour</h3>
+                    <h3>
+                        Draw & Colour
+                    </h3>
 
                     <p class="book-meta">
                         Early Learning & School
@@ -400,9 +552,14 @@
 
                     <div class="book-footer">
 
-                        <span class="book-price">₹—</span>
+                        <span class="book-price">
+                            ₹—
+                        </span>
 
-                        <button class="view-book">
+                        <button
+                            type="button"
+                            class="view-book"
+                        >
                             View Book
                         </button>
 
@@ -423,8 +580,13 @@
 <footer>
 
     <div>
-        <strong>Cambridge Publishing Company Pvt. Ltd.</strong>
-        <p>Bengaluru, Karnataka</p>
+        <strong>
+            Cambridge Publishing Company Pvt. Ltd.
+        </strong>
+
+        <p>
+            Bengaluru, Karnataka
+        </p>
     </div>
 
     <p class="footer-note">
@@ -434,4 +596,5 @@
 </footer>
 
 </body>
+
 </html>
