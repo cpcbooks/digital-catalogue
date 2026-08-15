@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Preparation | Cambridge Digital Catalogue</title>
+<link rel="stylesheet" href="css/catalogue.css">
+<style>
+.exam-hero{padding:48px 6% 36px;background:#fff}
+.exam-hero-inner{max-width:1180px;margin:auto}
+.back-link{display:inline-block;margin-bottom:20px;color:var(--navy);text-decoration:none;font-size:12px;font-weight:700}
+.exam-hero h1{margin:0;font-size:clamp(32px,5vw,48px);letter-spacing:-1.3px}
+.hero-description{max-width:680px;margin:12px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+.catalogue-controls{margin-top:28px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px}
+.catalogue-controls input,.catalogue-controls select{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font:inherit;font-size:12px}
+.catalogue-controls input:focus,.catalogue-controls select:focus{outline:2px solid var(--navy);outline-offset:1px}
+.selection-bar{margin-top:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid var(--border);border-radius:8px;background:#fafbfc}
+.selection-bar[hidden]{display:none}
+.selection-status{margin:0;color:var(--muted);font-size:11px}
+.selection-status strong{color:var(--text)}
+.view-selection{padding:9px 13px;border:1px solid var(--navy);border-radius:6px;background:var(--navy);color:#fff;text-decoration:none;font-size:10px;font-weight:750;white-space:nowrap}
+.results-summary{margin-bottom:20px;display:flex;justify-content:space-between;align-items:end;gap:20px}
+.results-summary h2{margin:0;font-size:25px}
+.results-count{margin:0;color:var(--muted);font-size:11px}
+.family-section{display:grid;gap:14px}
+.family-section+.family-section{margin-top:34px}
+.family-heading{padding-bottom:10px;display:flex;justify-content:space-between;align-items:end;gap:20px;border-bottom:2px solid var(--navy)}
+.family-heading h3{margin:0;font-size:21px}
+.family-heading span,.subject-header span{color:var(--muted);font-size:10px}
+.subject-group{overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
+.subject-header{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--border);background:#fafbfc}
+.subject-header h4{margin:0;font-size:16px}
+.book-list{display:grid}
+.exam-book{padding:18px 22px;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:18px;align-items:center;border-bottom:1px solid var(--border)}
+.exam-book:last-child{border-bottom:0}
+.cover-placeholder{width:64px;height:84px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#eef1f5;color:#8b95a5;font-size:8px;font-weight:750;text-align:center}
+.book-details{min-width:0}
+.book-details h5{margin:0 0 7px;font-size:14px;line-height:1.35}
+.book-meta{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:10px}
+.book-action{min-width:112px;padding:9px 12px;border:1px solid var(--navy);border-radius:6px;background:#fff;color:var(--navy);cursor:pointer;font-size:10px;font-weight:750;white-space:nowrap}
+.book-action:hover{background:var(--navy);color:#fff}
+.book-action.is-selected{border-color:#d9dee6;background:#f5f7fa;color:var(--navy);cursor:default}
+.message-state{padding:45px 24px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;text-align:center}
+.message-state h2{margin:0 0 9px;font-size:22px}
+.message-state p{max-width:560px;margin:0 auto;color:var(--muted);font-size:12px;line-height:1.6}
+.message-state a{display:inline-block;margin-top:18px;color:var(--navy);font-size:12px;font-weight:750;text-decoration:none}
+@media(max-width:760px){
+.exam-hero{padding:36px 18px 30px}.catalogue-controls{grid-template-columns:1fr}.selection-bar{align-items:flex-start;flex-direction:column}.results-summary{flex-direction:column;align-items:start;gap:5px}.family-heading{align-items:start}.subject-header{padding:16px 18px}.exam-book{padding:17px 18px;grid-template-columns:52px minmax(0,1fr);gap:14px}.cover-placeholder{width:52px;height:70px}.book-action{grid-column:2;justify-self:start}}
+@media(hover:none){.book-action:hover{background:#fff;color:var(--navy)}.book-action.is-selected:hover{background:#f5f7fa;color:var(--navy)}}
+</style>
+</head>
+<body>
+<header class="catalogue-header">
+<div class="brand"><div class="brand-name">CAMBRIDGE</div><div class="brand-company">PUBLISHING COMPANY PVT. LTD.</div></div>
+<div class="catalogue-year">DIGITAL CATALOGUE · 2026–27</div>
+</header>
+
+<section class="exam-hero"><div class="exam-hero-inner">
+<a href="school-education.html" class="back-link" id="backLink">← School Education</a>
+<p class="eyebrow">EXAM PREPARATION</p>
+<h1 id="pageHeading">Exam Preparation</h1>
+<p class="hero-description" id="pageDescription">Browse Cambridge exam-preparation publications.</p>
+<div class="catalogue-controls" id="catalogueControls" hidden>
+<input type="search" id="bookSearch" placeholder="Search books, subjects or series..." autocomplete="off" aria-label="Search exam preparation books">
+<select id="familyFilter" aria-label="Filter by product family"><option value="">All Product Families</option></select>
+<select id="subjectFilter" aria-label="Filter by subject"><option value="">All Subjects</option></select>
+</div>
+<div class="selection-bar" id="selectionBar" hidden>
+<p class="selection-status" id="selectionStatus"><strong>0</strong> selected</p>
+<a class="view-selection" href="order.html">My Selection →</a>
+</div>
+</div></section>
+
+<main><section class="catalogue-section">
+<div id="messageContainer"></div>
+<div id="catalogueContent" hidden>
+<div class="results-summary"><h2>Publications</h2><p class="results-count" id="resultsCount"></p></div>
+<div id="familyList"></div>
+</div>
+</section></main>
+
+<footer><div><strong>Cambridge Publishing Company Pvt. Ltd.</strong><p>Bengaluru, Karnataka</p></div><p class="footer-note">Digital Catalogue · 2026–27</p></footer>
+
+<script src="js/catalogue-data.js"></script>
+<script>
+const ORDER_KEY="cambridgeOrder";
+const MAX_QUANTITY=10000;
+const FAMILY_ORDER=["Honest Success Series","LBA","Internal Assessment","Workbooks"];
+const SUBJECT_ORDER=["English I Language","English II Language","English III Language","Kannada I Language","Kannada II Language","Hindi III Language","Mathematics","Science","Social Science","Combined"];
+let selectedClass=null;
+let examBooks=[];
+
+function isValidExamClass(value){
+ if(value===null||value===undefined||value==="") return false;
+ const number=Number(value);
+ return Number.isInteger(number)&&number>=5&&number<=10;
+}
+
+function getCatalogue(){
+ if(!Array.isArray(window.CAMBRIDGE_CATALOGUE)) return [];
+ return window.CAMBRIDGE_CATALOGUE.filter(book=>book&&typeof book==="object"&&book.active!==false);
+}
+
+function getStoredOrder(){
+ let parsed=[];
+ try{
+  const raw=localStorage.getItem(ORDER_KEY);
+  if(raw){const value=JSON.parse(raw);if(Array.isArray(value)) parsed=value;}
+ }catch(error){parsed=[];}
+ return parsed.filter(item=>item&&typeof item==="object").map(item=>{
+  const quantity=Number(item.quantity);
+  return {...item,quantity:Number.isInteger(quantity)&&quantity>=1&&quantity<=MAX_QUANTITY?quantity:1};
+ });
+}
+
+function saveOrder(order){
+ try{localStorage.setItem(ORDER_KEY,JSON.stringify(order));return true;}
+ catch(error){alert("Your selection could not be saved on this device. Please try again.");return false;}
+}
+
+function getBookKey(book){
+ if(book.id) return "id:"+String(book.id);
+ if(book.sku) return "sku:"+String(book.sku);
+ if(book.isbn) return "isbn:"+String(book.isbn);
+ return ["book",book.title||"",book.series||"",book.class||"",book.subject||"",book.medium||""].join(":");
+}
+function getItemKey(item){
+ if(item.id) return "id:"+String(item.id);
+ if(item.sku) return "sku:"+String(item.sku);
+ if(item.isbn) return "isbn:"+String(item.isbn);
+ return ["book",item.title||"",item.series||"",item.class||"",item.subject||"",item.medium||""].join(":");
+}
+function isBookSelected(book){
+ const key=getBookKey(book);
+ return getStoredOrder().some(item=>getItemKey(item)===key);
+}
+function getSelectedTitleCount(){
+ return getStoredOrder().filter(item=>item.type!=="custom-kit").length;
+}
+function updateSelectionBar(){
+ const bar=document.getElementById("selectionBar");
+ const status=document.getElementById("selectionStatus");
+ if(!bar||!status) return;
+ const count=getSelectedTitleCount();
+ bar.hidden=count===0;
+ status.innerHTML="<strong>"+count+"</strong> "+(count===1?"title selected":"titles selected");
+}
+function addBookToSelection(book){
+ if(isBookSelected(book)) return true;
+ const order=getStoredOrder();
+ order.push({
+  id:book.id||"",sku:book.sku||"",isbn:book.isbn||"",
+  title:book.title||"Untitled Book",series:book.series||"",family:book.family||"",
+  class:book.class||"",subject:book.subject||"",medium:book.medium||"",
+  mrp:Number.isFinite(book.mrp)?book.mrp:null,cover:book.cover||"",quantity:1
+ });
+ return saveOrder(order);
+}
+function refreshCatalogue(){renderBooks();updateSelectionBar();}
+function orderIndex(value,order){const index=order.indexOf(value);return index===-1?Number.MAX_SAFE_INTEGER:index;}
+
+function showMessage(heading,text){
+ const container=document.getElementById("messageContainer");container.innerHTML="";
+ const box=document.createElement("div");box.className="message-state";
+ const title=document.createElement("h2");title.textContent=heading;
+ const paragraph=document.createElement("p");paragraph.textContent=text;
+ const link=document.createElement("a");link.href="school-education.html";link.textContent="Choose another class →";
+ box.append(title,paragraph,link);container.appendChild(box);
+ document.getElementById("catalogueControls").hidden=true;
+ document.getElementById("catalogueContent").hidden=true;
+ document.getElementById("selectionBar").hidden=true;
+}
+
+function populateFilters(){
+ const familySelect=document.getElementById("familyFilter");
+ const subjectSelect=document.getElementById("subjectFilter");
+ const families=[...new Set(examBooks.map(b=>b.family).filter(Boolean))];
+ families.sort((a,b)=>{const x=orderIndex(a,FAMILY_ORDER),y=orderIndex(b,FAMILY_ORDER);return x!==y?x-y:a.localeCompare(b);});
+ familySelect.innerHTML='<option value="">All Product Families</option>';
+ families.forEach(f=>{const o=document.createElement("option");o.value=f;o.textContent=f;familySelect.appendChild(o);});
+ const subjects=[...new Set(examBooks.map(b=>b.subject).filter(Boolean))];
+ subjects.sort((a,b)=>{const x=orderIndex(a,SUBJECT_ORDER),y=orderIndex(b,SUBJECT_ORDER);return x!==y?x-y:a.localeCompare(b);});
+ subjectSelect.innerHTML='<option value="">All Subjects</option>';
+ subjects.forEach(subject=>{const o=document.createElement("option");o.value=subject;o.textContent=subject;subjectSelect.appendChild(o);});
+}
+
+function getFilteredBooks(){
+ const search=document.getElementById("bookSearch").value.trim().toLowerCase();
+ const family=document.getElementById("familyFilter").value;
+ const subject=document.getElementById("subjectFilter").value;
+ return examBooks.filter(book=>{
+  if(family&&book.family!==family) return false;
+  if(subject&&book.subject!==subject) return false;
+  if(!search) return true;
+  return [book.title,book.series,book.family,book.subject,book.displaySubject,book.medium,book.sku,book.isbn].filter(Boolean).join(" ").toLowerCase().includes(search);
+ });
+}
+
+function groupByFamily(books){
+ const map=new Map();
+ books.forEach(book=>{const family=book.family||"Other Exam Preparation";if(!map.has(family))map.set(family,[]);map.get(family).push(book);});
+ return [...map.entries()].sort((a,b)=>{const x=orderIndex(a[0],FAMILY_ORDER),y=orderIndex(b[0],FAMILY_ORDER);return x!==y?x-y:a[0].localeCompare(b[0]);});
+}
+function groupBySubject(books){
+ const map=new Map();
+ books.forEach(book=>{const subject=book.subject||"Other";if(!map.has(subject))map.set(subject,[]);map.get(subject).push(book);});
+ return [...map.entries()].sort((a,b)=>{const x=orderIndex(a[0],SUBJECT_ORDER),y=orderIndex(b[0],SUBJECT_ORDER);return x!==y?x-y:a[0].localeCompare(b[0]);});
+}
+
+function createBookRow(book){
+ const row=document.createElement("article");row.className="exam-book";
+ const cover=document.createElement("div");cover.className="cover-placeholder";cover.textContent="BOOK COVER";
+ const details=document.createElement("div");details.className="book-details";
+ const heading=document.createElement("h5");heading.textContent=book.title||"Untitled Book";
+ const meta=document.createElement("div");meta.className="book-meta";
+ [
+  book.displaySubject||"",
+  book.medium?book.medium+" Medium":"",
+  book.sku?"SKU: "+book.sku:"",
+  book.isbn?"ISBN: "+book.isbn:"",
+  Number.isFinite(book.mrp)?"MRP ₹"+book.mrp:""
+ ].filter(Boolean).forEach(value=>{const span=document.createElement("span");span.textContent=value;meta.appendChild(span);});
+ details.append(heading,meta);
+ const button=document.createElement("button");button.type="button";button.className="book-action";
+ if(isBookSelected(book)){
+  button.textContent="✓ Selected";button.classList.add("is-selected");button.disabled=true;
+ }else{
+  button.textContent="Add to Selection";
+  button.addEventListener("click",()=>{if(addBookToSelection(book))refreshCatalogue();});
+ }
+ row.append(cover,details,button);return row;
+}
+
+function renderBooks(){
+ const books=getFilteredBooks(),container=document.getElementById("familyList");container.innerHTML="";
+ document.getElementById("resultsCount").textContent=books.length+(books.length===1?" book":" books");
+ if(!books.length){
+  const box=document.createElement("div");box.className="message-state";
+  const h=document.createElement("h2");h.textContent="No matching books";
+  const p=document.createElement("p");p.textContent="Try another search term, product family or subject.";
+  box.append(h,p);container.appendChild(box);return;
+ }
+ groupByFamily(books).forEach(([familyName,familyBooks])=>{
+  const section=document.createElement("section");section.className="family-section";
+  const fh=document.createElement("div");fh.className="family-heading";
+  const h=document.createElement("h3");h.textContent=familyName;
+  const count=document.createElement("span");count.textContent=familyBooks.length+(familyBooks.length===1?" book":" books");
+  fh.append(h,count);section.appendChild(fh);
+  groupBySubject(familyBooks).forEach(([subjectName,subjectBooks])=>{
+   const group=document.createElement("section");group.className="subject-group";
+   const sh=document.createElement("div");sh.className="subject-header";
+   const h4=document.createElement("h4");h4.textContent=subjectName;
+   const sc=document.createElement("span");sc.textContent=subjectBooks.length+(subjectBooks.length===1?" title":" titles");
+   sh.append(h4,sc);
+   const list=document.createElement("div");list.className="book-list";
+   subjectBooks.forEach(book=>list.appendChild(createBookRow(book)));
+   group.append(sh,list);section.appendChild(group);
+  });
+  container.appendChild(section);
+ });
+}
+
+function initialise(){
+ const classValue=new URLSearchParams(window.location.search).get("class");
+ if(!isValidExamClass(classValue)){
+  showMessage("Choose a class","Exam Preparation is available under Classes 5–10. Choose a class to continue.");return;
+ }
+ selectedClass=Number(classValue);
+ document.title="Class "+selectedClass+" Exam Preparation | Cambridge Digital Catalogue";
+ document.getElementById("pageHeading").textContent="Class "+selectedClass+" Exam Preparation";
+ document.getElementById("pageDescription").textContent="Browse Cambridge guides, assessments, workbooks and other exam-preparation publications available for Class "+selectedClass+".";
+ document.getElementById("backLink").href="school-education.html?class="+selectedClass;
+ examBooks=getCatalogue().filter(book=>Number(book.class)===selectedClass&&book.category==="exam");
+ if(!examBooks.length){
+  showMessage("Titles will be added","No verified Exam Preparation records have been added for Class "+selectedClass+" yet.");return;
+ }
+ document.getElementById("catalogueControls").hidden=false;
+ document.getElementById("catalogueContent").hidden=false;
+ populateFilters();renderBooks();updateSelectionBar();
+ document.getElementById("bookSearch").addEventListener("input",renderBooks);
+ document.getElementById("familyFilter").addEventListener("change",renderBooks);
+ document.getElementById("subjectFilter").addEventListener("change",renderBooks);
+ window.addEventListener("storage",event=>{if(event.key===ORDER_KEY)refreshCatalogue();});
+}
+document.addEventListener("DOMContentLoaded",initialise);
+</script>
+</body>
+</html>
