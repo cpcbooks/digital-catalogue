@@ -104,12 +104,27 @@
     font-size:17px;
 }
 
-.quantity-value{
-    min-width:25px;
+
+.quantity-input{
+    width:58px;
+    height:32px;
+    box-sizing:border-box;
+
+    border:1px solid var(--border);
+    border-radius:7px;
+
+    background:#fff;
+
     text-align:center;
+    font-size:14px;
     font-weight:750;
+
+    outline:none;
 }
 
+.quantity-input:focus{
+    border-color:var(--navy);
+}
 
 /* ACTIONS */
 
@@ -521,9 +536,17 @@ function renderOrder(){
                         −
                     </button>
 
-                    <div class="quantity-value">
-                        ${item.quantity || 1}
-                    </div>
+                    <input
+    type="number"
+    class="quantity-input"
+    value="${item.quantity || 1}"
+    min="1"
+    step="1"
+    inputmode="numeric"
+    aria-label="Quantity"
+    onchange="setQuantity(${index}, this.value)"
+    onblur="setQuantity(${index}, this.value)"
+>
 
                     <button
                         onclick="changeQuantity(
@@ -646,6 +669,27 @@ function renderOrder(){
    QUANTITY
 ======================================== */
 
+function setQuantity(index,value){
+
+    let quantity =
+        parseInt(value,10);
+
+    if(
+        isNaN(quantity) ||
+        quantity < 1
+    ){
+        quantity = 1;
+    }
+
+    order[index].quantity =
+        quantity;
+
+    saveOrder();
+
+    renderOrder();
+}
+
+    
 function changeQuantity(index,change){
 
     const item =
