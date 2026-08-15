@@ -296,7 +296,7 @@
     border-color:#d9dee6;
     background:#f5f7fa;
     color:var(--navy);
-    cursor:default;
+    cursor:pointer;
 }
 
 .message-state{
@@ -1045,6 +1045,44 @@ function addBookToSelection(book){
 }
 
 
+function removeBookFromSelection(book){
+
+    const key =
+        getBookKey(book);
+
+    const order =
+        getStoredOrder();
+
+    const index =
+        order.findIndex(
+            function(item){
+
+                return (
+                    item.type !==
+                        "custom-kit" &&
+                    getItemKey(item) ===
+                        key
+                );
+
+            }
+        );
+
+    if(index === -1){
+        return true;
+    }
+
+    order.splice(
+        index,
+        1
+    );
+
+    return saveOrder(
+        order
+    );
+
+}
+
+
 function refreshCatalogue(){
 
     renderBooks();
@@ -1605,8 +1643,22 @@ function createBookRow(book){
             "is-selected"
         );
 
-        button.disabled =
-            true;
+        button.addEventListener(
+            "click",
+            function(){
+
+                if(
+                    removeBookFromSelection(
+                        book
+                    )
+                ){
+
+                    refreshCatalogue();
+
+                }
+
+            }
+        );
 
     }
     else{
