@@ -292,9 +292,11 @@
     outline-offset:2px;
 }
 
-.book-action.is-added{
-    background:var(--navy);
-    color:#fff;
+.book-action.is-selected{
+    border-color:#d9dee6;
+    background:#f5f7fa;
+    color:var(--navy);
+    cursor:default;
 }
 
 .message-state{
@@ -389,9 +391,9 @@
         color:var(--navy);
     }
 
-    .book-action.is-added:hover{
-        background:var(--navy);
-        color:#fff;
+    .book-action.is-selected:hover{
+        background:#f5f7fa;
+        color:var(--navy);
     }
 
 }
@@ -498,7 +500,7 @@
                 class="view-selection"
                 href="order.html"
             >
-                View Selection
+                My Selection →
             </a>
 
         </div>
@@ -912,26 +914,18 @@ function getItemKey(item){
 }
 
 
-function getSelectionCount(){
+function getSelectedTitleCount(){
 
     return getStoredOrder()
-        .reduce(
-            function(total,item){
+        .filter(function(item){
 
-                const quantity =
-                    Number(item.quantity);
+            return (
+                item.type !==
+                "custom-kit"
+            );
 
-                return total +
-                    (
-                        Number.isInteger(quantity) &&
-                        quantity > 0
-                            ? quantity
-                            : 1
-                    );
-
-            },
-            0
-        );
+        })
+        .length;
 
 }
 
@@ -956,10 +950,10 @@ function updateSelectionBar(){
     }
 
     const count =
-        getSelectionCount();
+        getSelectedTitleCount();
 
     bar.hidden =
-        false;
+        count === 0;
 
     status.innerHTML =
         "<strong>" +
@@ -967,146 +961,94 @@ function updateSelectionBar(){
         "</strong> " +
         (
             count === 1
-                ? "book selected"
-                : "books selected"
+                ? "title selected"
+                : "titles selected"
         );
 
 }
 
 
-function addToSelection(
-    book,
-    button
-){
+function isBookSelected(book){
+
+    const key =
+        getBookKey(book);
+
+    return getStoredOrder()
+        .some(function(item){
+
+            return (
+                getItemKey(item) ===
+                key
+            );
+
+        });
+
+}
+
+
+function addBookToSelection(book){
+
+    if(
+        isBookSelected(book)
+    ){
+        return true;
+    }
 
     const order =
         getStoredOrder();
 
-    const bookKey =
-        getBookKey(book);
+    order.push({
 
-    const existingIndex =
-        order.findIndex(
-            function(item){
+        id:
+            book.id || "",
 
-                return (
-                    getItemKey(item) ===
-                    bookKey
-                );
+        sku:
+            book.sku || "",
 
-            }
-        );
+        isbn:
+            book.isbn || "",
 
-    if(existingIndex >= 0){
+        title:
+            book.title ||
+            "Untitled Book",
 
-        const current =
-            Number(
-                order[
-                    existingIndex
-                ].quantity
-            ) || 1;
+        series:
+            book.series || "",
 
-        if(
-            current >=
-            MAX_QUANTITY
-        ){
+        class:
+            book.class || "",
 
-            alert(
-                "Maximum quantity of " +
-                MAX_QUANTITY +
-                " reached for this book."
-            );
+        subject:
+            book.subject || "",
 
-            return;
+        medium:
+            book.medium || "",
 
-        }
+        mrp:
+            Number.isFinite(
+                book.mrp
+            )
+                ? book.mrp
+                : null,
 
-        order[
-            existingIndex
-        ].quantity =
-            current + 1;
+        cover:
+            book.cover || "",
 
-    }
-    else{
+        quantity:1
 
-        order.push({
+    });
 
-            id:
-                book.id || "",
+    return saveOrder(
+        order
+    );
 
-            sku:
-                book.sku || "",
+}
 
-            isbn:
-                book.isbn || "",
 
-            title:
-                book.title ||
-                "Untitled Book",
+function refreshCatalogue(){
 
-            series:
-                book.series || "",
-
-            class:
-                book.class || "",
-
-            subject:
-                book.subject || "",
-
-            medium:
-                book.medium || "",
-
-            mrp:
-                Number.isFinite(
-                    book.mrp
-                )
-                    ? book.mrp
-                    : null,
-
-            cover:
-                book.cover || "",
-
-            quantity:1
-
-        });
-
-    }
-
-    if(
-        !saveOrder(order)
-    ){
-        return;
-    }
-
+    renderBooks();
     updateSelectionBar();
-
-    if(button){
-
-        const original =
-            "Add to Selection";
-
-        button.textContent =
-            "Added ✓";
-
-        button.classList.add(
-            "is-added"
-        );
-
-        window.setTimeout(
-            function(){
-
-                button.textContent =
-                    original;
-
-                button.classList.remove(
-                    "is-added"
-                );
-
-            },
-            1100
-        );
-
-    }
 
 }
 
@@ -1617,23 +1559,21 @@ function createBookRow(book){
 
     ]
     .filter(Boolean)
-    .forEach(
-        function(value){
+    .forEach(function(value){
 
-            const span =
-                document.createElement(
-                    "span"
-                );
-
-            span.textContent =
-                value;
-
-            meta.appendChild(
-                span
+        const span =
+            document.createElement(
+                "span"
             );
 
-        }
-    );
+        span.textContent =
+            value;
+
+        meta.appendChild(
+            span
+        );
+
+    });
 
     details.appendChild(
         heading
@@ -1654,20 +1594,44 @@ function createBookRow(book){
     button.className =
         "book-action";
 
-    button.textContent =
-        "Add to Selection";
+    if(
+        isBookSelected(book)
+    ){
 
-    button.addEventListener(
-        "click",
-        function(){
+        button.textContent =
+            "✓ Selected";
 
-            addToSelection(
-                book,
-                button
-            );
+        button.classList.add(
+            "is-selected"
+        );
 
-        }
-    );
+        button.disabled =
+            true;
+
+    }
+    else{
+
+        button.textContent =
+            "Add to Selection";
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                if(
+                    addBookToSelection(
+                        book
+                    )
+                ){
+
+                    refreshCatalogue();
+
+                }
+
+            }
+        );
+
+    }
 
     row.appendChild(
         cover
