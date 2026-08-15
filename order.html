@@ -541,6 +541,7 @@ function renderOrder(){
     class="quantity-input"
     value="${item.quantity || 1}"
     min="1"
+    max="10000"
     step="1"
     inputmode="numeric"
     aria-label="Quantity"
@@ -668,7 +669,7 @@ function renderOrder(){
 /* ========================================
    QUANTITY
 ======================================== */
-
+const MAX_ORDER_QUANTITY = 10000;
 function setQuantity(index,value){
 
     let quantity =
@@ -678,7 +679,23 @@ function setQuantity(index,value){
         isNaN(quantity) ||
         quantity < 1
     ){
-        quantity = 1;
+        alert(
+            "Please enter a valid quantity between 1 and 10,000."
+        );
+
+        renderOrder();
+        return;
+    }
+
+    if(quantity > MAX_ORDER_QUANTITY){
+
+        alert(
+            "Maximum quantity allowed per item is 10,000.\n\n" +
+            "Please enter a quantity between 1 and 10,000."
+        );
+
+        renderOrder();
+        return;
     }
 
     order[index].quantity =
