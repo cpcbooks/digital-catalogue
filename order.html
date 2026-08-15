@@ -169,14 +169,35 @@
 ======================================== */
 
 .remove-button{
+    justify-self:end;
+    align-self:center;
+
+    width:max-content;
+
     padding:8px 10px;
+
     border:0;
+    border-radius:6px;
+
     background:transparent;
+
     color:#8b3b3b;
+
     cursor:pointer;
+
     font-size:11px;
     font-weight:700;
+
     touch-action:manipulation;
+}
+
+.remove-button:hover{
+    background:#fff2f2;
+}
+
+.remove-button:focus-visible{
+    outline:2px solid #8b3b3b;
+    outline-offset:2px;
 }
 
 
@@ -357,9 +378,15 @@
     }
 
     .remove-button{
-        padding-left:0;
-        text-align:left;
-    }
+    justify-self:start;
+    align-self:start;
+
+    width:max-content;
+
+    padding:8px 10px;
+
+    text-align:left;
+}
 
     .order-actions{
         flex-direction:column;
