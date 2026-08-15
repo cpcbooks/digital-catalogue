@@ -69,11 +69,13 @@
     cursor:pointer;
     font-size:12px;
     font-weight:700;
+
     transition:
         background-color .18s ease,
         border-color .18s ease,
         color .18s ease,
         transform .18s ease;
+
     touch-action:manipulation;
 }
 
@@ -131,25 +133,36 @@
 
 .category-grid{
     display:grid;
+
     grid-template-columns:
         repeat(2,minmax(0,1fr));
+
     gap:18px;
+
     max-width:900px;
 }
 
 .category-grid.single-category{
+
     grid-template-columns:
         minmax(0,440px);
 }
 
 .category-card{
+
     min-height:280px;
+
     padding:28px;
+
     display:flex;
     flex-direction:column;
+
     border:1px solid var(--border);
+
     border-radius:var(--radius);
+
     background:#fff;
+
     transition:
         transform .18s ease,
         box-shadow .18s ease,
@@ -157,86 +170,134 @@
 }
 
 .category-card:hover{
+
     transform:translateY(-3px);
+
     border-color:#ccd4df;
+
     box-shadow:
         0 12px 30px
         rgba(20,35,60,.07);
 }
 
 .category-label{
+
     margin-bottom:28px;
+
     color:var(--navy);
+
     font-size:10px;
     font-weight:800;
+
     letter-spacing:1.2px;
 }
 
 .category-card h3{
+
     margin:0 0 10px;
+
     font-size:22px;
+
     line-height:1.25;
 }
 
 .category-card p{
+
     margin:0;
+
     color:var(--muted);
+
     font-size:13px;
+
     line-height:1.6;
 }
 
 .category-card button{
+
     margin-top:auto;
+
     padding:12px 15px;
+
     border:1px solid var(--navy);
+
     border-radius:7px;
+
     background:#fff;
+
     color:var(--navy);
+
     cursor:pointer;
+
     font-size:12px;
     font-weight:750;
+
     touch-action:manipulation;
 }
 
 .category-card button:hover{
+
     background:var(--navy);
+
     color:#fff;
 }
 
 .category-card button:focus-visible{
+
     outline:2px solid var(--navy);
+
     outline-offset:2px;
 }
 
+
+/* ========================================
+   EXAM CARD
+======================================== */
+
 .exam-card{
+
     background:var(--navy);
+
     color:#fff;
+
     border-color:var(--navy);
 }
 
 .exam-card .category-label{
+
     color:rgba(255,255,255,.72);
 }
 
 .exam-card p{
+
     color:rgba(255,255,255,.72);
 }
 
 .exam-card button{
+
     background:#fff;
+
     color:var(--navy);
+
     border-color:#fff;
 }
 
 .exam-card button:hover{
+
     background:#f5f7fa;
+
     color:var(--navy);
 }
+
+
+/* ========================================
+   MOBILE
+======================================== */
 
 @media(max-width:800px){
 
     .category-grid,
     .category-grid.single-category{
+
         grid-template-columns:1fr;
     }
 
@@ -245,34 +306,47 @@
 @media(max-width:650px){
 
     .school-hero{
+
         padding:38px 18px 34px;
     }
 
     .school-intro{
+
         font-size:13px;
     }
 
     .class-selector{
+
         justify-content:flex-start;
+
         flex-wrap:nowrap;
+
         overflow-x:auto;
+
         padding:2px 18px 8px;
+
         margin-left:-18px;
         margin-right:-18px;
+
         scrollbar-width:none;
+
         -webkit-overflow-scrolling:touch;
     }
 
     .class-selector::-webkit-scrollbar{
+
         display:none;
     }
 
     .school-class{
+
         flex:0 0 auto;
     }
 
     .category-card{
+
         min-height:220px;
+
         padding:22px;
     }
 
@@ -281,19 +355,27 @@
 @media(hover:none){
 
     .school-class:hover{
+
         border-color:var(--border);
+
         transform:none;
     }
 
     .school-class.active:hover{
+
         border-color:var(--navy);
+
         background:var(--navy);
+
         color:#fff;
     }
 
     .category-card:hover{
+
         transform:none;
+
         border-color:var(--border);
+
         box-shadow:none;
     }
 
@@ -374,60 +456,60 @@
 
 <main>
 
-    <section
-        class="catalogue-section"
-        id="initialSection"
-    >
+<section
+    class="catalogue-section"
+    id="initialSection"
+>
 
-        <div class="initial-state">
+    <div class="initial-state">
 
-            <h2>
-                Select a class
-            </h2>
+        <h2>
+            Select a class
+        </h2>
 
-            <p>
-                Choose Class 1–10 above to explore the
-                Cambridge publications available for that level.
+        <p>
+            Choose Class 1–10 above to explore the
+            Cambridge publications available for that level.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section
+    class="catalogue-section school-content"
+    id="schoolContent"
+>
+
+    <div class="section-heading">
+
+        <div>
+
+            <p class="section-label">
+                EXPLORE THIS CLASS
             </p>
 
-        </div>
+            <h2 id="selectedClassHeading">
+                Class Books
+            </h2>
 
-    </section>
-
-
-    <section
-        class="catalogue-section school-content"
-        id="schoolContent"
-    >
-
-        <div class="section-heading">
-
-            <div>
-
-                <p class="section-label">
-                    EXPLORE THIS CLASS
-                </p>
-
-                <h2 id="selectedClassHeading">
-                    Class Books
-                </h2>
-
-                <p
-                    class="selected-class-note"
-                    id="selectedClassNote"
-                ></p>
-
-            </div>
+            <p
+                class="selected-class-note"
+                id="selectedClassNote"
+            ></p>
 
         </div>
 
+    </div>
 
-        <div
-            class="category-grid"
-            id="categoryGrid"
-        ></div>
 
-    </section>
+    <div
+        class="category-grid"
+        id="categoryGrid"
+    ></div>
+
+</section>
 
 </main>
 
@@ -457,17 +539,45 @@
 
 const schoolClasses = {
 
-    1:{categories:["school"]},
-    2:{categories:["school"]},
-    3:{categories:["school"]},
-    4:{categories:["school"]},
+    1:{
+        categories:["school"]
+    },
 
-    5:{categories:["school","exam"]},
-    6:{categories:["school","exam"]},
-    7:{categories:["school","exam"]},
-    8:{categories:["school","exam"]},
-    9:{categories:["school","exam"]},
-    10:{categories:["school","exam"]}
+    2:{
+        categories:["school"]
+    },
+
+    3:{
+        categories:["school"]
+    },
+
+    4:{
+        categories:["school"]
+    },
+
+    5:{
+        categories:["school","exam"]
+    },
+
+    6:{
+        categories:["school","exam"]
+    },
+
+    7:{
+        categories:["school","exam"]
+    },
+
+    8:{
+        categories:["school","exam"]
+    },
+
+    9:{
+        categories:["school","exam"]
+    },
+
+    10:{
+        categories:["school","exam"]
+    }
 
 };
 
@@ -476,9 +586,11 @@ const categoryDefinitions = {
 
     school:{
 
-        label:"SCHOOL BOOKS",
+        label:
+            "SCHOOL BOOKS",
 
-        title:"School Books",
+        title:
+            "School Books",
 
         description:
             "Explore Cambridge school publications and subject books available for this class.",
@@ -486,24 +598,28 @@ const categoryDefinitions = {
         button:
             "Browse School Books →",
 
-        className:""
+        className:
+            ""
 
     },
 
 
     exam:{
 
-        label:"EXAM PREPARATION",
+        label:
+            "EXAM PREPARATION",
 
-        title:"Exam Preparation",
+        title:
+            "Exam Preparation",
 
         description:
-            "Explore guides, practice books, assessment materials and other exam-preparation publications available for this class.",
+            "Explore guides, assessment materials, workbooks and other exam-preparation publications available for this class.",
 
         button:
             "Explore Exam Preparation →",
 
-        className:"exam-card"
+        className:
+            "exam-card"
 
     }
 
@@ -512,6 +628,10 @@ const categoryDefinitions = {
 
 let selectedClass = null;
 
+
+/* ========================================
+   VALIDATION
+======================================== */
 
 function isValidClass(value){
 
@@ -542,6 +662,10 @@ function isValidClass(value){
 
 }
 
+
+/* ========================================
+   CATEGORY CARD
+======================================== */
 
 function createCategoryCard(
     type,
@@ -639,16 +763,34 @@ function createCategoryCard(
     );
 
 
-    article.appendChild(label);
-    article.appendChild(heading);
-    article.appendChild(description);
-    article.appendChild(button);
+    article.appendChild(
+        label
+    );
+
+
+    article.appendChild(
+        heading
+    );
+
+
+    article.appendChild(
+        description
+    );
+
+
+    article.appendChild(
+        button
+    );
 
 
     return article;
 
 }
 
+
+/* ========================================
+   SELECT CLASS
+======================================== */
 
 function selectClass(
     classNumber,
@@ -668,7 +810,9 @@ function selectClass(
 
 
     classNumber =
-        Number(classNumber);
+        Number(
+            classNumber
+        );
 
 
     selectedClass =
@@ -679,19 +823,18 @@ function selectClass(
         .querySelectorAll(
             ".school-class"
         )
-        .forEach(
-            function(item){
+        .forEach(function(item){
 
-                item.classList.remove(
-                    "active"
-                );
+            item.classList.remove(
+                "active"
+            );
 
-                item.removeAttribute(
-                    "aria-current"
-                );
 
-            }
-        );
+            item.removeAttribute(
+                "aria-current"
+            );
+
+        });
 
 
     if(!button){
@@ -709,6 +852,7 @@ function selectClass(
         button.classList.add(
             "active"
         );
+
 
         button.setAttribute(
             "aria-current",
@@ -791,8 +935,9 @@ function selectClass(
 
 
     const categories =
-        schoolClasses[classNumber]
-            .categories;
+        schoolClasses[
+            classNumber
+        ].categories;
 
 
     grid.classList.toggle(
@@ -801,39 +946,44 @@ function selectClass(
     );
 
 
-    categories.forEach(
-        function(type){
+    categories.forEach(function(type){
 
-            const card =
-                createCategoryCard(
-                    type,
-                    classNumber
-                );
+        const card =
+            createCategoryCard(
+                type,
+                classNumber
+            );
 
 
-            if(card){
+        if(card){
 
-                grid.appendChild(
-                    card
-                );
-
-            }
+            grid.appendChild(
+                card
+            );
 
         }
-    );
+
+    });
 
 
     if(shouldScroll){
 
         content.scrollIntoView({
+
             behavior:"smooth",
+
             block:"start"
+
         });
 
     }
 
 }
 
+
+/* ========================================
+   OPEN CATEGORY
+======================================== */
 
 function openCategory(
     type,
@@ -866,16 +1016,35 @@ function openCategory(
 
     if(type === "exam"){
 
-        alert(
-            "Exam Preparation for Class " +
-            classNumber +
-            " will be built in the next stage."
-        );
+        /*
+            Exam Preparation is intentionally
+            available only for Classes 5–10.
+        */
+
+        if(
+            classNumber < 5 ||
+            classNumber > 10
+        ){
+
+            return;
+
+        }
+
+
+        window.location.href =
+            "exam-preparation.html?class=" +
+            encodeURIComponent(
+                classNumber
+            );
 
     }
 
 }
 
+
+/* ========================================
+   URL CLASS RESTORE
+======================================== */
 
 function openClassFromURL(){
 
@@ -933,8 +1102,11 @@ function openClassFromURL(){
             function(){
 
                 content.scrollIntoView({
+
                     behavior:"auto",
+
                     block:"start"
+
                 });
 
             }
@@ -944,6 +1116,10 @@ function openClassFromURL(){
 
 }
 
+
+/* ========================================
+   START
+======================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
