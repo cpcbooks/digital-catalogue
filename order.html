@@ -36,26 +36,36 @@
 .back-link{
     display:inline-block;
     margin-bottom:20px;
+
     color:var(--navy);
+
     text-decoration:none;
+
     font-size:12px;
     font-weight:700;
 }
 
 .order-hero h1{
     margin:0;
+
     font-size:clamp(34px,5vw,50px);
+
     letter-spacing:-1.5px;
 }
 
 .order-intro{
     margin:10px 0 0;
+
     color:var(--muted);
+
     font-size:13px;
+    line-height:1.5;
 }
 
 
-/* SELECTION */
+/* ========================================
+   SELECTION
+======================================== */
 
 .order-section{
     padding:30px 6% 60px;
@@ -64,56 +74,76 @@
 .order-card{
     margin-bottom:14px;
     padding:22px;
+
     background:#fff;
+
     border:1px solid var(--border);
     border-radius:12px;
 }
 
 .order-main{
     display:grid;
-    grid-template-columns:1fr auto auto;
+
+    grid-template-columns:
+        1fr auto auto;
+
     gap:25px;
+
     align-items:center;
 }
 
 .item-label{
     margin-bottom:5px;
+
     color:var(--muted);
+
     font-size:10px;
     font-weight:750;
+
     letter-spacing:.8px;
+
     text-transform:uppercase;
 }
 
 .item-title{
     margin:0;
+
     font-size:17px;
 }
 
 .item-meta{
     margin-top:6px;
+
     color:var(--muted);
+
     font-size:11px;
 }
 
 
-/* QUANTITY */
+/* ========================================
+   QUANTITY
+======================================== */
 
 .quantity-area{
     display:flex;
+
     flex-direction:column;
+
     align-items:center;
 }
 
 .quantity{
     display:flex;
+
     align-items:center;
+
     gap:8px;
 }
 
 .quantity button{
     width:36px;
     height:36px;
+
     padding:0;
 
     border:1px solid var(--border);
@@ -133,7 +163,7 @@
 }
 
 .quantity-input{
-    width:78px;
+    width:80px;
     height:36px;
 
     box-sizing:border-box;
@@ -162,6 +192,7 @@
 
 .quantity-error{
     min-height:15px;
+
     margin-top:5px;
 
     color:#a33b3b;
@@ -170,10 +201,14 @@
     font-weight:650;
 
     text-align:center;
+
+    white-space:nowrap;
 }
 
 
-/* ACTIONS */
+/* ========================================
+   REMOVE
+======================================== */
 
 .remove-button{
     padding:8px 10px;
@@ -192,33 +227,14 @@
     touch-action:manipulation;
 }
 
-.clear-order-button{
-    padding:13px 18px;
 
-    border:1px solid #d8bcbc;
-    border-radius:8px;
-
-    background:#fff;
-
-    color:#8b3b3b;
-
-    cursor:pointer;
-
-    font-size:12px;
-    font-weight:750;
-
-    touch-action:manipulation;
-}
-
-.clear-order-button:hover{
-    background:#fff7f7;
-}
-
-
-/* KIT */
+/* ========================================
+   KIT BOOKS
+======================================== */
 
 .view-books{
     margin-top:15px;
+
     padding:0;
 
     border:0;
@@ -231,12 +247,15 @@
 
     font-size:11px;
     font-weight:750;
+
+    touch-action:manipulation;
 }
 
 .kit-books{
     display:none;
 
     margin-top:16px;
+
     padding:16px 18px;
 
     background:#f7f8fa;
@@ -250,6 +269,7 @@
 
 .kit-books ol{
     margin:0;
+
     padding-left:20px;
 }
 
@@ -262,7 +282,9 @@
 }
 
 
-/* EMPTY */
+/* ========================================
+   EMPTY SELECTION
+======================================== */
 
 .empty-order{
     padding:60px 20px;
@@ -288,13 +310,17 @@
 }
 
 
-/* SUMMARY */
+/* ========================================
+   SUMMARY
+======================================== */
 
 .order-summary{
     margin-top:25px;
+
     padding:22px;
 
     background:var(--navy);
+
     color:#fff;
 
     border-radius:12px;
@@ -302,7 +328,9 @@
 
 .summary-row{
     display:flex;
+
     justify-content:space-between;
+
     gap:20px;
 }
 
@@ -320,12 +348,15 @@
 }
 
 
-/* FOOT ACTIONS */
+/* ========================================
+   BOTTOM ACTIONS
+======================================== */
 
 .order-actions{
     margin-top:18px;
 
     display:flex;
+
     justify-content:space-between;
     align-items:center;
 
@@ -334,22 +365,25 @@
 
 .order-actions-left{
     display:flex;
+
     gap:10px;
+
     flex-wrap:wrap;
 }
 
 .continue-button,
+.clear-order-button,
 .checkout-button{
     padding:13px 20px;
 
     border-radius:8px;
 
-    text-decoration:none;
-
     font-size:12px;
     font-weight:750;
 
     text-align:center;
+
+    touch-action:manipulation;
 }
 
 .continue-button{
@@ -358,6 +392,18 @@
     background:#fff;
 
     color:var(--navy);
+
+    text-decoration:none;
+}
+
+.clear-order-button{
+    border:1px solid #d8bcbc;
+
+    background:#fff;
+
+    color:#8b3b3b;
+
+    cursor:pointer;
 }
 
 .checkout-button{
@@ -368,12 +414,12 @@
     color:#fff;
 
     cursor:pointer;
-
-    touch-action:manipulation;
 }
 
 
-/* MOBILE */
+/* ========================================
+   MOBILE
+======================================== */
 
 @media(max-width:650px){
 
@@ -391,6 +437,7 @@
 
     .order-main{
         grid-template-columns:1fr;
+
         gap:15px;
     }
 
@@ -404,16 +451,19 @@
 
     .remove-button{
         padding-left:0;
+
         text-align:left;
     }
 
     .order-actions{
         flex-direction:column;
+
         align-items:stretch;
     }
 
     .order-actions-left{
         display:grid;
+
         grid-template-columns:1fr 1fr;
     }
 
@@ -421,6 +471,7 @@
     .clear-order-button,
     .checkout-button{
         width:100%;
+
         box-sizing:border-box;
     }
 
@@ -447,6 +498,7 @@
         </div>
 
     </div>
+
 
     <div class="catalogue-year">
         DIGITAL CATALOGUE · 2026–27
@@ -499,7 +551,7 @@
 <script>
 
 /* ========================================
-   SETTINGS
+   CONSTANTS
 ======================================== */
 
 const ORDER_KEY =
@@ -508,92 +560,95 @@ const ORDER_KEY =
 const ORDER_UPDATED_KEY =
     "cambridgeOrderUpdatedAt";
 
-const MIN_ORDER_QUANTITY = 1;
-const MAX_ORDER_QUANTITY = 10000;
+const MIN_QUANTITY = 1;
+
+const MAX_QUANTITY = 10000;
 
 
 /* ========================================
-   LOAD SELECTION
+   LOAD ORDER
 ======================================== */
 
 let order = [];
 
 
-try{
+function loadOrder(){
 
-    const stored =
-        JSON.parse(
-            localStorage.getItem(
-                ORDER_KEY
-            ) || "[]"
+    try{
+
+        const stored =
+            JSON.parse(
+                localStorage.getItem(
+                    ORDER_KEY
+                ) || "[]"
+            );
+
+
+        if(Array.isArray(stored)){
+
+            order =
+                stored.filter(
+                    item =>
+                        item &&
+                        typeof item === "object"
+                );
+
+        }else{
+
+            order = [];
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Unable to load selection.",
+            error
         );
 
 
-    if(Array.isArray(stored)){
-        order = stored;
+        order = [];
+
     }
 
-}catch(error){
 
-    console.error(
-        "Unable to read selection.",
-        error
+    /*
+       Repair only invalid quantities.
+
+       Never delete an item simply because
+       its quantity data is malformed.
+    */
+
+    order.forEach(
+        item => {
+
+            const quantity =
+                Number(
+                    item.quantity
+                );
+
+
+            if(
+                !Number.isInteger(quantity) ||
+                quantity < MIN_QUANTITY ||
+                quantity > MAX_QUANTITY
+            ){
+
+                item.quantity = 1;
+
+            }
+
+        }
     );
 
 }
 
 
 /* ========================================
-   NORMALISE STORED DATA
-======================================== */
-
-order = order.filter(
-    item =>
-        item &&
-        typeof item === "object"
-);
-
-
-order.forEach(item => {
-
-    const quantity =
-        Number(item.quantity);
-
-
-    if(
-        !Number.isInteger(quantity) ||
-        quantity < MIN_ORDER_QUANTITY ||
-        quantity > MAX_ORDER_QUANTITY
-    ){
-
-        item.quantity = 1;
-
-    }
-
-});
-
-
-/* ========================================
-   SAVE SELECTION
+   SAVE ORDER
 ======================================== */
 
 function saveOrder(){
-
-    /*
-       Defensive rule:
-
-       Normal edits never silently write an
-       accidental empty selection.
-
-       Explicit Clear Selection and removing
-       the final item handle empty state
-       themselves.
-    */
-
-    if(!Array.isArray(order)){
-        return false;
-    }
-
 
     try{
 
@@ -627,7 +682,7 @@ function saveOrder(){
 
 
 /* ========================================
-   ESCAPE HTML
+   SAFE DISPLAY TEXT
 ======================================== */
 
 function escapeHTML(value){
@@ -643,7 +698,42 @@ function escapeHTML(value){
 
 
 /* ========================================
-   RENDER
+   QUANTITY TOTAL
+======================================== */
+
+function getTotalQuantity(){
+
+    return order.reduce(
+        (total,item) => {
+
+            const quantity =
+                Number(
+                    item.quantity
+                );
+
+
+            if(
+                Number.isInteger(quantity) &&
+                quantity >= MIN_QUANTITY &&
+                quantity <= MAX_QUANTITY
+            ){
+
+                return total + quantity;
+
+            }
+
+
+            return total;
+
+        },
+        0
+    );
+
+}
+
+
+/* ========================================
+   RENDER ORDER
 ======================================== */
 
 function renderOrder(){
@@ -664,6 +754,8 @@ function renderOrder(){
 
     summaryContainer.innerHTML = "";
 
+
+    /* EMPTY */
 
     if(order.length === 0){
 
@@ -697,6 +789,8 @@ function renderOrder(){
     }
 
 
+    /* ITEMS */
+
     order.forEach(
         (item,index) => {
 
@@ -723,12 +817,19 @@ function renderOrder(){
             let meta = "";
 
 
-            if(item.type === "custom-kit"){
+            if(
+                item.type ===
+                "custom-kit"
+            ){
 
                 const count =
-                    Array.isArray(item.books)
+                    Array.isArray(
+                        item.books
+                    )
                     ? item.books.length
-                    : Number(item.bookCount) || 0;
+                    : Number(
+                        item.bookCount
+                      ) || 0;
 
 
                 meta =
@@ -783,7 +884,7 @@ function renderOrder(){
 
                             <button
                                 type="button"
-                                data-action="decrease"
+                                class="quantity-minus"
                                 data-index="${index}"
                                 aria-label="Decrease quantity"
                             >
@@ -806,7 +907,7 @@ function renderOrder(){
 
                             <button
                                 type="button"
-                                data-action="increase"
+                                class="quantity-plus"
                                 data-index="${index}"
                                 aria-label="Increase quantity"
                             >
@@ -818,7 +919,7 @@ function renderOrder(){
 
                         <div
                             class="quantity-error"
-                            id="quantity-error-${index}"
+                            id="quantityError${index}"
                             aria-live="polite"
                         ></div>
 
@@ -828,7 +929,6 @@ function renderOrder(){
                     <button
                         type="button"
                         class="remove-button"
-                        data-action="remove"
                         data-index="${index}"
                     >
                         Remove
@@ -839,11 +939,16 @@ function renderOrder(){
             `;
 
 
-            /* KIT CONTENTS */
+            /*
+               CUSTOM KIT BOOK LIST
+            */
 
             if(
-                item.type === "custom-kit" &&
-                Array.isArray(item.books) &&
+                item.type ===
+                "custom-kit" &&
+                Array.isArray(
+                    item.books
+                ) &&
                 item.books.length > 0
             ){
 
@@ -895,13 +1000,17 @@ function renderOrder(){
                             "Untitled Book";
 
 
-                        list.appendChild(li);
+                        list.appendChild(
+                            li
+                        );
 
                     }
                 );
 
 
-                booksBox.appendChild(list);
+                booksBox.appendChild(
+                    list
+                );
 
 
                 viewButton.addEventListener(
@@ -909,9 +1018,7 @@ function renderOrder(){
                     () => {
 
                         const open =
-                            booksBox
-                            .classList
-                            .toggle(
+                            booksBox.classList.toggle(
                                 "visible"
                             );
 
@@ -951,26 +1058,8 @@ function renderOrder(){
 
 
 /* ========================================
-   QUANTITY UI
+   QUANTITY ERROR
 ======================================== */
-
-function getQuantityInput(index){
-
-    return document.querySelector(
-        `.quantity-input[data-index="${index}"]`
-    );
-
-}
-
-
-function getQuantityError(index){
-
-    return document.getElementById(
-        `quantity-error-${index}`
-    );
-
-}
-
 
 function showQuantityError(
     index,
@@ -978,11 +1067,16 @@ function showQuantityError(
 ){
 
     const input =
-        getQuantityInput(index);
+        document.querySelector(
+            `.quantity-input[data-index="${index}"]`
+        );
 
 
     const error =
-        getQuantityError(index);
+        document.getElementById(
+            "quantityError" +
+            index
+        );
 
 
     if(input){
@@ -1007,11 +1101,16 @@ function showQuantityError(
 function clearQuantityError(index){
 
     const input =
-        getQuantityInput(index);
+        document.querySelector(
+            `.quantity-input[data-index="${index}"]`
+        );
 
 
     const error =
-        getQuantityError(index);
+        document.getElementById(
+            "quantityError" +
+            index
+        );
 
 
     if(input){
@@ -1033,22 +1132,10 @@ function clearQuantityError(index){
 
 
 /* ========================================
-   QUANTITY INPUT SANITISING
+   MANUAL QUANTITY INPUT
 ======================================== */
 
-function cleanQuantityText(value){
-
-    return String(value || "")
-        .replace(/\D/g,"");
-
-}
-
-
-/* ========================================
-   COMMIT MANUAL QUANTITY
-======================================== */
-
-function processQuantityTyping(input){
+function handleQuantityInput(input){
 
     const index =
         Number(
@@ -1066,51 +1153,27 @@ function processQuantityTyping(input){
     }
 
 
-    let cleaned =
-        cleanQuantityText(
-            input.value
-        );
-
-
     /*
-       Protect pasted/typed giant values.
-
-       We allow only enough characters to
-       represent 10,000.
+       Keep numbers only.
     */
 
-    if(cleaned.length > 5){
-
-        input.value =
-            String(
-                order[index].quantity
-            );
-
-
-        showQuantityError(
-            index,
-            "Maximum quantity is 10,000."
-        );
-
-
-        return;
-
-    }
+    let value =
+        String(input.value)
+        .replace(/\D/g,"");
 
 
     input.value =
-        cleaned;
+        value;
 
 
     /*
-       Empty input is only a temporary
-       editing state.
+       Empty is allowed temporarily
+       while the customer edits.
 
-       IMPORTANT:
-       We do NOT modify order[].
+       DO NOT alter order[].
     */
 
-    if(cleaned === ""){
+    if(value === ""){
 
         showQuantityError(
             index,
@@ -1123,13 +1186,33 @@ function processQuantityTyping(input){
     }
 
 
+    /*
+       Huge pasted value.
+
+       Do NOT save it.
+       Do NOT alter the selection.
+    */
+
+    if(value.length > 5){
+
+        showQuantityError(
+            index,
+            "Maximum quantity is 10,000."
+        );
+
+
+        return;
+
+    }
+
+
     const quantity =
-        Number(cleaned);
+        Number(value);
 
 
     if(
         !Number.isInteger(quantity) ||
-        quantity < MIN_ORDER_QUANTITY
+        quantity < MIN_QUANTITY
     ){
 
         showQuantityError(
@@ -1145,21 +1228,8 @@ function processQuantityTyping(input){
 
     if(
         quantity >
-        MAX_ORDER_QUANTITY
+        MAX_QUANTITY
     ){
-
-        /*
-           Restore last valid quantity.
-
-           Nothing invalid is ever written
-           to the stored selection.
-        */
-
-        input.value =
-            String(
-                order[index].quantity
-            );
-
 
         showQuantityError(
             index,
@@ -1173,10 +1243,10 @@ function processQuantityTyping(input){
 
 
     /*
-       VALID VALUE
+       VALID QUANTITY
 
-       Only now do we update the actual
-       saved selection.
+       This is the only place manual
+       typing changes the saved quantity.
     */
 
     order[index].quantity =
@@ -1199,9 +1269,12 @@ function processQuantityTyping(input){
 /* ========================================
    FINALISE QUANTITY
 
-   Used only by Enter/Done where supported.
+   Safe on:
+   Android
+   iOS
+   Desktop
 
-   No blur/click-away handler exists.
+   Blur never deletes/re-renders anything.
 ======================================== */
 
 function finaliseQuantity(input){
@@ -1222,22 +1295,31 @@ function finaliseQuantity(input){
     }
 
 
-    const cleaned =
-        cleanQuantityText(
-            input.value
-        );
+    const value =
+        String(input.value)
+        .replace(/\D/g,"");
 
 
     const quantity =
-        Number(cleaned);
+        Number(value);
 
 
     if(
-        cleaned === "" ||
+        value === "" ||
+        value.length > 5 ||
         !Number.isInteger(quantity) ||
-        quantity < MIN_ORDER_QUANTITY ||
-        quantity > MAX_ORDER_QUANTITY
+        quantity < MIN_QUANTITY ||
+        quantity > MAX_QUANTITY
     ){
+
+        /*
+           Restore the last valid saved
+           quantity only in this input.
+
+           NO renderOrder()
+           NO splice()
+           NO item deletion.
+        */
 
         input.value =
             String(
@@ -1245,10 +1327,25 @@ function finaliseQuantity(input){
             );
 
 
-        showQuantityError(
-            index,
-            "Enter a quantity from 1 to 10,000."
-        );
+        if(
+            value !== "" &&
+            Number(value) >
+            MAX_QUANTITY
+        ){
+
+            showQuantityError(
+                index,
+                "Maximum quantity is 10,000."
+            );
+
+        }else{
+
+            showQuantityError(
+                index,
+                "Enter a quantity from 1 to 10,000."
+            );
+
+        }
 
 
         return;
@@ -1256,12 +1353,12 @@ function finaliseQuantity(input){
     }
 
 
-    input.value =
-        String(quantity);
-
-
     order[index].quantity =
         quantity;
+
+
+    input.value =
+        String(quantity);
 
 
     clearQuantityError(
@@ -1283,42 +1380,33 @@ function finaliseQuantity(input){
 
 function changeQuantity(
     index,
-    change
+    difference
 ){
 
-    const item =
-        order[index];
+    if(
+        !order[index]
+    ){
 
-
-    if(!item){
         return;
+
     }
 
 
     const current =
-        Number(item.quantity) || 1;
+        Number(
+            order[index].quantity
+        ) || 1;
 
 
     const next =
-        current + change;
+        current +
+        difference;
 
 
     if(
         next >
-        MAX_ORDER_QUANTITY
+        MAX_QUANTITY
     ){
-
-        const input =
-            getQuantityInput(index);
-
-
-        if(input){
-
-            input.value =
-                String(current);
-
-        }
-
 
         showQuantityError(
             index,
@@ -1333,20 +1421,8 @@ function changeQuantity(
 
     if(
         next <
-        MIN_ORDER_QUANTITY
+        MIN_QUANTITY
     ){
-
-        const input =
-            getQuantityInput(index);
-
-
-        if(input){
-
-            input.value =
-                String(current);
-
-        }
-
 
         showQuantityError(
             index,
@@ -1359,12 +1435,14 @@ function changeQuantity(
     }
 
 
-    item.quantity =
+    order[index].quantity =
         next;
 
 
     const input =
-        getQuantityInput(index);
+        document.querySelector(
+            `.quantity-input[data-index="${index}"]`
+        );
 
 
     if(input){
@@ -1389,15 +1467,35 @@ function changeQuantity(
 
 
 /* ========================================
-   REMOVE
+   REMOVE ITEM
 ======================================== */
 
 function removeItem(index){
 
     if(
-        !Number.isInteger(index) ||
         !order[index]
     ){
+
+        return;
+
+    }
+
+
+    /*
+       Destructive actions should require
+       confirmation.
+
+       This also protects against any
+       accidental mobile shifted/ghost tap.
+    */
+
+    const confirmed =
+        confirm(
+            "Remove this item from your selection?"
+        );
+
+
+    if(!confirmed){
 
         return;
 
@@ -1419,150 +1517,8 @@ function removeItem(index){
 
 
 /* ========================================
-   EVENT DELEGATION
-
-   One event system is more reliable than
-   repeatedly attaching handlers to every
-   element after rendering.
+   ORDER ITEM EVENTS
 ======================================== */
-
-document
-    .getElementById(
-        "orderItems"
-    )
-    .addEventListener(
-        "input",
-        event => {
-
-            const input =
-                event.target.closest(
-                    ".quantity-input"
-                );
-
-
-            if(!input){
-                return;
-            }
-
-
-            processQuantityTyping(
-                input
-            );
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "orderItems"
-    )
-    .addEventListener(
-        "keydown",
-        event => {
-
-            const input =
-                event.target.closest(
-                    ".quantity-input"
-                );
-
-
-            if(!input){
-                return;
-            }
-
-
-            if(
-                event.key === "-" ||
-                event.key === "+" ||
-                event.key === "." ||
-                event.key === "e" ||
-                event.key === "E"
-            ){
-
-                event.preventDefault();
-
-                return;
-
-            }
-
-
-            if(event.key === "Enter"){
-
-                event.preventDefault();
-
-
-                finaliseQuantity(
-                    input
-                );
-
-
-                input.blur();
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "orderItems"
-    )
-    .addEventListener(
-        "click",
-        event => {
-
-            const button =
-                event.target.closest(
-                    "[data-action]"
-                );
-
-
-            if(!button){
-                return;
-            }
-
-
-            event.preventDefault();
-
-
-            const index =
-                Number(
-                    button.dataset.index
-                );
-
-
-            const action =
-                button.dataset.action;
-
-
-/* ========================================
-   EVENT DELEGATION
-
-   Cross-platform protection for:
-   Android
-   iOS / iPadOS
-   Desktop browsers
-======================================== */
-
-
-/*
-   REMOVE BUTTON SAFETY
-
-   A normal click/tap on Remove must first
-   begin on the Remove button itself.
-
-   This prevents a mobile keyboard closing,
-   viewport movement or a "ghost click"
-   from accidentally deleting an item.
-*/
-
-let armedRemoveIndex = null;
-let armedRemoveTime = 0;
-
-const REMOVE_ARM_TIMEOUT = 1500;
-
 
 const orderItemsContainer =
     document.getElementById(
@@ -1570,140 +1526,94 @@ const orderItemsContainer =
     );
 
 
-/* ========================================
-   POINTER DOWN
-
-   Remember whether an actual physical
-   tap/click started on a Remove button.
-======================================== */
-
-orderItemsContainer.addEventListener(
-    "pointerdown",
-    event => {
-
-        const removeButton =
-            event.target.closest(
-                '[data-action="remove"]'
-            );
-
-
-        if(!removeButton){
-
-            armedRemoveIndex = null;
-            armedRemoveTime = 0;
-
-            return;
-
-        }
-
-
-        const index =
-            Number(
-                removeButton.dataset.index
-            );
-
-
-        if(
-            !Number.isInteger(index) ||
-            !order[index]
-        ){
-
-            armedRemoveIndex = null;
-            armedRemoveTime = 0;
-
-            return;
-
-        }
-
-
-        armedRemoveIndex =
-            index;
-
-
-        armedRemoveTime =
-            Date.now();
-
-    }
-);
-
-
-/* ========================================
-   POINTER CANCEL
-
-   Cancel any pending Remove action.
-======================================== */
-
-orderItemsContainer.addEventListener(
-    "pointercancel",
-    () => {
-
-        armedRemoveIndex = null;
-        armedRemoveTime = 0;
-
-    }
-);
-
-
-/* ========================================
-   QUANTITY INPUT
-======================================== */
+/*
+   INPUT
+*/
 
 orderItemsContainer.addEventListener(
     "input",
     event => {
 
-        const input =
-            event.target.closest(
-                ".quantity-input"
-            );
+        if(
+            !event.target.classList.contains(
+                "quantity-input"
+            )
+        ){
 
-
-        if(!input){
             return;
+
         }
 
 
-        processQuantityTyping(
-            input
+        handleQuantityInput(
+            event.target
         );
 
     }
 );
 
 
-/* ========================================
-   QUANTITY KEYBOARD
+/*
+   BLUR
 
-   Desktop Enter and mobile browsers
-   that expose Enter / Done.
-======================================== */
+   Capturing is required because blur
+   itself does not bubble.
+
+   This handler ONLY finalises the
+   specific quantity input.
+
+   It cannot remove or rerender items.
+*/
+
+orderItemsContainer.addEventListener(
+    "blur",
+    event => {
+
+        if(
+            !event.target.classList.contains(
+                "quantity-input"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        finaliseQuantity(
+            event.target
+        );
+
+    },
+    true
+);
+
+
+/*
+   KEYBOARD
+*/
 
 orderItemsContainer.addEventListener(
     "keydown",
     event => {
 
-        const input =
-            event.target.closest(
-                ".quantity-input"
-            );
+        if(
+            !event.target.classList.contains(
+                "quantity-input"
+            )
+        ){
 
-
-        if(!input){
             return;
+
         }
 
 
-        /*
-           Prevent unsupported quantity
-           characters on physical keyboards.
-        */
-
         if(
-            event.key === "-" ||
-            event.key === "+" ||
-            event.key === "." ||
             event.key === "e" ||
-            event.key === "E"
+            event.key === "E" ||
+            event.key === "+" ||
+            event.key === "-" ||
+            event.key === "."
         ){
 
             event.preventDefault();
@@ -1713,17 +1623,19 @@ orderItemsContainer.addEventListener(
         }
 
 
-        if(event.key === "Enter"){
+        if(
+            event.key === "Enter"
+        ){
 
             event.preventDefault();
 
 
             finaliseQuantity(
-                input
+                event.target
             );
 
 
-            input.blur();
+            event.target.blur();
 
         }
 
@@ -1731,76 +1643,26 @@ orderItemsContainer.addEventListener(
 );
 
 
-/* ========================================
-   CLICK ACTIONS
-======================================== */
+/*
+   BUTTON CLICKS
+*/
 
 orderItemsContainer.addEventListener(
     "click",
     event => {
 
-        const button =
+        const minus =
             event.target.closest(
-                "[data-action]"
+                ".quantity-minus"
             );
 
 
-        if(!button){
-            return;
-        }
-
-
-        const index =
-            Number(
-                button.dataset.index
-            );
-
-
-        if(
-            !Number.isInteger(index) ||
-            !order[index]
-        ){
-
-            return;
-
-        }
-
-
-        const action =
-            button.dataset.action;
-
-
-        /* -------------------------------
-           PLUS
-        -------------------------------- */
-
-        if(action === "increase"){
-
-            event.preventDefault();
-
+        if(minus){
 
             changeQuantity(
-                index,
-                1
-            );
-
-
-            return;
-
-        }
-
-
-        /* -------------------------------
-           MINUS
-        -------------------------------- */
-
-        if(action === "decrease"){
-
-            event.preventDefault();
-
-
-            changeQuantity(
-                index,
+                Number(
+                    minus.dataset.index
+                ),
                 -1
             );
 
@@ -1810,78 +1672,39 @@ orderItemsContainer.addEventListener(
         }
 
 
-        /* -------------------------------
-           REMOVE
-
-           This is deliberately stricter
-           because it is destructive.
-        -------------------------------- */
-
-        if(action === "remove"){
-
-            event.preventDefault();
+        const plus =
+            event.target.closest(
+                ".quantity-plus"
+            );
 
 
-            /*
-               Desktop keyboard accessibility:
+        if(plus){
 
-               A keyboard-triggered button click
-               normally has detail === 0.
-
-               We allow that without requiring
-               pointerdown.
-            */
-
-            const keyboardActivation =
-                event.detail === 0;
+            changeQuantity(
+                Number(
+                    plus.dataset.index
+                ),
+                1
+            );
 
 
-            /*
-               Mouse / touch / pen:
+            return;
 
-               Removal is permitted only if the
-               physical pointer originally went
-               down on this exact Remove button.
-            */
-
-            const pointerActivation =
-                armedRemoveIndex === index &&
-                (
-                    Date.now() -
-                    armedRemoveTime
-                ) <= REMOVE_ARM_TIMEOUT;
+        }
 
 
-            /*
-               Clear the armed state immediately
-               whether accepted or rejected.
-            */
-
-            armedRemoveIndex = null;
-            armedRemoveTime = 0;
+        const remove =
+            event.target.closest(
+                ".remove-button"
+            );
 
 
-            if(
-                !keyboardActivation &&
-                !pointerActivation
-            ){
-
-                /*
-                   Ignore ghost / shifted click.
-
-                   Most importantly:
-                   DO NOT modify order[]
-                   DO NOT save localStorage
-                   DO NOT renderOrder()
-                */
-
-                return;
-
-            }
-
+        if(remove){
 
             removeItem(
-                index
+                Number(
+                    remove.dataset.index
+                )
             );
 
         }
@@ -1891,95 +1714,34 @@ orderItemsContainer.addEventListener(
 
 
 /* ========================================
-   IMPORTANT
-
-   We deliberately DO NOT attach any
-   destructive action to:
-
-   blur
-   focusout
-   document click
-   body click
-   touchend
-   pointerup
-   keyboard closing
-   viewport resize
-
-   Therefore tapping/clicking the grey
-   background can never remove a selection.
-======================================== */
-
-
-/* ========================================
-   TOTAL QUANTITY
-======================================== */
-
-function getTotalQuantity(){
-
-    return order.reduce(
-        (total,item) => {
-
-            const quantity =
-                Number(
-                    item.quantity
-                );
-
-
-            if(
-                Number.isInteger(quantity) &&
-                quantity >=
-                MIN_ORDER_QUANTITY &&
-                quantity <=
-                MAX_ORDER_QUANTITY
-            ){
-
-                return (
-                    total +
-                    quantity
-                );
-
-            }
-
-
-            return total;
-
-        },
-        0
-    );
-
-}
-
-
-/* ========================================
    SUMMARY
 ======================================== */
 
 function renderSummary(){
 
-    const container =
-        document.getElementById(
-            "orderSummary"
-        );
-
-
     if(order.length === 0){
 
-        container.innerHTML = "";
+        document.getElementById(
+            "orderSummary"
+        ).innerHTML = "";
+
 
         return;
 
     }
 
 
-    const lines =
-        order.length;
-
-
     const quantity =
         getTotalQuantity();
 
 
-    container.innerHTML = `
+    const lines =
+        order.length;
+
+
+    document.getElementById(
+        "orderSummary"
+    ).innerHTML = `
 
         <div class="order-summary">
 
@@ -1989,15 +1751,16 @@ function renderSummary(){
                     Selection Summary
                 </span>
 
-                <strong
-                    id="totalQuantity"
-                >
+
+                <strong id="totalQuantity">
+
                     ${quantity}
                     ${
                         quantity === 1
                         ? "item"
                         : "items"
                     }
+
                 </strong>
 
             </div>
@@ -2039,7 +1802,7 @@ function renderSummary(){
                 <button
                     type="button"
                     class="clear-order-button"
-                    id="clearOrderButton"
+                    id="clearSelection"
                 >
                     Clear Selection
                 </button>
@@ -2050,7 +1813,7 @@ function renderSummary(){
             <button
                 type="button"
                 class="checkout-button"
-                id="proceedButton"
+                id="continueRequest"
             >
                 Continue to Request →
             </button>
@@ -2063,46 +1826,7 @@ function renderSummary(){
 
 
 /* ========================================
-   SUMMARY EVENTS
-======================================== */
-
-document
-    .getElementById(
-        "orderSummary"
-    )
-    .addEventListener(
-        "click",
-        event => {
-
-            if(
-                event.target.closest(
-                    "#clearOrderButton"
-                )
-            ){
-
-                clearOrder();
-
-                return;
-
-            }
-
-
-            if(
-                event.target.closest(
-                    "#proceedButton"
-                )
-            ){
-
-                proceedToRequest();
-
-            }
-
-        }
-    );
-
-
-/* ========================================
-   UPDATE SUMMARY ONLY
+   UPDATE TOTAL ONLY
 ======================================== */
 
 function updateSummary(){
@@ -2114,7 +1838,9 @@ function updateSummary(){
 
 
     if(!total){
+
         return;
+
     }
 
 
@@ -2134,20 +1860,61 @@ function updateSummary(){
 
 
 /* ========================================
-   CLEAR SELECTION
+   SUMMARY BUTTON EVENTS
 ======================================== */
 
-function clearOrder(){
+document
+    .getElementById(
+        "orderSummary"
+    )
+    .addEventListener(
+        "click",
+        event => {
+
+            if(
+                event.target.closest(
+                    "#clearSelection"
+                )
+            ){
+
+                clearSelection();
+
+                return;
+
+            }
+
+
+            if(
+                event.target.closest(
+                    "#continueRequest"
+                )
+            ){
+
+                continueToRequest();
+
+            }
+
+        }
+    );
+
+
+/* ========================================
+   CLEAR ALL
+======================================== */
+
+function clearSelection(){
 
     const confirmed =
         confirm(
-            "Clear all items from this selection?\n\n" +
+            "Clear your entire selection?\n\n" +
             "This cannot be undone."
         );
 
 
     if(!confirmed){
+
         return;
+
     }
 
 
@@ -2181,19 +1948,22 @@ function clearOrder(){
 
 
 /* ========================================
-   CONTINUE
+   CONTINUE TO REQUEST
 ======================================== */
 
-function proceedToRequest(){
+function continueToRequest(){
 
-    if(order.length === 0){
+    if(
+        order.length === 0
+    ){
+
         return;
+
     }
 
 
     /*
-       Before continuing, guarantee that
-       each stored quantity is valid.
+       Final defensive check.
     */
 
     const valid =
@@ -2211,9 +1981,9 @@ function proceedToRequest(){
                         quantity
                     ) &&
                     quantity >=
-                    MIN_ORDER_QUANTITY &&
+                    MIN_QUANTITY &&
                     quantity <=
-                    MAX_ORDER_QUANTITY
+                    MAX_QUANTITY
                 );
 
             }
@@ -2221,7 +1991,14 @@ function proceedToRequest(){
 
 
     if(!valid){
+
+        alert(
+            "Please check the quantities before continuing."
+        );
+
+
         return;
+
     }
 
 
@@ -2237,6 +2014,8 @@ function proceedToRequest(){
 /* ========================================
    START
 ======================================== */
+
+loadOrder();
 
 renderOrder();
 
