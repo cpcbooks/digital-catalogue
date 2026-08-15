@@ -1537,63 +1537,377 @@ document
                 button.dataset.action;
 
 
-            if(
-                action ===
-                "increase"
-            ){
+/* ========================================
+   EVENT DELEGATION
 
-                changeQuantity(
-                    index,
-                    1
-                );
-
-                return;
-
-            }
-
-
-            if(
-                action ===
-                "decrease"
-            ){
-
-                changeQuantity(
-                    index,
-                    -1
-                );
-
-                return;
-
-            }
-
-
-            if(
-                action ===
-                "remove"
-            ){
-
-                removeItem(
-                    index
-                );
-
-            }
-
-        }
-    );
+   Cross-platform protection for:
+   Android
+   iOS / iPadOS
+   Desktop browsers
+======================================== */
 
 
 /*
-   INTENTIONALLY NO:
+   REMOVE BUTTON SAFETY
 
-   blur handler
-   focusout handler
-   document click handler
-   pointerdown handler
-   touchend handler
+   A normal click/tap on Remove must first
+   begin on the Remove button itself.
 
-   Clicking/tapping the grey area therefore
-   cannot alter the selection.
+   This prevents a mobile keyboard closing,
+   viewport movement or a "ghost click"
+   from accidentally deleting an item.
 */
+
+let armedRemoveIndex = null;
+let armedRemoveTime = 0;
+
+const REMOVE_ARM_TIMEOUT = 1500;
+
+
+const orderItemsContainer =
+    document.getElementById(
+        "orderItems"
+    );
+
+
+/* ========================================
+   POINTER DOWN
+
+   Remember whether an actual physical
+   tap/click started on a Remove button.
+======================================== */
+
+orderItemsContainer.addEventListener(
+    "pointerdown",
+    event => {
+
+        const removeButton =
+            event.target.closest(
+                '[data-action="remove"]'
+            );
+
+
+        if(!removeButton){
+
+            armedRemoveIndex = null;
+            armedRemoveTime = 0;
+
+            return;
+
+        }
+
+
+        const index =
+            Number(
+                removeButton.dataset.index
+            );
+
+
+        if(
+            !Number.isInteger(index) ||
+            !order[index]
+        ){
+
+            armedRemoveIndex = null;
+            armedRemoveTime = 0;
+
+            return;
+
+        }
+
+
+        armedRemoveIndex =
+            index;
+
+
+        armedRemoveTime =
+            Date.now();
+
+    }
+);
+
+
+/* ========================================
+   POINTER CANCEL
+
+   Cancel any pending Remove action.
+======================================== */
+
+orderItemsContainer.addEventListener(
+    "pointercancel",
+    () => {
+
+        armedRemoveIndex = null;
+        armedRemoveTime = 0;
+
+    }
+);
+
+
+/* ========================================
+   QUANTITY INPUT
+======================================== */
+
+orderItemsContainer.addEventListener(
+    "input",
+    event => {
+
+        const input =
+            event.target.closest(
+                ".quantity-input"
+            );
+
+
+        if(!input){
+            return;
+        }
+
+
+        processQuantityTyping(
+            input
+        );
+
+    }
+);
+
+
+/* ========================================
+   QUANTITY KEYBOARD
+
+   Desktop Enter and mobile browsers
+   that expose Enter / Done.
+======================================== */
+
+orderItemsContainer.addEventListener(
+    "keydown",
+    event => {
+
+        const input =
+            event.target.closest(
+                ".quantity-input"
+            );
+
+
+        if(!input){
+            return;
+        }
+
+
+        /*
+           Prevent unsupported quantity
+           characters on physical keyboards.
+        */
+
+        if(
+            event.key === "-" ||
+            event.key === "+" ||
+            event.key === "." ||
+            event.key === "e" ||
+            event.key === "E"
+        ){
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+
+        if(event.key === "Enter"){
+
+            event.preventDefault();
+
+
+            finaliseQuantity(
+                input
+            );
+
+
+            input.blur();
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   CLICK ACTIONS
+======================================== */
+
+orderItemsContainer.addEventListener(
+    "click",
+    event => {
+
+        const button =
+            event.target.closest(
+                "[data-action]"
+            );
+
+
+        if(!button){
+            return;
+        }
+
+
+        const index =
+            Number(
+                button.dataset.index
+            );
+
+
+        if(
+            !Number.isInteger(index) ||
+            !order[index]
+        ){
+
+            return;
+
+        }
+
+
+        const action =
+            button.dataset.action;
+
+
+        /* -------------------------------
+           PLUS
+        -------------------------------- */
+
+        if(action === "increase"){
+
+            event.preventDefault();
+
+
+            changeQuantity(
+                index,
+                1
+            );
+
+
+            return;
+
+        }
+
+
+        /* -------------------------------
+           MINUS
+        -------------------------------- */
+
+        if(action === "decrease"){
+
+            event.preventDefault();
+
+
+            changeQuantity(
+                index,
+                -1
+            );
+
+
+            return;
+
+        }
+
+
+        /* -------------------------------
+           REMOVE
+
+           This is deliberately stricter
+           because it is destructive.
+        -------------------------------- */
+
+        if(action === "remove"){
+
+            event.preventDefault();
+
+
+            /*
+               Desktop keyboard accessibility:
+
+               A keyboard-triggered button click
+               normally has detail === 0.
+
+               We allow that without requiring
+               pointerdown.
+            */
+
+            const keyboardActivation =
+                event.detail === 0;
+
+
+            /*
+               Mouse / touch / pen:
+
+               Removal is permitted only if the
+               physical pointer originally went
+               down on this exact Remove button.
+            */
+
+            const pointerActivation =
+                armedRemoveIndex === index &&
+                (
+                    Date.now() -
+                    armedRemoveTime
+                ) <= REMOVE_ARM_TIMEOUT;
+
+
+            /*
+               Clear the armed state immediately
+               whether accepted or rejected.
+            */
+
+            armedRemoveIndex = null;
+            armedRemoveTime = 0;
+
+
+            if(
+                !keyboardActivation &&
+                !pointerActivation
+            ){
+
+                /*
+                   Ignore ghost / shifted click.
+
+                   Most importantly:
+                   DO NOT modify order[]
+                   DO NOT save localStorage
+                   DO NOT renderOrder()
+                */
+
+                return;
+
+            }
+
+
+            removeItem(
+                index
+            );
+
+        }
+
+    }
+);
+
+
+/* ========================================
+   IMPORTANT
+
+   We deliberately DO NOT attach any
+   destructive action to:
+
+   blur
+   focusout
+   document click
+   body click
+   touchend
+   pointerup
+   keyboard closing
+   viewport resize
+
+   Therefore tapping/clicking the grey
+   background can never remove a selection.
+======================================== */
 
 
 /* ========================================
