@@ -1,431 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Early Learning | Cambridge Digital Catalogue</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<link rel="stylesheet" href="css/catalogue.css">
+<title>
+    Early Learning | Cambridge Digital Catalogue
+</title>
+
+<link
+    rel="stylesheet"
+    href="css/catalogue.css"
+>
 
 <style>
 
-.early-hero {
-    padding: 55px 6% 45px;
-    background: white;
-    text-align: center;
+.early-hero{
+    padding:55px 6% 45px;
+    background:white;
+    text-align:center;
 }
 
-.back-link {
-    display: inline-block;
-    margin-bottom: 22px;
-    color: var(--navy);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 700;
+.back-link{
+    display:inline-block;
+    margin-bottom:22px;
+    color:var(--navy);
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
 }
 
-.early-hero h1 {
-    margin: 0;
-    font-size: clamp(34px,5vw,52px);
-    letter-spacing: -1.5px;
+.early-hero h1{
+    margin:0;
+    font-size:clamp(34px,5vw,52px);
+    letter-spacing:-1.5px;
 }
 
-.early-hero p {
-    max-width: 580px;
-    margin: 14px auto 0;
-    color: var(--muted);
+.early-hero p{
+    max-width:580px;
+    margin:14px auto 0;
+    color:var(--muted);
 }
 
-.level-selector {
-    max-width: 900px;
-    margin: 32px auto 0;
-    display: flex;
-    justify-content: center;
-    gap: 9px;
-    flex-wrap: wrap;
+.level-selector{
+    max-width:900px;
+    margin:32px auto 0;
+
+    display:flex;
+    justify-content:center;
+    gap:9px;
+    flex-wrap:wrap;
 }
 
-.early-level {
-    padding: 11px 20px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: white;
-    cursor: pointer;
-    font-weight: 650;
+.early-level{
+    padding:11px 20px;
+
+    border:1px solid var(--border);
+    border-radius:999px;
+
+    background:white;
+
+    cursor:pointer;
+
+    font-weight:650;
+
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        border-color .18s ease,
+        transform .18s ease;
+
+    touch-action:manipulation;
 }
 
-.early-level.active {
-    background: var(--navy);
-    color: white;
-    border-color: var(--navy);
+.early-level:hover{
+    border-color:var(--navy);
+    transform:translateY(-1px);
+}
+
+.early-level:focus-visible{
+    outline:2px solid var(--navy);
+    outline-offset:2px;
+}
+
+.early-level.active{
+    background:var(--navy);
+    color:white;
+    border-color:var(--navy);
 }
 
 
-/* CHOOSE EXPERIENCE */
+/* ========================================
+   CHOOSE EXPERIENCE
+======================================== */
 
-.choice-section {
-    display: none;
+.choice-section{
+    display:none;
 }
 
-.choice-section.visible {
-    display: block;
+.choice-section.visible{
+    display:block;
 }
 
-.choice-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 18px;
+.choice-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
 }
 
-.choice-card {
-    min-height: 290px;
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: white;
+.choice-card{
+    min-height:290px;
+    padding:28px;
+
+    display:flex;
+    flex-direction:column;
+
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+
+    background:white;
 }
 
-.choice-label {
-    margin-bottom: 28px;
-    color: var(--navy);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.3px;
+.choice-label{
+    margin-bottom:28px;
+
+    color:var(--navy);
+
+    font-size:10px;
+    font-weight:800;
+
+    letter-spacing:1.3px;
 }
 
-.choice-card h3 {
-    margin: 0 0 10px;
-    font-size: 22px;
+.choice-card h3{
+    margin:0 0 10px;
+    font-size:22px;
 }
 
-.choice-card p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 13px;
+.choice-card p{
+    margin:0;
+
+    color:var(--muted);
+
+    font-size:13px;
 }
 
-.choice-card button {
-    margin-top: auto;
-    padding: 12px 16px;
-    border: 0;
-    border-radius: 7px;
-    background: var(--navy);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
+.choice-card button{
+    margin-top:auto;
+
+    padding:12px 16px;
+
+    border:0;
+    border-radius:7px;
+
+    background:var(--navy);
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    touch-action:manipulation;
 }
 
-.custom-kit {
-    background: var(--navy);
-    color: white;
+.custom-kit{
+    background:var(--navy);
+    color:white;
 }
 
 .custom-kit .choice-label,
-.custom-kit p {
-    color: rgba(255,255,255,.7);
+.custom-kit p{
+    color:rgba(255,255,255,.7);
 }
 
-.custom-kit button {
-    background: white;
-    color: var(--navy);
-}
-
-
-/* KIT RULE */
-
-.kit-rule {
-    margin-top: 14px;
-    font-size: 11px;
-    font-weight: 700;
+.custom-kit button{
+    background:white;
+    color:var(--navy);
 }
 
 
-/* MOBILE */
+/* ========================================
+   KIT RULE
+======================================== */
+
+.kit-rule{
+    margin-top:14px;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
 
 @media(max-width:700px){
 
-    .early-hero {
-        padding: 38px 18px 35px;
+    .early-hero{
+        padding:38px 18px 35px;
     }
 
-    .choice-grid {
-        grid-template-columns: 1fr;
+    .choice-grid{
+        grid-template-columns:1fr;
     }
 
-    .choice-card {
-        min-height: 220px;
+    .choice-card{
+        min-height:220px;
     }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
 
 <header class="catalogue-header">
 
-<div class="brand">
-<div class="brand-name">CAMBRIDGE</div>
-<div class="brand-company">PUBLISHING COMPANY PVT. LTD.</div>
-</div>
+    <div class="brand">
 
-<div class="catalogue-year">
-DIGITAL CATALOGUE · 2026–27
-</div>
+        <div class="brand-name">
+            CAMBRIDGE
+        </div>
+
+        <div class="brand-company">
+            PUBLISHING COMPANY PVT. LTD.
+        </div>
+
+    </div>
+
+    <div class="catalogue-year">
+        DIGITAL CATALOGUE · 2026–27
+    </div>
 
 </header>
 
 
 <section class="early-hero">
 
-<a href="index.html" class="back-link">
-← Digital Catalogue
-</a>
+    <a
+        href="index.html"
+        class="back-link"
+    >
+        ← Digital Catalogue
+    </a>
 
-<p class="eyebrow">EARLY LEARNING</p>
+    <p class="eyebrow">
+        EARLY LEARNING
+    </p>
 
-<h1>Books for little learners.</h1>
+    <h1>
+        Books for little learners.
+    </h1>
 
-<p>
-Explore thoughtfully developed books for the early years
-of a child's learning journey.
-</p>
+    <p>
+        Explore thoughtfully developed books for the early years
+        of a child's learning journey.
+    </p>
 
 
-<div class="level-selector">
+    <div class="level-selector">
 
-<button class="early-level"
-onclick="selectLevel('playgroup',this)">
-Playgroup
-</button>
+        <button
+            type="button"
+            class="early-level"
+            data-level="playgroup"
+            onclick="selectLevel('playgroup',this)"
+        >
+            Playgroup
+        </button>
 
-<button class="early-level"
-onclick="selectLevel('nursery',this)">
-Nursery
-</button>
+        <button
+            type="button"
+            class="early-level"
+            data-level="nursery"
+            onclick="selectLevel('nursery',this)"
+        >
+            Nursery
+        </button>
 
-<button class="early-level"
-onclick="selectLevel('lkg',this)">
-LKG
-</button>
+        <button
+            type="button"
+            class="early-level"
+            data-level="lkg"
+            onclick="selectLevel('lkg',this)"
+        >
+            LKG
+        </button>
 
-<button class="early-level"
-onclick="selectLevel('ukg',this)">
-UKG
-</button>
+        <button
+            type="button"
+            class="early-level"
+            data-level="ukg"
+            onclick="selectLevel('ukg',this)"
+        >
+            UKG
+        </button>
 
-</div>
+    </div>
 
 </section>
 
 
 <section
-class="catalogue-section choice-section"
-id="choiceSection"
+    class="catalogue-section choice-section"
+    id="choiceSection"
 >
 
-<div class="section-heading">
+    <div class="section-heading">
 
-<div>
+        <div>
 
-<p class="section-label">
-CHOOSE YOUR WAY
-</p>
+            <p class="section-label">
+                CHOOSE YOUR WAY
+            </p>
 
-<h2 id="selectedHeading">
-Explore Early Learning
-</h2>
+            <h2 id="selectedHeading">
+                Explore Early Learning
+            </h2>
 
-</div>
+        </div>
 
-</div>
-
-
-<div class="choice-grid">
+    </div>
 
 
-<!-- STANDARD KIT -->
-
-<article class="choice-card">
-
-<div class="choice-label">
-READY-MADE
-</div>
-
-<h3>Cambridge Standard Kit</h3>
-
-<p>
-A carefully selected ready-to-order combination
-of Cambridge books for this level.
-</p>
-
-<button onclick="comingSoon()">
-View Standard Kit →
-</button>
-
-</article>
+    <div class="choice-grid">
 
 
-<!-- BUILD KIT -->
+        <!-- STANDARD KIT -->
 
-<article class="choice-card custom-kit">
+        <article class="choice-card">
 
-<div class="choice-label">
-PERSONALISE
-</div>
+            <div class="choice-label">
+                READY-MADE
+            </div>
 
-<h3>Build Your Own Kit</h3>
+            <h3>
+                Cambridge Standard Kit
+            </h3>
 
-<p>
-Choose books from our range and create a combination
-that suits your school.
-</p>
+            <p>
+                A carefully selected ready-to-order combination
+                of Cambridge books for this level.
+            </p>
 
-<div class="kit-rule" id="kitRule">
-Minimum books apply
-</div>
+            <button
+                type="button"
+                onclick="comingSoon()"
+            >
+                View Standard Kit →
+            </button>
 
-<button onclick="openKitBuilder()">
-Build My Kit →
-</button>
-
-</article>
-
-
-<!-- INDIVIDUAL BOOKS -->
-
-<article class="choice-card">
-
-<div class="choice-label">
-EXPLORE
-</div>
-
-<h3>Individual Books</h3>
-
-<p>
-Browse the complete range and select individual
-books according to your requirement.
-</p>
-
-<button onclick="comingSoon()">
-Browse Books →
-</button>
-
-</article>
+        </article>
 
 
-</div>
+        <!-- BUILD KIT -->
+
+        <article class="choice-card custom-kit">
+
+            <div class="choice-label">
+                PERSONALISE
+            </div>
+
+            <h3>
+                Build Your Own Kit
+            </h3>
+
+            <p>
+                Choose books from our range and create a combination
+                that suits your school.
+            </p>
+
+            <div
+                class="kit-rule"
+                id="kitRule"
+            >
+                Minimum books apply
+            </div>
+
+            <button
+                type="button"
+                onclick="openKitBuilder()"
+            >
+                Build My Kit →
+            </button>
+
+        </article>
+
+
+        <!-- INDIVIDUAL BOOKS -->
+
+        <article class="choice-card">
+
+            <div class="choice-label">
+                EXPLORE
+            </div>
+
+            <h3>
+                Individual Books
+            </h3>
+
+            <p>
+                Browse the complete range and select individual
+                books according to your requirement.
+            </p>
+
+            <button
+                type="button"
+                onclick="comingSoon()"
+            >
+                Browse Books →
+            </button>
+
+        </article>
+
+
+    </div>
 
 </section>
 
 
 <footer>
 
-<div>
-<strong>
-Cambridge Publishing Company Pvt. Ltd.
-</strong>
+    <div>
 
-<p>Bengaluru, Karnataka</p>
-</div>
+        <strong>
+            Cambridge Publishing Company Pvt. Ltd.
+        </strong>
 
-<p class="footer-note">
-Digital Catalogue · 2026–27
-</p>
+        <p>
+            Bengaluru, Karnataka
+        </p>
+
+    </div>
+
+    <p class="footer-note">
+        Digital Catalogue · 2026–27
+    </p>
 
 </footer>
 
 
 <script>
 
-/*
-Minimum-kit values are temporary configuration.
-We can change these later without redesigning the page.
-*/
+/* ========================================
+   EARLY LEARNING CONFIGURATION
+======================================== */
 
 const earlyLearning = {
 
-    playgroup: {
-        name: "Playgroup",
-        minimumKit: null
+    playgroup:{
+        name:"Playgroup",
+        minimumKit:null
     },
 
-    nursery: {
-        name: "Nursery",
-        minimumKit: 8
+    nursery:{
+        name:"Nursery",
+        minimumKit:8
     },
 
-    lkg: {
-        name: "LKG",
-        minimumKit: 8
+    lkg:{
+        name:"LKG",
+        minimumKit:8
     },
 
-    ukg: {
-        name: "UKG",
-        minimumKit: 8
+    ukg:{
+        name:"UKG",
+        minimumKit:8
     }
 
 };
 
+
 let selectedLevel = null;
-function selectLevel(level,button){
 
-    const data = earlyLearning[level];
-    selectedLevel = level;
+
+/* ========================================
+   SELECT LEVEL
+======================================== */
+
+function selectLevel(
+    level,
+    button,
+    shouldScroll = true
+){
+
+    const data =
+        earlyLearning[level];
+
+
+    if(!data){
+
+        return;
+
+    }
+
+
+    selectedLevel =
+        level;
+
 
     document
-    .querySelectorAll(".early-level")
-    .forEach(item =>
-        item.classList.remove("active")
-    );
+        .querySelectorAll(
+            ".early-level"
+        )
+        .forEach(
+            item => {
 
-    button.classList.add("active");
+                item.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    if(button){
+
+        button.classList.add(
+            "active"
+        );
+
+    }
 
 
     document
-    .getElementById("choiceSection")
-    .classList.add("visible");
+        .getElementById(
+            "choiceSection"
+        )
+        .classList.add(
+            "visible"
+        );
 
 
     document
-    .getElementById("selectedHeading")
-    .textContent =
-    data.name + " Books";
+        .getElementById(
+            "selectedHeading"
+        )
+        .textContent =
+            data.name +
+            " Books";
 
 
     const rule =
-    document.getElementById("kitRule");
+        document.getElementById(
+            "kitRule"
+        );
 
 
     if(data.minimumKit){
 
         rule.textContent =
-        "Minimum " +
-        data.minimumKit +
-        " books required to create a kit";
+            "Minimum " +
+            data.minimumKit +
+            " books required to create a kit";
 
     }else{
 
         rule.textContent =
-        "Kit options will be configured for this level";
+            "Kit options will be configured for this level";
 
     }
 
 
-    document
-    .getElementById("choiceSection")
-    .scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-    });
+    if(shouldScroll){
+
+        document
+            .getElementById(
+                "choiceSection"
+            )
+            .scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+    }
 
 }
 
+
+/* ========================================
+   COMING SOON
+======================================== */
 
 function comingSoon(){
 
@@ -434,6 +601,12 @@ function comingSoon(){
     );
 
 }
+
+
+/* ========================================
+   OPEN KIT BUILDER
+======================================== */
+
 function openKitBuilder(){
 
     if(!selectedLevel){
@@ -447,7 +620,10 @@ function openKitBuilder(){
     }
 
 
-    if(selectedLevel === "playgroup"){
+    if(
+        selectedLevel ===
+        "playgroup"
+    ){
 
         alert(
             "Playgroup kit options will be added once the range is finalised."
@@ -459,12 +635,92 @@ function openKitBuilder(){
 
 
     window.location.href =
-    "kit-builder.html?level=" +
-    selectedLevel;
+        "kit-builder.html?level=" +
+        encodeURIComponent(
+            selectedLevel
+        );
 
 }
+
+
+/* ========================================
+   OPEN LEVEL FROM HOMEPAGE
+======================================== */
+
+function openLevelFromURL(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const level =
+        params.get(
+            "level"
+        );
+
+
+    if(
+        !level ||
+        !earlyLearning[level]
+    ){
+
+        return;
+
+    }
+
+
+    const button =
+        document.querySelector(
+            `.early-level[data-level="${level}"]`
+        );
+
+
+    if(!button){
+
+        return;
+
+    }
+
+
+    selectLevel(
+        level,
+        button,
+        false
+    );
+
+
+    requestAnimationFrame(
+        () => {
+
+            document
+                .getElementById(
+                    "choiceSection"
+                )
+                .scrollIntoView({
+                    behavior:"auto",
+                    block:"start"
+                });
+
+        }
+    );
+
+}
+
+
+/* ========================================
+   START
+======================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    openLevelFromURL
+);
+
 </script>
 
 
 </body>
+
 </html>
