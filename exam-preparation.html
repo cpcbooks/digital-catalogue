@@ -1,297 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exam Preparation | Cambridge Digital Catalogue</title>
-<link rel="stylesheet" href="css/catalogue.css">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Exam Preparation | Cambridge Digital Catalogue</title><link rel="stylesheet" href="css/catalogue.css">
 <style>
-.exam-hero{padding:48px 6% 36px;background:#fff}
-.exam-hero-inner{max-width:1180px;margin:auto}
-.back-link{display:inline-block;margin-bottom:20px;color:var(--navy);text-decoration:none;font-size:12px;font-weight:700}
-.exam-hero h1{margin:0;font-size:clamp(32px,5vw,48px);letter-spacing:-1.3px}
-.hero-description{max-width:680px;margin:12px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
-.catalogue-controls{margin-top:28px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px}
-.catalogue-controls input,.catalogue-controls select{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font:inherit;font-size:12px}
-.catalogue-controls input:focus,.catalogue-controls select:focus{outline:2px solid var(--navy);outline-offset:1px}
-.selection-bar{margin-top:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid var(--border);border-radius:8px;background:#fafbfc}
-.selection-bar[hidden]{display:none}
-.selection-status{margin:0;color:var(--muted);font-size:11px}
-.selection-status strong{color:var(--text)}
-.view-selection{padding:9px 13px;border:1px solid var(--navy);border-radius:6px;background:var(--navy);color:#fff;text-decoration:none;font-size:10px;font-weight:750;white-space:nowrap}
-.results-summary{margin-bottom:20px;display:flex;justify-content:space-between;align-items:end;gap:20px}
-.results-summary h2{margin:0;font-size:25px}
-.results-count{margin:0;color:var(--muted);font-size:11px}
-.family-section{display:grid;gap:14px}
-.family-section+.family-section{margin-top:34px}
-.family-heading{padding-bottom:10px;display:flex;justify-content:space-between;align-items:end;gap:20px;border-bottom:2px solid var(--navy)}
-.family-heading h3{margin:0;font-size:21px}
-.family-heading span,.subject-header span{color:var(--muted);font-size:10px}
-.subject-group{overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
-.subject-header{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--border);background:#fafbfc}
-.subject-header h4{margin:0;font-size:16px}
-.book-list{display:grid}
-.exam-book{padding:18px 22px;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:18px;align-items:center;border-bottom:1px solid var(--border)}
-.exam-book:last-child{border-bottom:0}
-.cover-placeholder{width:64px;height:84px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#eef1f5;color:#8b95a5;font-size:8px;font-weight:750;text-align:center}
-.book-details{min-width:0}
-.book-details h5{margin:0 0 7px;font-size:14px;line-height:1.35}
-.book-meta{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:10px}
-.book-action{min-width:112px;padding:9px 12px;border:1px solid var(--navy);border-radius:6px;background:#fff;color:var(--navy);cursor:pointer;font-size:10px;font-weight:750;white-space:nowrap}
-.book-action:hover{background:var(--navy);color:#fff}
-.book-action.is-selected{border-color:#d9dee6;background:#f5f7fa;color:var(--navy);cursor:default}
-.message-state{padding:45px 24px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;text-align:center}
-.message-state h2{margin:0 0 9px;font-size:22px}
-.message-state p{max-width:560px;margin:0 auto;color:var(--muted);font-size:12px;line-height:1.6}
-.message-state a{display:inline-block;margin-top:18px;color:var(--navy);font-size:12px;font-weight:750;text-decoration:none}
-@media(max-width:760px){
-.exam-hero{padding:36px 18px 30px}.catalogue-controls{grid-template-columns:1fr}.selection-bar{align-items:flex-start;flex-direction:column}.results-summary{flex-direction:column;align-items:start;gap:5px}.family-heading{align-items:start}.subject-header{padding:16px 18px}.exam-book{padding:17px 18px;grid-template-columns:52px minmax(0,1fr);gap:14px}.cover-placeholder{width:52px;height:70px}.book-action{grid-column:2;justify-self:start}}
-@media(hover:none){.book-action:hover{background:#fff;color:var(--navy)}.book-action.is-selected:hover{background:#f5f7fa;color:var(--navy)}}
+.page-hero{padding:46px 6% 34px;background:#fff}.hero-inner{max-width:1180px;margin:auto}.back-link{display:inline-block;margin-bottom:18px;color:var(--navy);text-decoration:none;font-size:12px;font-weight:700}.page-hero h1{margin:0;font-size:clamp(32px,5vw,48px);letter-spacing:-1.3px}.hero-description{max-width:680px;margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.6}.controls{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}.controls input,.controls select{box-sizing:border-box;padding:12px 13px;border:1px solid var(--border);border-radius:8px;background:#fff;font:inherit;font-size:12px}.controls input{flex:1 1 280px}.selection-bar{margin-top:13px;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--border);border-radius:8px;background:#fafbfc}.selection-bar[hidden]{display:none}.selection-status{margin:0;color:var(--muted);font-size:11px}.view-selection{padding:9px 12px;border-radius:6px;background:var(--navy);color:#fff;text-decoration:none;font-size:10px;font-weight:750}.results-summary{margin-bottom:18px;display:flex;justify-content:space-between;align-items:end;gap:16px}.results-summary h2{margin:0;font-size:25px}.results-count{margin:0;color:var(--muted);font-size:11px}.group-section+.group-section{margin-top:30px}.group-title{padding:0 2px 8px;display:flex;justify-content:space-between;align-items:end;gap:14px;border-bottom:2px solid var(--navy)}.group-title h3{margin:0;font-size:20px}.group-title span{color:var(--muted);font-size:10px}.book-list{overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:#fff}.book-card{padding:20px 22px;display:grid;grid-template-columns:104px minmax(0,1fr) 160px;gap:22px;align-items:center;border-bottom:1px solid var(--border)}.book-card:last-child{border-bottom:0}.book-cover{width:104px;aspect-ratio:2/3;overflow:hidden;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#eef1f5;color:#8b95a5;font-size:8px;font-weight:750;text-align:center}.book-cover img{width:100%;height:100%;object-fit:cover}.book-info{min-width:0}.book-info h4{margin:0 0 7px;font-size:15px;line-height:1.35}.book-meta{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:10px}.book-actions{display:grid;gap:9px}.view-book,.add-book{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:7px;font-size:10px;font-weight:750;text-align:center;text-decoration:none;cursor:pointer}.view-book{border:1px solid var(--navy);background:var(--navy);color:#fff}.add-book{border:1px solid var(--navy);background:#fff;color:var(--navy)}.qty-control{display:grid;grid-template-columns:36px minmax(52px,1fr) 36px;border:1px solid #d9dee6;border-radius:7px;overflow:hidden}.qty-control button,.qty-control input{height:36px;border:0;background:#fff;color:var(--navy);font:inherit;font-weight:750;text-align:center}.qty-control button{cursor:pointer;font-size:16px}.qty-control input{width:100%;box-sizing:border-box;border-left:1px solid #e4e7ec;border-right:1px solid #e4e7ec;font-size:11px;-moz-appearance:textfield}.qty-control input::-webkit-outer-spin-button,.qty-control input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.message{padding:40px 22px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;text-align:center;color:var(--muted);font-size:12px}.subgroup{margin-top:12px}.subgroup-label{padding:13px 18px;background:#fafbfc;border:1px solid var(--border);border-bottom:0;border-radius:var(--radius) var(--radius) 0 0;font-size:13px;font-weight:750}.subgroup .book-list{border-radius:0 0 var(--radius) var(--radius)}
+@media(max-width:720px){.page-hero{padding:36px 18px 28px}.selection-bar,.results-summary{align-items:flex-start;flex-direction:column}.book-card{padding:18px;grid-template-columns:86px minmax(0,1fr);gap:16px;align-items:start}.book-cover{width:86px}.book-actions{grid-column:2;width:100%;max-width:190px}.view-book,.add-book{padding:10px}.group-title{align-items:start}}
 </style>
-</head>
-<body>
-<header class="catalogue-header">
-<div class="brand"><div class="brand-name">CAMBRIDGE</div><div class="brand-company">PUBLISHING COMPANY PVT. LTD.</div></div>
-<div class="catalogue-year">DIGITAL CATALOGUE · 2026–27</div>
-</header>
-
-<section class="exam-hero"><div class="exam-hero-inner">
-<a href="school-education.html" class="back-link" id="backLink">← School Education</a>
-<p class="eyebrow">EXAM PREPARATION</p>
-<h1 id="pageHeading">Exam Preparation</h1>
-<p class="hero-description" id="pageDescription">Browse Cambridge exam-preparation publications.</p>
-<div class="catalogue-controls" id="catalogueControls" hidden>
-<input type="search" id="bookSearch" placeholder="Search books, subjects or series..." autocomplete="off" aria-label="Search exam preparation books">
-<select id="familyFilter" aria-label="Filter by product family"><option value="">All Product Families</option></select>
-<select id="subjectFilter" aria-label="Filter by subject"><option value="">All Subjects</option></select>
-</div>
-<div class="selection-bar" id="selectionBar" hidden>
-<p class="selection-status" id="selectionStatus"><strong>0</strong> selected</p>
-<a class="view-selection" href="order.html">My Selection →</a>
-</div>
-</div></section>
-
-<main><section class="catalogue-section">
-<div id="messageContainer"></div>
-<div id="catalogueContent" hidden>
-<div class="results-summary"><h2>Publications</h2><p class="results-count" id="resultsCount"></p></div>
-<div id="familyList"></div>
-</div>
-</section></main>
-
+</head><body>
+<header class="catalogue-header"><div class="brand"><div class="brand-name">CAMBRIDGE</div><div class="brand-company">PUBLISHING COMPANY PVT. LTD.</div></div><div class="catalogue-year">DIGITAL CATALOGUE · 2026–27</div></header>
+<section class="page-hero"><div class="hero-inner"><a class="back-link" id="backLink" href="school-education.html">← Back</a><p class="eyebrow">EXAM PREPARATION</p><h1 id="pageHeading">Exam Preparation</h1><p class="hero-description" id="pageDescription">Browse Cambridge exam-preparation publications.</p><div class="controls" id="controls" hidden><input id="search" type="search" placeholder="Search books, subjects or series..." aria-label="Search exam books"><select id="family"><option value="">All Product Families</option></select><select id="subject"><option value="">All Subjects</option></select></div><div class="selection-bar" id="selectionBar" hidden><p class="selection-status" id="selectionStatus"></p><a class="view-selection" href="order.html">My Selection →</a></div></div></section>
+<main><section class="catalogue-section"><div class="results-summary" id="summary" hidden><h2>Publications</h2><p class="results-count" id="resultsCount"></p></div><div id="list"></div></section></main>
 <footer><div><strong>Cambridge Publishing Company Pvt. Ltd.</strong><p>Bengaluru, Karnataka</p></div><p class="footer-note">Digital Catalogue · 2026–27</p></footer>
+<script src="js/catalogue-data.js"></script><script>
+const ORDER_KEY="cambridgeOrder",MAX_QUANTITY=10000;
+function catalogue(){return Array.isArray(window.CAMBRIDGE_CATALOGUE)?window.CAMBRIDGE_CATALOGUE.filter(b=>b&&typeof b==="object"&&b.active!==false):[]}
+function order(){let a=[];try{const v=JSON.parse(localStorage.getItem(ORDER_KEY)||"[]");if(Array.isArray(v))a=v}catch(e){}return a.filter(x=>x&&typeof x==="object").map(x=>({...x,quantity:validQty(x.quantity)?Number(x.quantity):1}))}
+function validQty(v){const n=Number(v);return Number.isInteger(n)&&n>=1&&n<=MAX_QUANTITY}
+function save(a){try{localStorage.setItem(ORDER_KEY,JSON.stringify(a));return true}catch(e){alert("Your selection could not be saved on this device. Please try again.");return false}}
+function key(x){if(x.id)return"id:"+x.id;if(x.sku)return"sku:"+x.sku;if(x.isbn)return"isbn:"+x.isbn;return["book",x.title||"",x.series||"",x.class||"",x.level||"",x.subject||"",x.medium||""].join(":")}
+function indexOfBook(book,a=order()){const k=key(book);return a.findIndex(x=>x.type!=="custom-kit"&&key(x)===k)}
+function selectedItem(book){const a=order(),i=indexOfBook(book,a);return i<0?null:a[i]}
+function selectedCount(){return order().filter(x=>x.type!=="custom-kit").length}
+function updateBar(){const bar=document.getElementById("selectionBar"),s=document.getElementById("selectionStatus");if(!bar||!s)return;const n=selectedCount();bar.hidden=n===0;s.innerHTML="<strong>"+n+"</strong> "+(n===1?"title selected":"titles selected")}
+function add(book,extra={}){const a=order();if(indexOfBook(book,a)>=0)return true;a.push({id:book.id||"",sku:book.sku||"",isbn:book.isbn||"",title:book.title||"Untitled Book",series:book.series||"",family:book.family||"",class:book.class||"",level:extra.level||book.level||"",levelName:extra.levelName||"",subject:book.subject||"",type:book.type||"",medium:book.medium||"",mrp:Number.isFinite(book.mrp)?book.mrp:null,cover:book.cover||"",quantity:1});return save(a)}
+function setQty(book,value){let n=Number(value);if(!Number.isFinite(n))return false;n=Math.trunc(n);if(n<1)return remove(book);if(n>MAX_QUANTITY)n=MAX_QUANTITY;const a=order(),i=indexOfBook(book,a);if(i<0){if(!add(book,window.SELECTION_EXTRA||{}))return false;return setQty(book,n)}a[i].quantity=n;return save(a)}
+function remove(book){const a=order(),i=indexOfBook(book,a);if(i<0)return true;a.splice(i,1);return save(a)}
+function detailsUrl(book){return "book-details.html?id="+encodeURIComponent(book.id||"")}
+function coverNode(book){const d=document.createElement("div");d.className="book-cover";if(book.cover){const img=document.createElement("img");img.src=book.cover;img.alt=(book.title||"Book")+" cover";img.loading="lazy";img.onerror=()=>{d.innerHTML="";d.textContent="BOOK COVER"};d.appendChild(img)}else d.textContent="BOOK COVER";return d}
+function actionNode(book){const wrap=document.createElement("div");wrap.className="book-actions";const view=document.createElement("a");view.className="view-book";view.href=detailsUrl(book);view.textContent="View Book →";wrap.appendChild(view);const item=selectedItem(book);if(!item){const b=document.createElement("button");b.type="button";b.className="add-book";b.textContent="+ Add to Selection";b.onclick=()=>{if(add(book,window.SELECTION_EXTRA||{}))refresh()};wrap.appendChild(b);return wrap}const q=document.createElement("div");q.className="qty-control";const minus=document.createElement("button");minus.type="button";minus.setAttribute("aria-label","Decrease quantity");minus.textContent="−";const input=document.createElement("input");input.type="number";input.min="1";input.max=String(MAX_QUANTITY);input.inputMode="numeric";input.value=String(item.quantity);input.setAttribute("aria-label","Quantity");const plus=document.createElement("button");plus.type="button";plus.setAttribute("aria-label","Increase quantity");plus.textContent="+";minus.onclick=()=>{if(item.quantity<=1){if(remove(book))refresh()}else if(setQty(book,item.quantity-1))refresh()};plus.onclick=()=>{if(setQty(book,Math.min(MAX_QUANTITY,item.quantity+1)))refresh()};input.onchange=()=>{let n=Number(input.value);if(!Number.isInteger(n)||n<1)n=1;if(n>MAX_QUANTITY)n=MAX_QUANTITY;if(setQty(book,n))refresh()};q.append(minus,input,plus);wrap.appendChild(q);return wrap}
+window.addEventListener("storage",e=>{if(e.key===ORDER_KEY&&typeof refresh==="function")refresh()});
 
-<script src="js/catalogue-data.js"></script>
-<script>
-const ORDER_KEY="cambridgeOrder";
-const MAX_QUANTITY=10000;
-const FAMILY_ORDER=["Honest Success Series","LBA","Internal Assessment","Workbooks"];
-const SUBJECT_ORDER=["English I Language","English II Language","English III Language","Kannada I Language","Kannada II Language","Hindi III Language","Mathematics","Science","Social Science","Combined"];
-let selectedClass=null;
-let examBooks=[];
-
-function isValidExamClass(value){
- if(value===null||value===undefined||value==="") return false;
- const number=Number(value);
- return Number.isInteger(number)&&number>=5&&number<=10;
-}
-
-function getCatalogue(){
- if(!Array.isArray(window.CAMBRIDGE_CATALOGUE)) return [];
- return window.CAMBRIDGE_CATALOGUE.filter(book=>book&&typeof book==="object"&&book.active!==false);
-}
-
-function getStoredOrder(){
- let parsed=[];
- try{
-  const raw=localStorage.getItem(ORDER_KEY);
-  if(raw){const value=JSON.parse(raw);if(Array.isArray(value)) parsed=value;}
- }catch(error){parsed=[];}
- return parsed.filter(item=>item&&typeof item==="object").map(item=>{
-  const quantity=Number(item.quantity);
-  return {...item,quantity:Number.isInteger(quantity)&&quantity>=1&&quantity<=MAX_QUANTITY?quantity:1};
- });
-}
-
-function saveOrder(order){
- try{localStorage.setItem(ORDER_KEY,JSON.stringify(order));return true;}
- catch(error){alert("Your selection could not be saved on this device. Please try again.");return false;}
-}
-
-function getBookKey(book){
- if(book.id) return "id:"+String(book.id);
- if(book.sku) return "sku:"+String(book.sku);
- if(book.isbn) return "isbn:"+String(book.isbn);
- return ["book",book.title||"",book.series||"",book.class||"",book.subject||"",book.medium||""].join(":");
-}
-function getItemKey(item){
- if(item.id) return "id:"+String(item.id);
- if(item.sku) return "sku:"+String(item.sku);
- if(item.isbn) return "isbn:"+String(item.isbn);
- return ["book",item.title||"",item.series||"",item.class||"",item.subject||"",item.medium||""].join(":");
-}
-function isBookSelected(book){
- const key=getBookKey(book);
- return getStoredOrder().some(item=>getItemKey(item)===key);
-}
-function getSelectedTitleCount(){
- return getStoredOrder().filter(item=>item.type!=="custom-kit").length;
-}
-function updateSelectionBar(){
- const bar=document.getElementById("selectionBar");
- const status=document.getElementById("selectionStatus");
- if(!bar||!status) return;
- const count=getSelectedTitleCount();
- bar.hidden=count===0;
- status.innerHTML="<strong>"+count+"</strong> "+(count===1?"title selected":"titles selected");
-}
-function addBookToSelection(book){
- if(isBookSelected(book)) return true;
- const order=getStoredOrder();
- order.push({
-  id:book.id||"",sku:book.sku||"",isbn:book.isbn||"",
-  title:book.title||"Untitled Book",series:book.series||"",family:book.family||"",
-  class:book.class||"",subject:book.subject||"",medium:book.medium||"",
-  mrp:Number.isFinite(book.mrp)?book.mrp:null,cover:book.cover||"",quantity:1
- });
- return saveOrder(order);
-}
-function removeBookFromSelection(book){
- const key=getBookKey(book);
- const order=getStoredOrder();
- const index=order.findIndex(item=>item.type!=="custom-kit"&&getItemKey(item)===key);
- if(index===-1) return true;
- order.splice(index,1);
- return saveOrder(order);
-}
-function refreshCatalogue(){renderBooks();updateSelectionBar();}
-function orderIndex(value,order){const index=order.indexOf(value);return index===-1?Number.MAX_SAFE_INTEGER:index;}
-
-function showMessage(heading,text){
- const container=document.getElementById("messageContainer");container.innerHTML="";
- const box=document.createElement("div");box.className="message-state";
- const title=document.createElement("h2");title.textContent=heading;
- const paragraph=document.createElement("p");paragraph.textContent=text;
- const link=document.createElement("a");link.href="school-education.html";link.textContent="Choose another class →";
- box.append(title,paragraph,link);container.appendChild(box);
- document.getElementById("catalogueControls").hidden=true;
- document.getElementById("catalogueContent").hidden=true;
- document.getElementById("selectionBar").hidden=true;
-}
-
-function populateFilters(){
- const familySelect=document.getElementById("familyFilter");
- const subjectSelect=document.getElementById("subjectFilter");
- const families=[...new Set(examBooks.map(b=>b.family).filter(Boolean))];
- families.sort((a,b)=>{const x=orderIndex(a,FAMILY_ORDER),y=orderIndex(b,FAMILY_ORDER);return x!==y?x-y:a.localeCompare(b);});
- familySelect.innerHTML='<option value="">All Product Families</option>';
- families.forEach(f=>{const o=document.createElement("option");o.value=f;o.textContent=f;familySelect.appendChild(o);});
- const subjects=[...new Set(examBooks.map(b=>b.subject).filter(Boolean))];
- subjects.sort((a,b)=>{const x=orderIndex(a,SUBJECT_ORDER),y=orderIndex(b,SUBJECT_ORDER);return x!==y?x-y:a.localeCompare(b);});
- subjectSelect.innerHTML='<option value="">All Subjects</option>';
- subjects.forEach(subject=>{const o=document.createElement("option");o.value=subject;o.textContent=subject;subjectSelect.appendChild(o);});
-}
-
-function getFilteredBooks(){
- const search=document.getElementById("bookSearch").value.trim().toLowerCase();
- const family=document.getElementById("familyFilter").value;
- const subject=document.getElementById("subjectFilter").value;
- return examBooks.filter(book=>{
-  if(family&&book.family!==family) return false;
-  if(subject&&book.subject!==subject) return false;
-  if(!search) return true;
-  return [book.title,book.series,book.family,book.subject,book.displaySubject,book.medium,book.sku,book.isbn].filter(Boolean).join(" ").toLowerCase().includes(search);
- });
-}
-
-function groupByFamily(books){
- const map=new Map();
- books.forEach(book=>{const family=book.family||"Other Exam Preparation";if(!map.has(family))map.set(family,[]);map.get(family).push(book);});
- return [...map.entries()].sort((a,b)=>{const x=orderIndex(a[0],FAMILY_ORDER),y=orderIndex(b[0],FAMILY_ORDER);return x!==y?x-y:a[0].localeCompare(b[0]);});
-}
-function groupBySubject(books){
- const map=new Map();
- books.forEach(book=>{const subject=book.subject||"Other";if(!map.has(subject))map.set(subject,[]);map.get(subject).push(book);});
- return [...map.entries()].sort((a,b)=>{const x=orderIndex(a[0],SUBJECT_ORDER),y=orderIndex(b[0],SUBJECT_ORDER);return x!==y?x-y:a[0].localeCompare(b[0]);});
-}
-
-function createBookRow(book){
- const row=document.createElement("article");row.className="exam-book";
- const cover=document.createElement("div");cover.className="cover-placeholder";cover.textContent="BOOK COVER";
- const details=document.createElement("div");details.className="book-details";
- const heading=document.createElement("h5");heading.textContent=book.title||"Untitled Book";
- const meta=document.createElement("div");meta.className="book-meta";
- [
-  book.displaySubject||"",
-  book.medium?book.medium+" Medium":"",
-  book.sku?"SKU: "+book.sku:"",
-  book.isbn?"ISBN: "+book.isbn:"",
-  Number.isFinite(book.mrp)?"MRP ₹"+book.mrp:""
- ].filter(Boolean).forEach(value=>{const span=document.createElement("span");span.textContent=value;meta.appendChild(span);});
- details.append(heading,meta);
- const button=document.createElement("button");button.type="button";button.className="book-action";
- if(isBookSelected(book)){
-  button.textContent="✓ Selected";button.classList.add("is-selected");
-  button.addEventListener("click",()=>{if(removeBookFromSelection(book))refreshCatalogue();});
- }else{
-  button.textContent="Add to Selection";
-  button.addEventListener("click",()=>{if(addBookToSelection(book))refreshCatalogue();});
- }
- row.append(cover,details,button);return row;
-}
-
-function renderBooks(){
- const books=getFilteredBooks(),container=document.getElementById("familyList");container.innerHTML="";
- document.getElementById("resultsCount").textContent=books.length+(books.length===1?" book":" books");
- if(!books.length){
-  const box=document.createElement("div");box.className="message-state";
-  const h=document.createElement("h2");h.textContent="No matching books";
-  const p=document.createElement("p");p.textContent="Try another search term, product family or subject.";
-  box.append(h,p);container.appendChild(box);return;
- }
- groupByFamily(books).forEach(([familyName,familyBooks])=>{
-  const section=document.createElement("section");section.className="family-section";
-  const fh=document.createElement("div");fh.className="family-heading";
-  const h=document.createElement("h3");h.textContent=familyName;
-  const count=document.createElement("span");count.textContent=familyBooks.length+(familyBooks.length===1?" book":" books");
-  fh.append(h,count);section.appendChild(fh);
-  groupBySubject(familyBooks).forEach(([subjectName,subjectBooks])=>{
-   const group=document.createElement("section");group.className="subject-group";
-   const sh=document.createElement("div");sh.className="subject-header";
-   const h4=document.createElement("h4");h4.textContent=subjectName;
-   const sc=document.createElement("span");sc.textContent=subjectBooks.length+(subjectBooks.length===1?" title":" titles");
-   sh.append(h4,sc);
-   const list=document.createElement("div");list.className="book-list";
-   subjectBooks.forEach(book=>list.appendChild(createBookRow(book)));
-   group.append(sh,list);section.appendChild(group);
-  });
-  container.appendChild(section);
- });
-}
-
-function initialise(){
- const classValue=new URLSearchParams(window.location.search).get("class");
- if(!isValidExamClass(classValue)){
-  showMessage("Choose a class","Exam Preparation is available under Classes 5–10. Choose a class to continue.");return;
- }
- selectedClass=Number(classValue);
- document.title="Class "+selectedClass+" Exam Preparation | Cambridge Digital Catalogue";
- document.getElementById("pageHeading").textContent="Class "+selectedClass+" Exam Preparation";
- document.getElementById("pageDescription").textContent="Browse Cambridge guides, assessments, workbooks and other exam-preparation publications available for Class "+selectedClass+".";
- document.getElementById("backLink").href="school-education.html?class="+selectedClass;
- examBooks=getCatalogue().filter(book=>Number(book.class)===selectedClass&&book.category==="exam");
- if(!examBooks.length){
-  showMessage("Titles will be added","No verified Exam Preparation records have been added for Class "+selectedClass+" yet.");return;
- }
- document.getElementById("catalogueControls").hidden=false;
- document.getElementById("catalogueContent").hidden=false;
- populateFilters();renderBooks();updateSelectionBar();
- document.getElementById("bookSearch").addEventListener("input",renderBooks);
- document.getElementById("familyFilter").addEventListener("change",renderBooks);
- document.getElementById("subjectFilter").addEventListener("change",renderBooks);
- window.addEventListener("storage",event=>{if(event.key===ORDER_KEY)refreshCatalogue();});
-}
-document.addEventListener("DOMContentLoaded",initialise);
-</script>
-</body>
-</html>
+const FAMILY_ORDER=["Honest Success Series","LBA","Internal Assessment","Workbooks"],SUBJECT_ORDER=["English I Language","English II Language","English III Language","Kannada I Language","Kannada II Language","Hindi III Language","Mathematics","Science","Social Science","Combined"];
+let selectedClass=null,books=[];
+function op(v,a){const i=a.indexOf(v);return i<0?999:i}
+function createCard(book){const row=document.createElement("article");row.className="book-card";row.appendChild(coverNode(book));const info=document.createElement("div");info.className="book-info";const h=document.createElement("h4");h.textContent=book.title||"Untitled Book";const m=document.createElement("div");m.className="book-meta";[book.displaySubject||book.subject,book.medium?book.medium+" Medium":"",book.sku?"SKU: "+book.sku:"",book.isbn?"ISBN: "+book.isbn:"",Number.isFinite(book.mrp)?"MRP ₹"+book.mrp:""].filter(Boolean).forEach(v=>{const s=document.createElement("span");s.textContent=v;m.appendChild(s)});info.append(h,m);row.append(info,actionNode(book));return row}
+function filtered(){const q=document.getElementById("search").value.trim().toLowerCase(),f=document.getElementById("family").value,s=document.getElementById("subject").value;return books.filter(b=>(!f||b.family===f)&&(!s||b.subject===s)&&(!q||[b.title,b.series,b.family,b.subject,b.displaySubject,b.medium,b.sku,b.isbn].filter(Boolean).join(" ").toLowerCase().includes(q)))}
+function render(){const a=filtered(),root=document.getElementById("list");root.innerHTML="";document.getElementById("resultsCount").textContent=a.length+(a.length===1?" book":" books");if(!a.length){root.innerHTML='<div class="message">No matching exam-preparation books.</div>';return}const fams=[...new Set(a.map(b=>b.family||"Other"))].sort((x,y)=>op(x,FAMILY_ORDER)-op(y,FAMILY_ORDER)||x.localeCompare(y));fams.forEach(f=>{const fs=document.createElement("section");fs.className="group-section";const fa=a.filter(b=>(b.family||"Other")===f);fs.innerHTML='<div class="group-title"><h3></h3><span></span></div>';fs.querySelector("h3").textContent=f;fs.querySelector("span").textContent=fa.length+(fa.length===1?" book":" books");const subjects=[...new Set(fa.map(b=>b.subject||"Other"))].sort((x,y)=>op(x,SUBJECT_ORDER)-op(y,SUBJECT_ORDER)||x.localeCompare(y));subjects.forEach(s=>{const sg=document.createElement("div");sg.className="subgroup";const label=document.createElement("div");label.className="subgroup-label";label.textContent=s;const list=document.createElement("div");list.className="book-list";fa.filter(b=>(b.subject||"Other")===s).forEach(b=>list.appendChild(createCard(b)));sg.append(label,list);fs.appendChild(sg)});root.appendChild(fs)})}
+function refresh(){render();updateBar()}
+function init(){const c=Number(new URLSearchParams(location.search).get("class"));if(!Number.isInteger(c)||c<5||c>10){document.getElementById("list").innerHTML='<div class="message">Choose Class 5–10 from School Education to browse exam preparation.</div>';return}selectedClass=c;window.SELECTION_EXTRA={};document.getElementById("pageHeading").textContent="Class "+c+" Exam Preparation";document.getElementById("backLink").href="school-education.html?class="+c;books=catalogue().filter(b=>b.category==="exam"&&Number(b.class)===c);document.getElementById("controls").hidden=false;document.getElementById("summary").hidden=false;[["family",FAMILY_ORDER],["subject",SUBJECT_ORDER]].forEach(([id,ord])=>{const el=document.getElementById(id),field=id;[...new Set(books.map(b=>b[field]).filter(Boolean))].sort((a,b)=>op(a,ord)-op(b,ord)||a.localeCompare(b)).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o)});el.onchange=render});document.getElementById("search").oninput=render;refresh()}
+document.addEventListener("DOMContentLoaded",init);
+</script></body></html>
