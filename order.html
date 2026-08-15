@@ -927,45 +927,6 @@ function handleManualQuantity(input){
    FINALISE INPUT ON BLUR
 ======================================== */
 
-function finaliseQuantity(input){
-
-    const index =
-        Number(input.dataset.index);
-
-
-    if(
-        !Number.isInteger(index) ||
-        !order[index]
-    ){
-        return;
-    }
-
-
-    const quantity =
-        Number(input.value);
-
-
-    /*
-       If the customer leaves an invalid
-       value and taps elsewhere, restore
-       the last valid saved quantity.
-    */
-
-    if(
-        !Number.isInteger(quantity) ||
-        quantity < MIN_ORDER_QUANTITY ||
-        quantity > MAX_ORDER_QUANTITY
-    ){
-
-        input.value =
-            order[index].quantity || 1;
-
-        clearQuantityError(index);
-
-    }
-
-}
-
 
 /* ========================================
    PLUS / MINUS
@@ -1087,12 +1048,7 @@ function attachOrderEvents(){
         );
 
 
-        input.addEventListener(
-            "blur",
-            () => {
-                finaliseQuantity(input);
-            }
-        );
+
 
 
         input.addEventListener(
