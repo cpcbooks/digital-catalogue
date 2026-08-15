@@ -21,10 +21,6 @@
 
 <style>
 
-/* ========================================
-   HERO
-======================================== */
-
 .school-hero{
     padding:55px 6% 45px;
     background:#fff;
@@ -33,140 +29,90 @@
 
 .back-link{
     display:inline-block;
-
     margin-bottom:22px;
-
     color:var(--navy);
-
     text-decoration:none;
-
     font-size:12px;
     font-weight:700;
 }
 
 .school-hero h1{
     margin:0;
-
     font-size:clamp(34px,5vw,52px);
-
     letter-spacing:-1.5px;
 }
 
 .school-intro{
     max-width:620px;
-
     margin:14px auto 0;
-
     color:var(--muted);
-
     font-size:14px;
     line-height:1.6;
 }
 
-
-/* ========================================
-   CLASS SELECTOR
-======================================== */
-
 .class-selector{
     max-width:950px;
-
     margin:32px auto 0;
-
     display:flex;
-
     justify-content:center;
-
     gap:9px;
-
     flex-wrap:wrap;
 }
 
 .school-class{
     min-width:48px;
-
     padding:11px 16px;
-
     border:1px solid var(--border);
-
     border-radius:999px;
-
     background:#fff;
-
     color:var(--text);
-
     cursor:pointer;
-
     font-size:12px;
     font-weight:700;
-
     transition:
         background-color .18s ease,
         border-color .18s ease,
         color .18s ease,
         transform .18s ease;
-
     touch-action:manipulation;
 }
 
 .school-class:hover{
     border-color:var(--navy);
-
     transform:translateY(-1px);
 }
 
 .school-class:focus-visible{
     outline:2px solid var(--navy);
-
     outline-offset:2px;
 }
 
 .school-class.active{
     border-color:var(--navy);
-
     background:var(--navy);
-
     color:#fff;
 }
 
-
-/* ========================================
-   INITIAL STATE
-======================================== */
-
 .initial-state{
     padding:42px 25px;
-
     text-align:center;
-
     background:#fff;
-
     border:1px solid var(--border);
-
     border-radius:var(--radius);
 }
 
 .initial-state h2{
     margin:0 0 8px;
-
     font-size:22px;
 }
 
 .initial-state p{
     max-width:520px;
-
     margin:0 auto;
-
     color:var(--muted);
-
     font-size:12px;
     line-height:1.6;
 }
-
-
-/* ========================================
-   SELECTED CLASS
-======================================== */
 
 .school-content{
     display:none;
@@ -178,44 +124,32 @@
 
 .selected-class-note{
     margin:7px 0 0;
-
     color:var(--muted);
-
     font-size:12px;
     line-height:1.5;
 }
 
-
-/* ========================================
-   CATEGORY GRID
-======================================== */
-
 .category-grid{
     display:grid;
-
     grid-template-columns:
         repeat(2,minmax(0,1fr));
-
     gap:18px;
-
     max-width:900px;
+}
+
+.category-grid.single-category{
+    grid-template-columns:
+        minmax(0,440px);
 }
 
 .category-card{
     min-height:280px;
-
     padding:28px;
-
     display:flex;
-
     flex-direction:column;
-
     border:1px solid var(--border);
-
     border-radius:var(--radius);
-
     background:#fff;
-
     transition:
         transform .18s ease,
         box-shadow .18s ease,
@@ -224,9 +158,7 @@
 
 .category-card:hover{
     transform:translateY(-3px);
-
     border-color:#ccd4df;
-
     box-shadow:
         0 12px 30px
         rgba(20,35,60,.07);
@@ -234,75 +166,51 @@
 
 .category-label{
     margin-bottom:28px;
-
     color:var(--navy);
-
     font-size:10px;
     font-weight:800;
-
     letter-spacing:1.2px;
 }
 
 .category-card h3{
     margin:0 0 10px;
-
     font-size:22px;
-
     line-height:1.25;
 }
 
 .category-card p{
     margin:0;
-
     color:var(--muted);
-
     font-size:13px;
     line-height:1.6;
 }
 
 .category-card button{
     margin-top:auto;
-
     padding:12px 15px;
-
     border:1px solid var(--navy);
-
     border-radius:7px;
-
     background:#fff;
-
     color:var(--navy);
-
     cursor:pointer;
-
     font-size:12px;
     font-weight:750;
-
     touch-action:manipulation;
 }
 
 .category-card button:hover{
     background:var(--navy);
-
     color:#fff;
 }
 
 .category-card button:focus-visible{
     outline:2px solid var(--navy);
-
     outline-offset:2px;
 }
 
-
-/* ========================================
-   EXAM PREPARATION
-======================================== */
-
 .exam-card{
     background:var(--navy);
-
     color:#fff;
-
     border-color:var(--navy);
 }
 
@@ -316,45 +224,23 @@
 
 .exam-card button{
     background:#fff;
-
     color:var(--navy);
-
     border-color:#fff;
 }
 
 .exam-card button:hover{
     background:#f5f7fa;
-
     color:var(--navy);
 }
 
-
-/* ========================================
-   ONE-CARD LAYOUT
-======================================== */
-
-.category-grid.single-category{
-    grid-template-columns:
-        minmax(0,440px);
-}
-
-
-/* ========================================
-   TABLET / MOBILE
-======================================== */
-
 @media(max-width:800px){
 
-    .category-grid{
-        grid-template-columns:1fr;
-    }
-
+    .category-grid,
     .category-grid.single-category{
         grid-template-columns:1fr;
     }
 
 }
-
 
 @media(max-width:650px){
 
@@ -368,18 +254,12 @@
 
     .class-selector{
         justify-content:flex-start;
-
         flex-wrap:nowrap;
-
         overflow-x:auto;
-
         padding:2px 18px 8px;
-
         margin-left:-18px;
         margin-right:-18px;
-
         scrollbar-width:none;
-
         -webkit-overflow-scrolling:touch;
     }
 
@@ -393,7 +273,6 @@
 
     .category-card{
         min-height:220px;
-
         padding:22px;
     }
 
@@ -458,16 +337,13 @@
         ← Digital Catalogue
     </a>
 
-
     <p class="eyebrow">
         SCHOOL EDUCATION
     </p>
 
-
     <h1>
         Books for every school year.
     </h1>
-
 
     <p class="school-intro">
         Explore Cambridge publications for Classes 1–10.
@@ -480,95 +356,16 @@
         aria-label="Select class"
     >
 
-        <button
-            type="button"
-            class="school-class"
-            data-class="1"
-            onclick="selectClass(1,this)"
-        >
-            1
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="2"
-            onclick="selectClass(2,this)"
-        >
-            2
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="3"
-            onclick="selectClass(3,this)"
-        >
-            3
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="4"
-            onclick="selectClass(4,this)"
-        >
-            4
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="5"
-            onclick="selectClass(5,this)"
-        >
-            5
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="6"
-            onclick="selectClass(6,this)"
-        >
-            6
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="7"
-            onclick="selectClass(7,this)"
-        >
-            7
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="8"
-            onclick="selectClass(8,this)"
-        >
-            8
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="9"
-            onclick="selectClass(9,this)"
-        >
-            9
-        </button>
-
-        <button
-            type="button"
-            class="school-class"
-            data-class="10"
-            onclick="selectClass(10,this)"
-        >
-            10
-        </button>
+        <button type="button" class="school-class" data-class="1" onclick="selectClass(1,this)">1</button>
+        <button type="button" class="school-class" data-class="2" onclick="selectClass(2,this)">2</button>
+        <button type="button" class="school-class" data-class="3" onclick="selectClass(3,this)">3</button>
+        <button type="button" class="school-class" data-class="4" onclick="selectClass(4,this)">4</button>
+        <button type="button" class="school-class" data-class="5" onclick="selectClass(5,this)">5</button>
+        <button type="button" class="school-class" data-class="6" onclick="selectClass(6,this)">6</button>
+        <button type="button" class="school-class" data-class="7" onclick="selectClass(7,this)">7</button>
+        <button type="button" class="school-class" data-class="8" onclick="selectClass(8,this)">8</button>
+        <button type="button" class="school-class" data-class="9" onclick="selectClass(9,this)">9</button>
+        <button type="button" class="school-class" data-class="10" onclick="selectClass(10,this)">10</button>
 
     </div>
 
@@ -576,9 +373,6 @@
 
 
 <main>
-
-
-    <!-- INITIAL STATE -->
 
     <section
         class="catalogue-section"
@@ -600,8 +394,6 @@
 
     </section>
 
-
-    <!-- SELECTED CLASS -->
 
     <section
         class="catalogue-section school-content"
@@ -637,7 +429,6 @@
 
     </section>
 
-
 </main>
 
 
@@ -664,107 +455,30 @@
 
 <script>
 
-/* ========================================
-   SCHOOL CLASS CONFIGURATION
-======================================== */
-
-/*
-    Classes 1–4:
-        School Books
-
-    Classes 5–10:
-        School Books
-        Exam Preparation
-
-    Guides and other exam-oriented
-    publications will sit inside the
-    Exam Preparation category.
-*/
-
 const schoolClasses = {
 
-    1:{
-        categories:[
-            "school"
-        ]
-    },
+    1:{categories:["school"]},
+    2:{categories:["school"]},
+    3:{categories:["school"]},
+    4:{categories:["school"]},
 
-    2:{
-        categories:[
-            "school"
-        ]
-    },
-
-    3:{
-        categories:[
-            "school"
-        ]
-    },
-
-    4:{
-        categories:[
-            "school"
-        ]
-    },
-
-    5:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    },
-
-    6:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    },
-
-    7:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    },
-
-    8:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    },
-
-    9:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    },
-
-    10:{
-        categories:[
-            "school",
-            "exam"
-        ]
-    }
+    5:{categories:["school","exam"]},
+    6:{categories:["school","exam"]},
+    7:{categories:["school","exam"]},
+    8:{categories:["school","exam"]},
+    9:{categories:["school","exam"]},
+    10:{categories:["school","exam"]}
 
 };
 
-
-/* ========================================
-   CATEGORY CONFIGURATION
-======================================== */
 
 const categoryDefinitions = {
 
     school:{
 
-        label:
-            "SCHOOL BOOKS",
+        label:"SCHOOL BOOKS",
 
-        title:
-            "School Books",
+        title:"School Books",
 
         description:
             "Explore Cambridge school publications and subject books available for this class.",
@@ -772,19 +486,16 @@ const categoryDefinitions = {
         button:
             "Browse School Books →",
 
-        className:
-            ""
+        className:""
 
     },
 
 
     exam:{
 
-        label:
-            "EXAM PREPARATION",
+        label:"EXAM PREPARATION",
 
-        title:
-            "Exam Preparation",
+        title:"Exam Preparation",
 
         description:
             "Explore guides, practice books, assessment materials and other exam-preparation publications available for this class.",
@@ -792,8 +503,7 @@ const categoryDefinitions = {
         button:
             "Explore Exam Preparation →",
 
-        className:
-            "exam-card"
+        className:"exam-card"
 
     }
 
@@ -803,10 +513,6 @@ const categoryDefinitions = {
 let selectedClass = null;
 
 
-/* ========================================
-   VALIDATE CLASS
-======================================== */
-
 function isValidClass(value){
 
     if(
@@ -814,7 +520,9 @@ function isValidClass(value){
         value === undefined ||
         value === ""
     ){
+
         return false;
+
     }
 
 
@@ -834,10 +542,6 @@ function isValidClass(value){
 
 }
 
-
-/* ========================================
-   CREATE CATEGORY CARD
-======================================== */
 
 function createCategoryCard(
     type,
@@ -935,34 +639,16 @@ function createCategoryCard(
     );
 
 
-    article.appendChild(
-        label
-    );
-
-
-    article.appendChild(
-        heading
-    );
-
-
-    article.appendChild(
-        description
-    );
-
-
-    article.appendChild(
-        button
-    );
+    article.appendChild(label);
+    article.appendChild(heading);
+    article.appendChild(description);
+    article.appendChild(button);
 
 
     return article;
 
 }
 
-
-/* ========================================
-   SELECT CLASS
-======================================== */
 
 function selectClass(
     classNumber,
@@ -1032,15 +718,15 @@ function selectClass(
     }
 
 
-    const initialSection =
+    const initial =
         document.getElementById(
             "initialSection"
         );
 
 
-    if(initialSection){
+    if(initial){
 
-        initialSection.style.display =
+        initial.style.display =
             "none";
 
     }
@@ -1064,20 +750,12 @@ function selectClass(
     );
 
 
-    const heading =
-        document.getElementById(
-            "selectedClassHeading"
-        );
-
-
-    if(heading){
-
-        heading.textContent =
-            "Class " +
-            classNumber +
-            " Books";
-
-    }
+    document.getElementById(
+        "selectedClassHeading"
+    ).textContent =
+        "Class " +
+        classNumber +
+        " Books";
 
 
     const note =
@@ -1086,23 +764,19 @@ function selectClass(
         );
 
 
-    if(note){
+    if(classNumber <= 4){
 
-        if(classNumber <= 4){
+        note.textContent =
+            "Explore school publications for Class " +
+            classNumber +
+            ".";
 
-            note.textContent =
-                "Explore school publications for Class " +
-                classNumber +
-                ".";
+    }else{
 
-        }else{
-
-            note.textContent =
-                "Explore school books and exam-preparation publications for Class " +
-                classNumber +
-                ".";
-
-        }
+        note.textContent =
+            "Explore school books and exam-preparation publications for Class " +
+            classNumber +
+            ".";
 
     }
 
@@ -1113,19 +787,12 @@ function selectClass(
         );
 
 
-    if(!grid){
-
-        return;
-
-    }
-
-
     grid.innerHTML = "";
 
 
     const categories =
         schoolClasses[classNumber]
-        .categories;
+            .categories;
 
 
     grid.classList.toggle(
@@ -1168,19 +835,6 @@ function selectClass(
 }
 
 
-/* ========================================
-   CATEGORY ACTION
-======================================== */
-
-/*
-    We are intentionally not inventing
-    product pages or book data here.
-
-    These buttons will be connected when
-    the real School Books and Exam
-    Preparation data is added.
-*/
-
 function openCategory(
     type,
     classNumber
@@ -1197,30 +851,31 @@ function openCategory(
     }
 
 
-    const definition =
-        categoryDefinitions[type];
+    if(type === "school"){
 
-
-    if(!definition){
+        window.location.href =
+            "school-books.html?class=" +
+            encodeURIComponent(
+                classNumber
+            );
 
         return;
 
     }
 
 
-    alert(
-        definition.title +
-        " for Class " +
-        classNumber +
-        " will be added in the next stage."
-    );
+    if(type === "exam"){
+
+        alert(
+            "Exam Preparation for Class " +
+            classNumber +
+            " will be built in the next stage."
+        );
+
+    }
 
 }
 
-
-/* ========================================
-   OPEN CLASS FROM URL
-======================================== */
 
 function openClassFromURL(){
 
@@ -1236,16 +891,6 @@ function openClassFromURL(){
         );
 
 
-    /*
-        Invalid values are safely ignored:
-
-        ?class=
-        ?class=0
-        ?class=11
-        ?class=abc
-        ?class=5.5
-    */
-
     if(
         !isValidClass(
             classValue
@@ -1258,7 +903,9 @@ function openClassFromURL(){
 
 
     const classNumber =
-        Number(classValue);
+        Number(
+            classValue
+        );
 
 
     const button =
@@ -1297,10 +944,6 @@ function openClassFromURL(){
 
 }
 
-
-/* ========================================
-   START
-======================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
