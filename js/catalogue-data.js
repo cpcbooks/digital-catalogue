@@ -446,8 +446,6 @@ window.CAMBRIDGE_CATALOGUE = [
     /* =====================================================
        EXAM PREPARATION
        CLASS 8
-
-       Only verified combined editions are added currently.
     ===================================================== */
 
     {
@@ -500,7 +498,6 @@ window.CAMBRIDGE_CATALOGUE = [
 
 
     /* =====================================================
-       EXAM PREPARATION
        CLASS 9 — HONEST SUCCESS SERIES
     ===================================================== */
 
@@ -640,7 +637,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:9,
-        subject:"Vignana",
+        subject:"Science",
+        displaySubject:"Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -656,7 +654,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:9,
-        subject:"Samaja Vignana",
+        subject:"Social Science",
+        displaySubject:"Samaja Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -672,7 +671,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:9,
-        subject:"Ganitha",
+        subject:"Mathematics",
+        displaySubject:"Ganitha",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -869,7 +869,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"LBA",
         family:"LBA",
         class:9,
-        subject:"Ganitha",
+        subject:"Mathematics",
+        displaySubject:"Ganitha",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -885,7 +886,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"LBA",
         family:"LBA",
         class:9,
-        subject:"Vignana",
+        subject:"Science",
+        displaySubject:"Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -901,7 +903,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"LBA",
         family:"LBA",
         class:9,
-        subject:"Samaja Vignana",
+        subject:"Social Science",
+        displaySubject:"Samaja Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -1066,7 +1069,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:10,
-        subject:"Ganitha",
+        subject:"Mathematics",
+        displaySubject:"Ganitha",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -1082,7 +1086,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:10,
-        subject:"Vignana",
+        subject:"Science",
+        displaySubject:"Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -1098,7 +1103,8 @@ window.CAMBRIDGE_CATALOGUE = [
         series:"Honest Success Series",
         family:"Honest Success Series",
         class:10,
-        subject:"Samaja Vignana",
+        subject:"Social Science",
+        displaySubject:"Samaja Vignana",
         category:"exam",
         medium:"Kannada",
         mrp:null,
@@ -1181,7 +1187,23 @@ window.CAMBRIDGE_CATALOGUE = [
             series:"LBA",
             family:"LBA",
             class:10,
-            subject:item[2],
+
+            subject:
+                item[2] === "Ganitha"
+                    ? "Mathematics"
+                    : item[2] === "Vignana"
+                        ? "Science"
+                        : item[2] === "Samaja Vignana"
+                            ? "Social Science"
+                            : item[2],
+
+            displaySubject:
+                item[2] === "Ganitha" ||
+                item[2] === "Vignana" ||
+                item[2] === "Samaja Vignana"
+                    ? item[2]
+                    : "",
+
             category:"exam",
             medium:item[3],
             mrp:null,
@@ -1218,7 +1240,23 @@ window.CAMBRIDGE_CATALOGUE = [
             series:"Internal Assessment",
             family:"Internal Assessment",
             class:10,
-            subject:item[2],
+
+            subject:
+                item[2] === "Ganitha"
+                    ? "Mathematics"
+                    : item[2] === "Vignana"
+                        ? "Science"
+                        : item[2] === "Samaja Vignana"
+                            ? "Social Science"
+                            : item[2],
+
+            displaySubject:
+                item[2] === "Ganitha" ||
+                item[2] === "Vignana" ||
+                item[2] === "Samaja Vignana"
+                    ? item[2]
+                    : "",
+
             category:"exam",
             medium:item[3],
             mrp:null,
@@ -1256,7 +1294,23 @@ window.CAMBRIDGE_CATALOGUE = [
             series:"Workbooks",
             family:"Workbooks",
             class:10,
-            subject:item[2],
+
+            subject:
+                item[2] === "Ganitha"
+                    ? "Mathematics"
+                    : item[2] === "Vignana"
+                        ? "Science"
+                        : item[2] === "Samaja Vignana"
+                            ? "Social Science"
+                            : item[2],
+
+            displaySubject:
+                item[2] === "Ganitha" ||
+                item[2] === "Vignana" ||
+                item[2] === "Samaja Vignana"
+                    ? item[2]
+                    : "",
+
             category:"exam",
             medium:item[3],
             mrp:null,
