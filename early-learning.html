@@ -351,8 +351,8 @@
             </h3>
 
             <p>
-                A carefully selected ready-to-order combination
-                of Cambridge books for this level.
+                A carefully selected combination of Cambridge
+                books for this level.
             </p>
 
             <button
@@ -379,7 +379,7 @@
 
             <p>
                 Choose books from our range and create a combination
-                that suits your school.
+                that suits your requirement.
             </p>
 
             <div
@@ -418,7 +418,7 @@
 
             <button
                 type="button"
-                onclick="comingSoon()"
+                onclick="openIndividualBooks()"
             >
                 Browse Books →
             </button>
@@ -636,6 +636,46 @@ function openKitBuilder(){
 
     window.location.href =
         "kit-builder.html?level=" +
+        encodeURIComponent(
+            selectedLevel
+        );
+
+}
+
+
+/* ========================================
+   OPEN INDIVIDUAL BOOKS
+======================================== */
+
+function openIndividualBooks(){
+
+    if(!selectedLevel){
+
+        alert(
+            "Please select Nursery, LKG or UKG first."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        selectedLevel ===
+        "playgroup"
+    ){
+
+        alert(
+            "Playgroup individual books will be added once the range is finalised."
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "early-learning-books.html?level=" +
         encodeURIComponent(
             selectedLevel
         );
