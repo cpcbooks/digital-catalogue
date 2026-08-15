@@ -91,12 +91,12 @@
 .quantity{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
 }
 
 .quantity button{
-    width:32px;
-    height:32px;
+    width:34px;
+    height:34px;
     border:1px solid var(--border);
     border-radius:7px;
     background:#fff;
@@ -104,21 +104,20 @@
     font-size:17px;
 }
 
+.quantity button:hover{
+    background:#f7f8fa;
+}
 
 .quantity-input{
-    width:58px;
-    height:32px;
+    width:70px;
+    height:34px;
     box-sizing:border-box;
-
     border:1px solid var(--border);
     border-radius:7px;
-
     background:#fff;
-
     text-align:center;
     font-size:14px;
     font-weight:750;
-
     outline:none;
 }
 
@@ -126,7 +125,23 @@
     border-color:var(--navy);
 }
 
+.quantity-input.invalid{
+    border-color:#b84646;
+    background:#fff7f7;
+}
+
+
 /* ACTIONS */
+
+.remove-button{
+    padding:8px 10px;
+    border:0;
+    background:transparent;
+    color:#8b3b3b;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:700;
+}
 
 .clear-order-button{
     padding:13px 18px;
@@ -141,16 +156,6 @@
 
 .clear-order-button:hover{
     background:#fff7f7;
-}
-    
-.remove-button{
-    padding:8px 10px;
-    border:0;
-    background:transparent;
-    color:#8b3b3b;
-    cursor:pointer;
-    font-size:11px;
-    font-weight:700;
 }
 
 
@@ -191,7 +196,7 @@
 }
 
 
-/* EMPTY CART */
+/* EMPTY ORDER */
 
 .empty-order{
     padding:60px 20px;
@@ -245,7 +250,14 @@
     margin-top:18px;
     display:flex;
     justify-content:space-between;
+    align-items:center;
     gap:12px;
+}
+
+.order-actions-left{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
 }
 
 .continue-button,
@@ -302,6 +314,10 @@
         justify-content:flex-start;
     }
 
+    .quantity-input{
+        width:78px;
+    }
+
     .remove-button{
         padding-left:0;
         text-align:left;
@@ -309,9 +325,16 @@
 
     .order-actions{
         flex-direction:column;
+        align-items:stretch;
+    }
+
+    .order-actions-left{
+        display:grid;
+        grid-template-columns:1fr 1fr;
     }
 
     .continue-button,
+    .clear-order-button,
     .checkout-button{
         width:100%;
         box-sizing:border-box;
@@ -321,6 +344,7 @@
 
 </style>
 </head>
+
 
 <body>
 
@@ -381,19 +405,71 @@
 <script>
 
 /* ========================================
-   LOAD ORDER
+   SETTINGS
 ======================================== */
 
-let order =
-    JSON.parse(
-        localStorage.getItem(
-            "cambridgeOrder"
-        ) || "[]"
-    );
+const MIN_ORDER_QUANTITY = 1;
+const MAX_ORDER_QUANTITY = 10000;
 
 
 /* ========================================
-   SAVE
+   LOAD ORDER SAFELY
+======================================== */
+
+let order = [];
+
+try{
+
+    const storedOrder =
+        JSON.parse(
+            localStorage.getItem(
+                "cambridgeOrder"
+            ) || "[]"
+        );
+
+    order =
+        Array.isArray(storedOrder)
+        ? storedOrder
+        : [];
+
+}catch(error){
+
+    console.error(
+        "Could not load order:",
+        error
+    );
+
+    order = [];
+}
+
+
+/* ========================================
+   NORMALISE ORDER DATA
+======================================== */
+
+order = order.map(item => {
+
+    let quantity =
+        Number(item.quantity);
+
+    if(
+        !Number.isInteger(quantity) ||
+        quantity < MIN_ORDER_QUANTITY ||
+        quantity > MAX_ORDER_QUANTITY
+    ){
+        quantity = 1;
+    }
+
+    return {
+        ...item,
+        quantity:quantity
+    };
+
+});
+
+
+/* ========================================
+   SAVE ORDER
 ======================================== */
 
 function saveOrder(){
@@ -435,7 +511,9 @@ function renderOrder(){
 
             <div class="empty-order">
 
-                <h2>Your order is empty.</h2>
+                <h2>
+                    Your order is empty.
+                </h2>
 
                 <p>
                     Browse the catalogue and add books
@@ -458,7 +536,7 @@ function renderOrder(){
     }
 
 
-    /* ITEMS */
+    /* ORDER ITEMS */
 
     order.forEach((item,index) => {
 
@@ -471,7 +549,7 @@ function renderOrder(){
             "order-card";
 
 
-        let title =
+        const title =
             item.title ||
             (
                 item.levelName
@@ -486,9 +564,18 @@ function renderOrder(){
 
         if(item.type === "custom-kit"){
 
+            const bookCount =
+                Array.isArray(item.books)
+                ? item.books.length
+                : Number(item.bookCount) || 0;
+
             meta =
-                item.bookCount +
-                " books in this kit";
+                bookCount +
+                (
+                    bookCount === 1
+                    ? " book in this kit"
+                    : " books in this kit"
+                );
 
         }else if(item.levelName){
 
@@ -514,11 +601,11 @@ function renderOrder(){
                     </div>
 
                     <h2 class="item-title">
-                        ${title}
+                        ${escapeHTML(title)}
                     </h2>
 
                     <div class="item-meta">
-                        ${meta}
+                        ${escapeHTML(meta)}
                     </div>
 
                 </div>
@@ -527,6 +614,7 @@ function renderOrder(){
                 <div class="quantity">
 
                     <button
+                        type="button"
                         onclick="changeQuantity(
                             ${index},
                             -1
@@ -536,20 +624,31 @@ function renderOrder(){
                         −
                     </button>
 
+
                     <input
-    type="number"
-    class="quantity-input"
-    value="${item.quantity || 1}"
-    min="1"
-    max="10000"
-    step="1"
-    inputmode="numeric"
-    aria-label="Quantity"
-    onchange="setQuantity(${index}, this.value)"
-    onblur="setQuantity(${index}, this.value)"
->
+                        type="number"
+                        class="quantity-input"
+                        id="quantity-${index}"
+                        value="${item.quantity}"
+                        min="${MIN_ORDER_QUANTITY}"
+                        max="${MAX_ORDER_QUANTITY}"
+                        step="1"
+                        inputmode="numeric"
+                        aria-label="Quantity"
+                        oninput="handleQuantityInput(
+                            ${index},
+                            this
+                        )"
+                        onkeydown="handleQuantityKeydown(
+                            event,
+                            ${index},
+                            this
+                        )"
+                    >
+
 
                     <button
+                        type="button"
                         onclick="changeQuantity(
                             ${index},
                             1
@@ -563,6 +662,7 @@ function renderOrder(){
 
 
                 <button
+                    type="button"
                     class="remove-button"
                     onclick="removeItem(${index})"
                 >
@@ -574,17 +674,21 @@ function renderOrder(){
         `;
 
 
-        /* CUSTOM KIT BOOKS */
+        /* CUSTOM KIT CONTENTS */
 
         if(
             item.type === "custom-kit" &&
-            Array.isArray(item.books)
+            Array.isArray(item.books) &&
+            item.books.length > 0
         ){
 
             const viewButton =
                 document.createElement(
                     "button"
                 );
+
+            viewButton.type =
+                "button";
 
             viewButton.className =
                 "view-books";
@@ -616,7 +720,8 @@ function renderOrder(){
                     );
 
                 li.textContent =
-                    book.title;
+                    book.title ||
+                    "Untitled Book";
 
                 list.appendChild(li);
 
@@ -630,12 +735,12 @@ function renderOrder(){
                 "click",
                 function(){
 
-                    const open =
+                    const isOpen =
                         booksBox.classList
                         .toggle("visible");
 
                     this.textContent =
-                        open
+                        isOpen
                         ? "Hide books ↑"
                         : "View books ↓";
 
@@ -667,64 +772,261 @@ function renderOrder(){
 
 
 /* ========================================
-   QUANTITY
+   MANUAL QUANTITY ENTRY
 ======================================== */
-const MAX_ORDER_QUANTITY = 10000;
-function setQuantity(index,value){
 
-    let quantity =
-        parseInt(value,10);
+function handleQuantityInput(index,input){
 
-    if(
-        isNaN(quantity) ||
-        quantity < 1
-    ){
-        alert(
-            "Please enter a valid quantity between 1 and 10,000."
+    /*
+       Empty input is temporarily allowed
+       while the customer is typing.
+    */
+
+    if(input.value === ""){
+        input.classList.remove(
+            "invalid"
         );
-
-        renderOrder();
         return;
     }
+
+
+    const rawValue =
+        input.value;
+
+
+    const quantity =
+        Number(rawValue);
+
+
+    /*
+       Reject decimals and invalid numbers.
+    */
+
+    if(
+        !Number.isInteger(quantity) ||
+        quantity < MIN_ORDER_QUANTITY
+    ){
+
+        showQuantityWarning(
+            "Please enter a whole number between 1 and 10,000."
+        );
+
+        restoreQuantity(
+            index,
+            input
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Hard maximum.
+       Reject instead of changing it to 10,000.
+    */
 
     if(quantity > MAX_ORDER_QUANTITY){
 
-        alert(
-            "Maximum quantity allowed per item is 10,000.\n\n" +
-            "Please enter a quantity between 1 and 10,000."
+        showQuantityWarning(
+            "Maximum quantity allowed per item is 10,000."
         );
 
-        renderOrder();
+        restoreQuantity(
+            index,
+            input
+        );
+
         return;
+
     }
+
+
+    /*
+       Valid quantity:
+       save immediately.
+    */
+
+    input.classList.remove(
+        "invalid"
+    );
 
     order[index].quantity =
         quantity;
 
     saveOrder();
 
-    renderOrder();
+    updateSummaryOnly();
+
 }
 
-    
+
+/* ========================================
+   QUANTITY KEYBOARD HANDLING
+======================================== */
+
+function handleQuantityKeydown(
+    event,
+    index,
+    input
+){
+
+    /*
+       Prevent characters that do not
+       belong in a positive whole number.
+    */
+
+    if(
+        event.key === "-" ||
+        event.key === "+" ||
+        event.key === "." ||
+        event.key === "e" ||
+        event.key === "E"
+    ){
+
+        event.preventDefault();
+
+        return;
+
+    }
+
+
+    /*
+       Enter confirms the value and
+       removes the mobile keyboard focus.
+    */
+
+    if(event.key === "Enter"){
+
+        input.blur();
+
+    }
+
+}
+
+
+/* ========================================
+   RESTORE LAST VALID QUANTITY
+======================================== */
+
+function restoreQuantity(index,input){
+
+    input.classList.add(
+        "invalid"
+    );
+
+
+    const previousQuantity =
+        Number(
+            order[index].quantity
+        ) || 1;
+
+
+    input.value =
+        previousQuantity;
+
+
+    setTimeout(
+        () => {
+
+            input.classList.remove(
+                "invalid"
+            );
+
+            input.focus();
+
+            input.select();
+
+        },
+        50
+    );
+
+}
+
+
+/* ========================================
+   QUANTITY WARNING
+======================================== */
+
+let quantityWarningOpen = false;
+
+
+function showQuantityWarning(message){
+
+    /*
+       Prevent multiple alerts firing
+       from one mobile input action.
+    */
+
+    if(quantityWarningOpen){
+        return;
+    }
+
+
+    quantityWarningOpen = true;
+
+
+    alert(message);
+
+
+    quantityWarningOpen = false;
+
+}
+
+
+/* ========================================
+   PLUS / MINUS
+======================================== */
+
 function changeQuantity(index,change){
 
     const item =
         order[index];
 
 
-    item.quantity =
-        item.quantity || 1;
+    if(!item){
+        return;
+    }
 
 
-    item.quantity += change;
+    const currentQuantity =
+        Number(item.quantity) || 1;
 
 
-    if(item.quantity < 1){
+    const newQuantity =
+        currentQuantity + change;
 
-        item.quantity = 1;
+
+    if(
+        newQuantity >
+        MAX_ORDER_QUANTITY
+    ){
+
+        showQuantityWarning(
+            "Maximum quantity allowed per item is 10,000."
+        );
+
+        return;
 
     }
+
+
+    if(
+        newQuantity <
+        MIN_ORDER_QUANTITY
+    ){
+
+        showQuantityWarning(
+            "Minimum quantity is 1. Use Remove if you don't want this item."
+        );
+
+        return;
+
+    }
+
+
+    item.quantity =
+        newQuantity;
 
 
     saveOrder();
@@ -740,6 +1042,14 @@ function changeQuantity(index,change){
 
 function removeItem(index){
 
+    if(
+        index < 0 ||
+        index >= order.length
+    ){
+        return;
+    }
+
+
     order.splice(
         index,
         1
@@ -754,8 +1064,53 @@ function removeItem(index){
 
 
 /* ========================================
-   SUMMARY
+   CLEAR ORDER
 ======================================== */
+
+function clearOrder(){
+
+    const confirmed =
+        confirm(
+            "Clear all items from this order?\n\n" +
+            "This cannot be undone."
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    order = [];
+
+
+    saveOrder();
+
+    renderOrder();
+
+}
+
+
+/* ========================================
+   ORDER SUMMARY
+======================================== */
+
+function getTotalQuantity(){
+
+    return order.reduce(
+        (sum,item) => {
+
+            const quantity =
+                Number(item.quantity) || 1;
+
+            return sum + quantity;
+
+        },
+        0
+    );
+
+}
+
 
 function renderSummary(){
 
@@ -770,12 +1125,7 @@ function renderSummary(){
 
 
     const totalQuantity =
-        order.reduce(
-            (sum,item) =>
-                sum +
-                (item.quantity || 1),
-            0
-        );
+        getTotalQuantity();
 
 
     container.innerHTML = `
@@ -788,7 +1138,7 @@ function renderSummary(){
                     Order Summary
                 </span>
 
-                <strong>
+                <strong id="totalQuantity">
                     ${totalQuantity}
                     ${
                         totalQuantity === 1
@@ -799,16 +1149,22 @@ function renderSummary(){
 
             </div>
 
+
             <div class="summary-note">
-                ${totalLines}
-                ${
-                    totalLines === 1
-                    ? "selection"
-                    : "selections"
-                }
+
+                <span id="selectionCount">
+                    ${totalLines}
+                    ${
+                        totalLines === 1
+                        ? "selection"
+                        : "selections"
+                    }
+                </span>
+
                 in your order.
                 Pricing will be confirmed
                 before the order is finalised.
+
             </div>
 
         </div>
@@ -816,32 +1172,34 @@ function renderSummary(){
 
         <div class="order-actions">
 
-            <a
-                href="index.html"
-                class="continue-button"
+            <div class="order-actions-left">
+
+                <a
+                    href="index.html"
+                    class="continue-button"
+                >
+                    ← Continue Browsing
+                </a>
+
+
+                <button
+                    type="button"
+                    class="clear-order-button"
+                    onclick="clearOrder()"
+                >
+                    Clear Order
+                </button>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="checkout-button"
+                onclick="proceedToOrder()"
             >
-                ← Continue Browsing
-            </a>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-
-    
-
-    <button
-        class="clear-order-button"
-        onclick="clearOrder()"
-    >
-        Clear Order
-    </button>
-
-</div>
-
-<button
-    class="checkout-button"
-    onclick="proceedToOrder()"
->
-    Proceed to Order →
-</button>
+                Proceed to Order →
+            </button>
 
         </div>
 
@@ -851,33 +1209,53 @@ function renderSummary(){
 
 
 /* ========================================
-   PROCEED
+   UPDATE SUMMARY WITHOUT REBUILDING CART
 ======================================== */
 
-function clearOrder(){
+function updateSummaryOnly(){
 
-    const confirmed =
-        confirm(
-            "Clear all items from this order?\n\nThis cannot be undone."
+    const totalElement =
+        document.getElementById(
+            "totalQuantity"
         );
 
-    if(!confirmed){
+
+    if(!totalElement){
         return;
     }
 
-    order = [];
 
-    saveOrder();
+    const totalQuantity =
+        getTotalQuantity();
 
-    renderOrder();
+
+    totalElement.textContent =
+        totalQuantity +
+        (
+            totalQuantity === 1
+            ? " item"
+            : " items"
+        );
+
 }
-    
+
+
+/* ========================================
+   PROCEED
+======================================== */
+
 function proceedToOrder(){
 
-    /*
-    Next stage:
-    customer / institution details.
-    */
+    if(order.length === 0){
+
+        alert(
+            "Your order is empty."
+        );
+
+        return;
+
+    }
+
 
     alert(
         "Next we will add the customer and institution details page."
@@ -887,8 +1265,26 @@ function proceedToOrder(){
 
 
 /* ========================================
+   BASIC HTML SAFETY
+======================================== */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* ========================================
    START
 ======================================== */
+
+saveOrder();
 
 renderOrder();
 
