@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Review Request | Cambridge Digital Catalogue
+</title>
+
+<link
+    rel="stylesheet"
+    href="css/catalogue.css"
+>
+
+<style>
+
+.review-hero{
+    padding:45px 6% 28px;
+    background:#fff;
+}
+
+.review-wrap,
+.review-section{
+    max-width:950px;
+    margin:auto;
+}
+
+.back-link{
+    display:inline-block;
+    margin-bottom:20px;
+    color:var(--navy);
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+}
+
+.review-hero h1{
+    margin:0;
+    font-size:clamp(34px,5vw,50px);
+    letter-spacing:-1.5px;
+}
+
+.review-intro{
+    margin:10px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+}
+
+
+/* ========================================
+   PAGE
+======================================== */
+
+.review-section{
+    padding:26px 6% 60px;
+}
+
+
+/* ========================================
+   CARD
+======================================== */
+
+.review-card{
+    margin-bottom:18px;
+    padding:24px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.card-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.card-heading h2{
+    margin:0;
+    font-size:18px;
+}
+
+.edit-link{
+    color:var(--navy);
+    text-decoration:none;
+    font-size:11px;
+    font-weight:750;
+    white-space:nowrap;
+}
+
+
+/* ========================================
+   DETAILS
+======================================== */
+
+.details-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 28px;
+}
+
+.detail-item{
+    min-width:0;
+}
+
+.detail-item.full{
+    grid-column:1 / -1;
+}
+
+.detail-label{
+    margin-bottom:5px;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:750;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+}
+
+.detail-value{
+    color:#252b33;
+    font-size:13px;
+    font-weight:650;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+}
+
+.detail-value.notes{
+    font-weight:500;
+    white-space:pre-wrap;
+}
+
+
+/* ========================================
+   SELECTION
+======================================== */
+
+.selection-item{
+    padding:18px 0;
+    border-top:1px solid var(--border);
+}
+
+.selection-item:first-of-type{
+    padding-top:0;
+    border-top:0;
+}
+
+.selection-main{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:20px;
+    align-items:center;
+}
+
+.selection-type{
+    margin-bottom:4px;
+    color:var(--muted);
+    font-size:9px;
+    font-weight:750;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+}
+
+.selection-title{
+    margin:0;
+    font-size:14px;
+    line-height:1.4;
+}
+
+.selection-meta{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.selection-quantity{
+    min-width:75px;
+    text-align:right;
+}
+
+.selection-quantity span{
+    display:block;
+    margin-bottom:3px;
+    color:var(--muted);
+    font-size:9px;
+    font-weight:750;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+}
+
+.selection-quantity strong{
+    font-size:15px;
+}
+
+
+/* ========================================
+   KIT BOOKS
+======================================== */
+
+.view-books{
+    margin-top:12px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--navy);
+    cursor:pointer;
+    font-size:10px;
+    font-weight:750;
+    touch-action:manipulation;
+}
+
+.kit-books{
+    display:none;
+    margin-top:12px;
+    padding:14px 17px;
+    background:#f7f8fa;
+    border-radius:8px;
+}
+
+.kit-books.visible{
+    display:block;
+}
+
+.kit-books ol{
+    margin:0;
+    padding-left:20px;
+}
+
+.kit-books li{
+    margin:6px 0;
+    color:#555f6b;
+    font-size:10px;
+    line-height:1.45;
+}
+
+
+/* ========================================
+   SUMMARY
+======================================== */
+
+.request-summary{
+    padding:22px;
+    background:var(--navy);
+    color:#fff;
+    border-radius:12px;
+}
+
+.summary-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:25px;
+}
+
+.summary-title{
+    font-size:13px;
+    font-weight:750;
+}
+
+.summary-count{
+    text-align:right;
+}
+
+.summary-count strong{
+    display:block;
+    font-size:21px;
+}
+
+.summary-count span{
+    color:rgba(255,255,255,.65);
+    font-size:10px;
+}
+
+.summary-note{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.15);
+    color:rgba(255,255,255,.7);
+    font-size:10px;
+    line-height:1.6;
+}
+
+
+/* ========================================
+   NOTICE
+======================================== */
+
+.request-notice{
+    margin-top:18px;
+    padding:16px 18px;
+    background:#f7f8fa;
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:#555f6b;
+    font-size:11px;
+    line-height:1.6;
+}
+
+.request-notice strong{
+    color:#252b33;
+}
+
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+.review-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    margin-top:20px;
+}
+
+.review-actions-left{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.secondary-button,
+.primary-button{
+    padding:13px 19px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:750;
+    text-align:center;
+    text-decoration:none;
+}
+
+.secondary-button{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--navy);
+}
+
+.primary-button{
+    border:0;
+    background:var(--navy);
+    color:#fff;
+    cursor:pointer;
+    touch-action:manipulation;
+}
+
+.primary-button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+
+/* ========================================
+   EMPTY / ERROR
+======================================== */
+
+.review-error{
+    padding:45px 22px;
+    text-align:center;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.review-error h2{
+    margin:0 0 8px;
+    font-size:20px;
+}
+
+.review-error p{
+    margin:0 0 22px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media(max-width:650px){
+
+    .review-hero{
+        padding:35px 18px 24px;
+    }
+
+    .review-section{
+        padding:22px 18px 45px;
+    }
+
+    .review-card{
+        padding:18px;
+    }
+
+    .details-grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .detail-item.full{
+        grid-column:auto;
+    }
+
+    .selection-main{
+        grid-template-columns:1fr auto;
+        gap:12px;
+    }
+
+    .summary-top{
+        gap:15px;
+    }
+
+    .review-actions{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .review-actions-left{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .secondary-button,
+    .primary-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="catalogue-header">
+
+    <div class="brand">
+
+        <div class="brand-name">
+            CAMBRIDGE
+        </div>
+
+        <div class="brand-company">
+            PUBLISHING COMPANY PVT. LTD.
+        </div>
+
+    </div>
+
+    <div class="catalogue-year">
+        DIGITAL CATALOGUE · 2026–27
+    </div>
+
+</header>
+
+
+<section class="review-hero">
+
+    <div class="review-wrap">
+
+        <a
+            href="request-details.html"
+            class="back-link"
+        >
+            ← Back to Request Details
+        </a>
+
+        <p class="eyebrow">
+            ORDER REQUEST
+        </p>
+
+        <h1>
+            Review Request
+        </h1>
+
+        <p class="review-intro">
+            Check your details and selected books before
+            sending your request to Cambridge.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main
+    class="review-section"
+    id="reviewPage"
+></main>
+
+
+<script>
+
+/* ========================================
+   SETTINGS
+======================================== */
+
+const ORDER_KEY =
+    "cambridgeOrder";
+
+const REQUEST_KEY =
+    "cambridgeRequestDetails";
+
+const MIN_QUANTITY = 1;
+
+const MAX_QUANTITY = 10000;
+
+
+/* ========================================
+   STATE
+======================================== */
+
+let order = [];
+
+let requestDetails = {};
+
+
+/* ========================================
+   LOAD DATA
+======================================== */
+
+function loadData(){
+
+    try{
+
+        const storedOrder =
+            JSON.parse(
+                localStorage.getItem(
+                    ORDER_KEY
+                ) || "[]"
+            );
+
+
+        if(Array.isArray(storedOrder)){
+
+            order =
+                storedOrder.filter(
+                    item =>
+                        item &&
+                        typeof item === "object"
+                );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Unable to load selection.",
+            error
+        );
+
+        order = [];
+
+    }
+
+
+    try{
+
+        const storedDetails =
+            JSON.parse(
+                localStorage.getItem(
+                    REQUEST_KEY
+                ) || "{}"
+            );
+
+
+        if(
+            storedDetails &&
+            typeof storedDetails === "object" &&
+            !Array.isArray(storedDetails)
+        ){
+
+            requestDetails =
+                storedDetails;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Unable to load request details.",
+            error
+        );
+
+        requestDetails = {};
+
+    }
+
+}
+
+
+/* ========================================
+   SAFE TEXT
+======================================== */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* ========================================
+   LABEL HELPERS
+======================================== */
+
+function customerTypeLabel(value){
+
+    const labels = {
+
+        school:
+            "School / Institution",
+
+        dealer:
+            "Bookshop / Dealer / Distributor",
+
+        individual:
+            "Individual / Parent / Student",
+
+        other:
+            "Other"
+
+    };
+
+
+    return labels[value] || "—";
+
+}
+
+
+function preferredContactLabel(value){
+
+    const labels = {
+
+        whatsapp:
+            "WhatsApp",
+
+        call:
+            "Call",
+
+        email:
+            "Email"
+
+    };
+
+
+    return labels[value] || "—";
+
+}
+
+
+/* ========================================
+   VALIDATION
+======================================== */
+
+function validPhone(value){
+
+    return /^[6-9]\d{9}$/.test(
+        String(value || "")
+    );
+
+}
+
+
+function validOrder(){
+
+    if(order.length === 0){
+
+        return false;
+
+    }
+
+
+    return order.every(
+        item => {
+
+            const quantity =
+                Number(item.quantity);
+
+
+            return (
+                Number.isSafeInteger(
+                    quantity
+                ) &&
+                quantity >= MIN_QUANTITY &&
+                quantity <= MAX_QUANTITY
+            );
+
+        }
+    );
+
+}
+
+
+function validRequestDetails(){
+
+    if(
+        !requestDetails ||
+        typeof requestDetails !== "object"
+    ){
+
+        return false;
+
+    }
+
+
+    if(
+        !requestDetails.customerType ||
+        !requestDetails.contactName ||
+        !requestDetails.city ||
+        !validPhone(
+            requestDetails.mobile
+        )
+    ){
+
+        return false;
+
+    }
+
+
+    if(
+        [
+            "school",
+            "dealer",
+            "other"
+        ].includes(
+            requestDetails.customerType
+        ) &&
+        !requestDetails.organisationName
+    ){
+
+        return false;
+
+    }
+
+
+    if(
+        !requestDetails.whatsappSameAsMobile &&
+        !validPhone(
+            requestDetails.whatsapp
+        )
+    ){
+
+        return false;
+
+    }
+
+
+    if(
+        requestDetails.preferredContact ===
+        "email" &&
+        !requestDetails.email
+    ){
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* ========================================
+   TOTAL QUANTITY
+======================================== */
+
+function getTotalQuantity(){
+
+    return order.reduce(
+        (total,item) => {
+
+            const quantity =
+                Number(item.quantity);
+
+
+            if(
+                Number.isSafeInteger(quantity) &&
+                quantity >= MIN_QUANTITY &&
+                quantity <= MAX_QUANTITY
+            ){
+
+                return total + quantity;
+
+            }
+
+
+            return total;
+
+        },
+        0
+    );
+
+}
+
+
+/* ========================================
+   DETAIL ROW
+======================================== */
+
+function detailHTML(
+    label,
+    value,
+    full = false,
+    notes = false
+){
+
+    if(
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ""
+    ){
+
+        return "";
+
+    }
+
+
+    return `
+
+        <div
+            class="detail-item
+            ${full ? "full" : ""}"
+        >
+
+            <div class="detail-label">
+                ${escapeHTML(label)}
+            </div>
+
+            <div
+                class="detail-value
+                ${notes ? "notes" : ""}"
+            >
+                ${escapeHTML(value)}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================
+   DETAILS CARD
+======================================== */
+
+function renderDetails(){
+
+    const whatsapp =
+        requestDetails.whatsappSameAsMobile
+        ? requestDetails.mobile
+        : requestDetails.whatsapp;
+
+
+    return `
+
+        <section class="review-card">
+
+            <div class="card-heading">
+
+                <h2>
+                    Your Details
+                </h2>
+
+                <a
+                    href="request-details.html"
+                    class="edit-link"
+                >
+                    Edit Details
+                </a>
+
+            </div>
+
+
+            <div class="details-grid">
+
+                ${detailHTML(
+                    "Requesting As",
+                    customerTypeLabel(
+                        requestDetails.customerType
+                    )
+                )}
+
+
+                ${detailHTML(
+                    "Contact Name",
+                    requestDetails.contactName
+                )}
+
+
+                ${detailHTML(
+                    "Organisation / Institution",
+                    requestDetails.organisationName
+                )}
+
+
+                ${detailHTML(
+                    "Mobile Number",
+                    requestDetails.mobile
+                )}
+
+
+                ${detailHTML(
+                    "WhatsApp Number",
+                    whatsapp
+                )}
+
+
+                ${detailHTML(
+                    "City / Place",
+                    requestDetails.city
+                )}
+
+
+                ${detailHTML(
+                    "Email",
+                    requestDetails.email
+                )}
+
+
+                ${detailHTML(
+                    "Preferred Contact",
+                    preferredContactLabel(
+                        requestDetails.preferredContact
+                    )
+                )}
+
+
+                ${detailHTML(
+                    "Notes / Requirements",
+                    requestDetails.notes,
+                    true,
+                    true
+                )}
+
+            </div>
+
+        </section>
+
+    `;
+
+}
+
+
+/* ========================================
+   SELECTION CARD
+======================================== */
+
+function renderSelection(){
+
+    let itemsHTML = "";
+
+
+    order.forEach(
+        (item,index) => {
+
+            const title =
+                item.title ||
+                (
+                    item.levelName
+                    ? item.levelName +
+                      " Custom Kit"
+                    : "Selected Item"
+                );
+
+
+            let meta = "";
+
+
+            if(
+                item.type ===
+                "custom-kit"
+            ){
+
+                const count =
+                    Array.isArray(
+                        item.books
+                    )
+                    ? item.books.length
+                    : Number(
+                        item.bookCount
+                      ) || 0;
+
+
+                meta =
+                    count +
+                    (
+                        count === 1
+                        ? " book in this kit"
+                        : " books in this kit"
+                    );
+
+            }else if(item.levelName){
+
+                meta =
+                    item.levelName;
+
+            }
+
+
+            let booksHTML = "";
+
+
+            if(
+                item.type ===
+                "custom-kit" &&
+                Array.isArray(
+                    item.books
+                ) &&
+                item.books.length > 0
+            ){
+
+                const books =
+                    item.books
+                    .map(
+                        book => `
+
+                            <li>
+                                ${escapeHTML(
+                                    book.title ||
+                                    "Untitled Book"
+                                )}
+                            </li>
+
+                        `
+                    )
+                    .join("");
+
+
+                booksHTML = `
+
+                    <button
+                        type="button"
+                        class="view-books"
+                        data-kit-index="${index}"
+                    >
+                        View books ↓
+                    </button>
+
+
+                    <div
+                        class="kit-books"
+                        id="kitBooks${index}"
+                    >
+
+                        <ol>
+                            ${books}
+                        </ol>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            itemsHTML += `
+
+                <div class="selection-item">
+
+                    <div class="selection-main">
+
+                        <div>
+
+                            <div class="selection-type">
+
+                                ${
+                                    item.type ===
+                                    "custom-kit"
+                                    ? "Custom Kit"
+                                    : "Book"
+                                }
+
+                            </div>
+
+
+                            <h3 class="selection-title">
+                                ${escapeHTML(title)}
+                            </h3>
+
+
+                            ${
+                                meta
+                                ? `
+                                    <div class="selection-meta">
+                                        ${escapeHTML(meta)}
+                                    </div>
+                                  `
+                                : ""
+                            }
+
+                        </div>
+
+
+                        <div class="selection-quantity">
+
+                            <span>
+                                Quantity
+                            </span>
+
+                            <strong>
+                                ${Number(item.quantity)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    ${booksHTML}
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    return `
+
+        <section class="review-card">
+
+            <div class="card-heading">
+
+                <h2>
+                    Your Selection
+                </h2>
+
+                <a
+                    href="order.html"
+                    class="edit-link"
+                >
+                    Edit Selection
+                </a>
+
+            </div>
+
+
+            ${itemsHTML}
+
+        </section>
+
+    `;
+
+}
+
+
+/* ========================================
+   SUMMARY
+======================================== */
+
+function renderSummary(){
+
+    const total =
+        getTotalQuantity();
+
+
+    const selections =
+        order.length;
+
+
+    return `
+
+        <div class="request-summary">
+
+            <div class="summary-top">
+
+                <div>
+
+                    <div class="summary-title">
+                        Request Summary
+                    </div>
+
+                </div>
+
+
+                <div class="summary-count">
+
+                    <strong>
+                        ${total}
+                    </strong>
+
+                    <span>
+                        ${
+                            total === 1
+                            ? "total item"
+                            : "total items"
+                        }
+                        ·
+                        ${selections}
+                        ${
+                            selections === 1
+                            ? "selection"
+                            : "selections"
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-note">
+
+                This is an order request,
+                not a confirmed order.
+
+                Cambridge will confirm pricing,
+                availability and the next steps
+                after reviewing your request.
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+function renderActions(){
+
+    return `
+
+        <div class="request-notice">
+
+            <strong>
+                Please review before sending.
+            </strong>
+
+            Check the contact details,
+            selected books and quantities above.
+
+            You can go back and make changes
+            without losing your saved selection.
+
+        </div>
+
+
+        <div class="review-actions">
+
+            <div class="review-actions-left">
+
+                <a
+                    href="request-details.html"
+                    class="secondary-button"
+                >
+                    ← Edit Details
+                </a>
+
+
+                <a
+                    href="order.html"
+                    class="secondary-button"
+                >
+                    Edit Selection
+                </a>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="primary-button"
+                id="sendRequestButton"
+            >
+                Send Request →
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================
+   INVALID STATE
+======================================== */
+
+function renderInvalidState(){
+
+    const page =
+        document.getElementById(
+            "reviewPage"
+        );
+
+
+    if(!validOrder()){
+
+        page.innerHTML = `
+
+            <div class="review-error">
+
+                <h2>
+                    Your selection needs attention.
+                </h2>
+
+                <p>
+                    Return to Your Selection and
+                    check the selected books and quantities
+                    before reviewing the request.
+                </p>
+
+                <a
+                    href="order.html"
+                    class="secondary-button"
+                >
+                    Return to Selection
+                </a>
+
+            </div>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    page.innerHTML = `
+
+        <div class="review-error">
+
+            <h2>
+                Your request details need attention.
+            </h2>
+
+            <p>
+                Return to Request Details and
+                complete the required information
+                before reviewing your request.
+            </p>
+
+            <a
+                href="request-details.html"
+                class="secondary-button"
+            >
+                Return to Request Details
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ========================================
+   RENDER PAGE
+======================================== */
+
+function renderPage(){
+
+    if(
+        !validOrder() ||
+        !validRequestDetails()
+    ){
+
+        renderInvalidState();
+
+        return;
+
+    }
+
+
+    const page =
+        document.getElementById(
+            "reviewPage"
+        );
+
+
+    page.innerHTML =
+
+        renderDetails() +
+        renderSelection() +
+        renderSummary() +
+        renderActions();
+
+}
+
+
+/* ========================================
+   VIEW KIT BOOKS
+======================================== */
+
+document
+    .getElementById(
+        "reviewPage"
+    )
+    .addEventListener(
+        "click",
+        event => {
+
+            const viewButton =
+                event.target.closest(
+                    ".view-books"
+                );
+
+
+            if(viewButton){
+
+                const index =
+                    Number(
+                        viewButton.dataset.kitIndex
+                    );
+
+
+                const booksBox =
+                    document.getElementById(
+                        "kitBooks" +
+                        index
+                    );
+
+
+                if(!booksBox){
+
+                    return;
+
+                }
+
+
+                const open =
+                    booksBox.classList.toggle(
+                        "visible"
+                    );
+
+
+                viewButton.textContent =
+                    open
+                    ? "Hide books ↑"
+                    : "View books ↓";
+
+
+                return;
+
+            }
+
+
+            const sendButton =
+                event.target.closest(
+                    "#sendRequestButton"
+                );
+
+
+            if(sendButton){
+
+                handleSendRequest();
+
+            }
+
+        }
+    );
+
+
+/* ========================================
+   SEND REQUEST
+
+   IMPORTANT:
+
+   Submission is intentionally NOT implemented
+   yet.
+
+   We will connect this button only after
+   choosing the real destination:
+   backend/API, WhatsApp, email, CRM, etc.
+
+   Until then we must never pretend that
+   a request has been sent.
+======================================== */
+
+function handleSendRequest(){
+
+    alert(
+        "Your request is ready to send.\n\n" +
+        "The final submission method will be connected next."
+    );
+
+}
+
+
+/* ========================================
+   START
+======================================== */
+
+loadData();
+
+renderPage();
+
+</script>
+
+
+</body>
+
+</html>
