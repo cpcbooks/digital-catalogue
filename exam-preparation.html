@@ -618,11 +618,6 @@ const SUBJECT_ORDER = [
     "Mathematics",
     "Science",
     "Social Science",
-
-    "Ganitha",
-    "Vignana",
-    "Samaja Vignana",
-
     "Combined"
 
 ];
@@ -1016,6 +1011,7 @@ function getFilteredBooks(){
                 book.series,
                 book.family,
                 book.subject,
+                book.displaySubject,
                 book.medium,
                 book.sku,
                 book.isbn
@@ -1236,7 +1232,13 @@ function createBookRow(book){
 
 
     [
-        book.medium,
+        book.displaySubject
+            ? book.displaySubject
+            : "",
+
+        book.medium
+            ? book.medium + " Medium"
+            : "",
 
         book.sku
             ? "SKU: " + book.sku
