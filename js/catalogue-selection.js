@@ -8,6 +8,7 @@
   const FLOATING_BAR_ID = "cambridgeFloatingSelection";
   const FLOATING_STYLE_ID = "cambridgeFloatingSelectionStyle";
   const BODY_ACTIVE_CLASS = "cambridge-floating-selection-active";
+  const BOOK_RETURN_KEY = "cambridgeBookReturn";
 
   function validQty(value) {
     const n = Number(value);
@@ -85,6 +86,85 @@
   function isSelectionPage() {
     const path = (window.location && window.location.pathname) || "";
     return /(?:^|\/)order\.html$/i.test(path);
+  }
+
+  function isBookDetailsPage() {
+    const path = (window.location && window.location.pathname) || "";
+    return /(?:^|\/)book-details\.html$/i.test(path);
+  }
+
+  function currentRelativeUrl() {
+    return window.location.pathname + window.location.search + window.location.hash;
+  }
+
+  /*
+   * BOOK DETAILS RETURN CONTRACT
+   * ----------------------------
+   * Save position only when View Book is opened.
+   * Restore it only on an actual browser history return (back/forward), then
+   * immediately consume it. Refreshes and later revisits therefore cannot
+   * replay an old scroll position.
+   */
+  function rememberBookReturn() {
+    if (isBookDetailsPage()) return;
+    try {
+      sessionStorage.setItem(BOOK_RETURN_KEY, JSON.stringify({
+        url: currentRelativeUrl(),
+        y: Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)),
+        createdAt: Date.now()
+      }));
+    } catch (error) {
+      console.warn("Cambridge Catalogue: could not remember book return position.", error);
+    }
+  }
+
+  function navigationType() {
+    try {
+      const entries = performance.getEntriesByType && performance.getEntriesByType("navigation");
+      if (entries && entries[0] && entries[0].type) return entries[0].type;
+    } catch (error) {}
+    return "";
+  }
+
+  function restoreBookReturn() {
+    if (isBookDetailsPage()) return false;
+
+    let saved = null;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null");
+    } catch (error) {
+      sessionStorage.removeItem(BOOK_RETURN_KEY);
+      return false;
+    }
+
+    if (!saved || saved.url !== currentRelativeUrl()) return false;
+
+    /* Expire abandoned detail-return state after 30 minutes. */
+    if (!Number.isFinite(saved.createdAt) || Date.now() - saved.createdAt > 30 * 60 * 1000) {
+      sessionStorage.removeItem(BOOK_RETURN_KEY);
+      return false;
+    }
+
+    /* Never replay an old position on reload or a fresh navigation. */
+    if (navigationType() !== "back_forward") return false;
+
+    sessionStorage.removeItem(BOOK_RETURN_KEY);
+
+    const y = Number(saved.y);
+    if (!Number.isFinite(y) || y < 0) return false;
+
+    /* Force an instant restoration even if a future stylesheet enables smooth scrolling. */
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(0, y);
+    root.style.scrollBehavior = previous;
+    return true;
+  }
+
+  function scheduleBookReturnRestore() {
+    if (isBookDetailsPage()) return;
+    requestAnimationFrame(() => restoreBookReturn());
   }
 
   function ensureFloatingStyle() {
@@ -343,6 +423,7 @@
     view.className = "view-book";
     view.href = detailsUrl(book);
     view.textContent = "View Book →";
+    view.addEventListener("click", rememberBookReturn);
     actions.appendChild(view);
 
     const selected = selectedItem(book);
@@ -496,12 +577,38 @@
     return actions;
   }
 
+  /* Make the Book Details page's own Back link behave like browser Back when
+     it was reached through View Book, so the same one-time return path applies. */
+  document.addEventListener("click", event => {
+    if (!isBookDetailsPage()) return;
+    const link = event.target.closest && event.target.closest("#back");
+    if (!link) return;
+
+    let saved = null;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null");
+    } catch (error) {}
+
+    if (saved && history.length > 1) {
+      event.preventDefault();
+      history.back();
+    }
+  });
+
   window.addEventListener("storage", event => {
     if (event.key === ORDER_KEY) emitChange();
   });
 
   window.addEventListener(CHANGE_EVENT, updateBar);
-  document.addEventListener("DOMContentLoaded", updateBar);
+  document.addEventListener("DOMContentLoaded", () => {
+    updateBar();
+    scheduleBookReturnRestore();
+  });
+
+  /* BFCache returns do not fire DOMContentLoaded again. */
+  window.addEventListener("pageshow", event => {
+    if (event.persisted) scheduleBookReturnRestore();
+  });
 
   window.CambridgeSelection = Object.freeze({
     ORDER_KEY,
@@ -523,6 +630,8 @@
     setQty,
     detailsUrl,
     coverNode,
-    actionNode
+    actionNode,
+    rememberBookReturn,
+    restoreBookReturn
   });
 })();
