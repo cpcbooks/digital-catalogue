@@ -1,5 +1,20 @@
 /* Compact persistent My Selection pane — shared catalogue UI */
 
+/* Keep section-entry back navigation at the same left-side location used by internal catalogue pages. */
+.school-hero,
+.early-hero {
+  position: relative;
+}
+
+.school-hero > .back-link,
+.early-hero > .back-link {
+  position: absolute;
+  top: 55px;
+  left: 6%;
+  margin: 0;
+  text-align: left;
+}
+
 /* The floating pane is now the single selection shortcut. */
 .selection-bar {
   display: none !important;
@@ -38,6 +53,14 @@
 
 body.cambridge-floating-selection-active {
   padding-bottom: 68px !important;
+}
+
+@media (max-width: 650px) {
+  .school-hero > .back-link,
+  .early-hero > .back-link {
+    top: 38px;
+    left: 18px;
+  }
 }
 
 @media (max-width: 520px) {
