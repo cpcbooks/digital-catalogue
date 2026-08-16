@@ -1,0 +1,61 @@
+/* Compact persistent My Selection pane */
+.cambridge-floating-selection {
+  left: auto !important;
+  right: max(16px, env(safe-area-inset-right)) !important;
+  bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  width: auto !important;
+  max-width: calc(100% - 32px) !important;
+  transform: none !important;
+  gap: 10px !important;
+  padding: 9px 9px 9px 12px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 28px rgba(18, 35, 63, .22) !important;
+}
+
+.cambridge-floating-selection__summary {
+  gap: 4px !important;
+  flex-wrap: nowrap !important;
+  font-size: 10px !important;
+  white-space: nowrap;
+}
+
+.cambridge-floating-selection__summary strong {
+  font-size: 11px !important;
+}
+
+.cambridge-floating-selection__link {
+  min-height: 32px !important;
+  padding: 0 10px !important;
+  border-radius: 7px !important;
+  font-size: 9px !important;
+}
+
+body.cambridge-floating-selection-active {
+  padding-bottom: 68px !important;
+}
+
+@media (max-width: 520px) {
+  .cambridge-floating-selection {
+    right: max(10px, env(safe-area-inset-right)) !important;
+    bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    max-width: calc(100% - 20px) !important;
+    padding: 8px 8px 8px 10px !important;
+  }
+
+  .cambridge-floating-selection__summary {
+    font-size: 9px !important;
+  }
+
+  .cambridge-floating-selection__summary strong {
+    font-size: 10px !important;
+  }
+
+  .cambridge-floating-selection__link {
+    min-height: 30px !important;
+    padding: 0 9px !important;
+  }
+
+  body.cambridge-floating-selection-active {
+    padding-bottom: 62px !important;
+  }
+}
