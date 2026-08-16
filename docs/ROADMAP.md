@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — Roadmap
 
+Last updated: 2026-08-16 18:07 IST (UTC+05:30)
+
 ## Completed / verified
 
 - Early Learning browsing
@@ -16,32 +18,27 @@
 - custom-kit component snapshot/mapping structure
 - secure Edge Function submission
 - successful real end-to-end request (`CPC-20260816-5645CC`)
+- canonical Nursery–Class 10 catalogue model: `class` only, array-based
+- removed catalogue `levels` field and legacy query compatibility
+- corrected school subject/medium semantics so language subject does not imply publication medium
+- updated Kit Builder, Book Details and request submission for class arrays
 
 ## Current milestone — Complete catalogue discovery
 
-### 1. Normalize catalogue schema
-
-- audit current `catalogue-data.js`
-- migrate legacy `levels` to `class`
-- make `class` array-based
-- verify Nursery/LKG/UKG and Classes 1–10
-- audit medium values independently of subject
-- remove legacy compatibility only after verification
-
-### 2. Higher Education
+### 1. Higher Education — NEXT
 
 - inspect actual CPC PUC/Degree data
-- define minimum taxonomy
+- define minimum taxonomy from real titles only
 - implement 1st PUC / 2nd PUC / Degree journeys
 - reuse shared selection/details architecture
 
-### 3. Competitive Exams
+### 2. Competitive Exams
 
 - inspect actual CPC competitive-exam titles
 - define exam/category taxonomy
 - implement browsing/results using shared architecture
 
-### 4. Universal Browse + Search
+### 3. Universal Browse + Search
 
 One shared discovery engine for:
 
@@ -51,7 +48,7 @@ One shared discovery engine for:
 - Subjects & Book Types
 - filters based on complete catalogue taxonomy
 
-### 5. Regression pass
+### 4. Regression pass
 
 Verify desktop/mobile and cross-module behaviour:
 
