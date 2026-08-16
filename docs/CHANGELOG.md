@@ -4,6 +4,18 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 
 ## 2026-08-16
 
+### 18:07 IST — Catalogue schema normalization
+
+- Rebuilt `catalogue-data.js` around the canonical `class` array model.
+- Removed the catalogue `levels` field from source data.
+- Preserved previous Early Learning availability by explicitly mapping common titles to Nursery/LKG/UKG.
+- Kept Draw & Colour A/B/C mapped to Nursery/LKG/UKG respectively.
+- Corrected school textbook medium semantics: Kannada/Hindi subjects remain English-medium textbook records.
+- Removed legacy Hindi-medium values from the current guide/exam dataset; current guide media are English/Kannada.
+- Reworked shared catalogue queries and validator for class arrays only.
+- Updated Kit Builder and Book Details for the canonical class model.
+- Updated request submission so class arrays are converted safely into current backend snapshot fields.
+
 ### Request flow / backend
 
 - Completed customer Request Details and Review Request journey.
@@ -22,7 +34,7 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 - Fixed quantity edge cases including max quantity and typed-value/plus-minus inconsistencies.
 - Improved zero/removal selection behaviour.
 - Added/iterated compact My Selection access.
-- Removed problematic custom persistent scroll restoration from ordinary View Book navigation in favour of native browser history behaviour.
+- Removed problematic stale scroll restoration behaviour from ordinary book browsing flows.
 
 ### Architecture / project continuity
 
