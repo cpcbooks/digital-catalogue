@@ -1,1682 +1,253 @@
 /*
 =========================================================
-CAMBRIDGE DIGITAL CATALOGUE
-CENTRAL PRODUCT DATA
+CAMBRIDGE DIGITAL CATALOGUE — CENTRAL PRODUCT DATA
 =========================================================
-
-This file is the current single source of truth for
-catalogue product records.
-
-Important:
-- Do not place page layout or UI logic in this file.
-- Empty SKU / ISBN / MRP / cover fields are intentional
-  until verified master data is available.
-- active:false can later be used to hide discontinued books.
-- Early Learning level mappings must only be added when
-  confirmed.
+Canonical rules:
+- `class` is always an array.
+- Nursery/LKG/UKG and Classes 1–10 use the same `class` field.
+- There is no `levels` field.
+- Subject and medium are independent.
+- Current school textbook records are English medium, including
+  Kannada/Hindi language-subject books.
+- Empty SKU / ISBN / MRP / cover fields are intentional until
+  verified master data is available.
 =========================================================
 */
 
-window.CAMBRIDGE_CATALOGUE = [
-
-    /* =====================================================
-       SCHOOL BOOKS
-       CLASS 1
-    ===================================================== */
-
-    {
-        id:"semester-1-1",
-        sku:"",
-        isbn:"",
-        title:"Semester 1",
-        series:"Semester Series",
-        class:1,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"semester-1-2",
-        sku:"",
-        isbn:"",
-        title:"Semester 2",
-        series:"Semester Series",
-        class:1,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       SCHOOL BOOKS
-       CLASS 2
-    ===================================================== */
-
-    {
-        id:"semester-2-1",
-        sku:"",
-        isbn:"",
-        title:"Semester 1",
-        series:"Semester Series",
-        class:2,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"semester-2-2",
-        sku:"",
-        isbn:"",
-        title:"Semester 2",
-        series:"Semester Series",
-        class:2,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       SCHOOL BOOKS
-       CLASS 3
-    ===================================================== */
-
-    {
-        id:"semester-3-1",
-        sku:"",
-        isbn:"",
-        title:"Semester 1",
-        series:"Semester Series",
-        class:3,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"semester-3-2",
-        sku:"",
-        isbn:"",
-        title:"Semester 2",
-        series:"Semester Series",
-        class:3,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       SCHOOL BOOKS
-       CLASS 4
-    ===================================================== */
-
-    {
-        id:"semester-4-1",
-        sku:"",
-        isbn:"",
-        title:"Semester 1",
-        series:"Semester Series",
-        class:4,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"semester-4-2",
-        sku:"",
-        isbn:"",
-        title:"Semester 2",
-        series:"Semester Series",
-        class:4,
-        subject:"Semester",
-        category:"school",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       SCHOOL BOOKS
-       CLASSES 5–10
-    ===================================================== */
-
-    ...[
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-    ].flatMap(function(classNumber){
-
-        const books = [
-
-            {
-                idPrefix:"english-reader",
-                title:"English Reader",
-                subject:"English",
-                medium:"English"
-            },
-
-            {
-                idPrefix:"english-workbook",
-                title:"English Workbook",
-                subject:"English",
-                medium:"English"
-            },
-
-            {
-                idPrefix:"kannada-reader",
-                title:"Kannada Reader",
-                subject:"Kannada",
-                medium:"Kannada"
-            },
-
-            {
-                idPrefix:"kannada-workbook",
-                title:"Kannada Workbook",
-                subject:"Kannada",
-                medium:"Kannada"
-            },
-
-            {
-                idPrefix:"hindi-reader",
-                title:"Hindi Reader",
-                subject:"Hindi",
-                medium:"Hindi"
-            },
-
-            {
-                idPrefix:"hindi-workbook",
-                title:"Hindi Workbook",
-                subject:"Hindi",
-                medium:"Hindi"
-            },
-
-            {
-                idPrefix:"mathematics",
-                title:"Mathematics",
-                subject:"Mathematics",
-                medium:"English"
-            },
-
-            {
-                idPrefix:"science",
-                title:"Science",
-                subject:"Science",
-                medium:"English"
-            },
-
-            {
-                idPrefix:"social-science",
-                title:"Social Science",
-                subject:"Social Science",
-                medium:"English"
-            }
-
-        ];
-
-        return books.map(function(book){
-
-            return {
-
-                id:
-                    book.idPrefix +
-                    "-" +
-                    classNumber,
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    book.title,
-
-                series:"",
-
-                class:
-                    classNumber,
-
-                subject:
-                    book.subject,
-
-                category:
-                    "school",
-
-                medium:
-                    book.medium,
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-
-            };
-
-        });
-
-    }),
-
-
-    /* =====================================================
-       HONEST SUCCESS SERIES
-       CLASS 8
-    ===================================================== */
-
-    {
-        id:"hs-8-combined",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Combined",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-english",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – English",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"English I Language",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-kannada",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Kannada",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Kannada I Language",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-hindi",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Hindi",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Hindi III Language",
-        category:"exam",
-        medium:"Hindi",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-mathematics",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Mathematics",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Mathematics",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-science",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Science",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Science",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-8-social-science",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Social Science",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:8,
-        subject:"Social Science",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       HONEST SUCCESS SERIES
-       CLASS 9
-    ===================================================== */
-
-    {
-        id:"hs-9-combined",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Combined",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-english",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – English",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"English I Language",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-kannada",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Kannada",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Kannada I Language",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-hindi",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Hindi",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Hindi III Language",
-        category:"exam",
-        medium:"Hindi",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-mathematics",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Mathematics",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Mathematics",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-vignana",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Vignana",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Science",
-        displaySubject:"Vignana",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-9-samaja",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Samaja",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:9,
-        subject:"Social Science",
-        displaySubject:"Samaja",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       HONEST SUCCESS SERIES
-       CLASS 10
-    ===================================================== */
-
-    {
-        id:"hs-10-combined",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Combined",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-english",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – English",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"English I Language",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-kannada",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Kannada",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Kannada I Language",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-hindi",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Hindi",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Hindi III Language",
-        category:"exam",
-        medium:"Hindi",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-mathematics",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Mathematics",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Mathematics",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-science",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Science",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Science",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-social-science",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Social Science",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Social Science",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-vignana",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Vignana",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Science",
-        displaySubject:"Vignana",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"hs-10-samaja-vignana",
-        sku:"",
-        isbn:"",
-        title:"Honest Success Series – Samaja",
-        series:"Honest Success Series",
-        family:"Honest Success Series",
-        class:10,
-        subject:"Social Science",
-        displaySubject:"Samaja",
-        category:"exam",
-        medium:"Kannada",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       EARLY LEARNING
-
-       levels:
-       - [] means level mapping is still pending.
-       - ["nursery"], ["lkg"], ["ukg"] means the mapping
-         has been specifically confirmed.
-    ===================================================== */
-
-    {
-        id:"el-abc-book",
-        sku:"",
-        isbn:"",
-        title:"Little Master's ABC Book",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-my-book-alphabet",
-        sku:"",
-        isbn:"",
-        title:"My Book of Alphabet",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-my-book-words",
-        sku:"",
-        isbn:"",
-        title:"My Book of Words",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-capital-letter-writing",
-        sku:"",
-        isbn:"",
-        title:"Capital Letter Writing",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Writing",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-small-letter-writing",
-        sku:"",
-        isbn:"",
-        title:"Small Letter Writing",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Writing",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-english-capital-activity",
-        sku:"",
-        isbn:"",
-        title:"English Capital Activity",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"English",
-        type:"Activity",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-numbers-0-9",
-        sku:"",
-        isbn:"",
-        title:"Numbers 0–9",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Mathematics",
-        type:"Numbers",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-counting-1-20",
-        sku:"",
-        isbn:"",
-        title:"Counting Numbers 1 to 20",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Mathematics",
-        type:"Numbers",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-play-learn-1-20",
-        sku:"",
-        isbn:"",
-        title:"Play & Learn Numbers 1 to 20",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Mathematics",
-        type:"Writing",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-numbers-activities-0-50",
-        sku:"",
-        isbn:"",
-        title:"Numbers with Activities 0 to 50",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Mathematics",
-        type:"Activity",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-akshara-parichaya",
-        sku:"",
-        isbn:"",
-        title:"Akshara Parichaya",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Kannada",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-kannada-varnamale",
-        sku:"",
-        isbn:"",
-        title:"Kannada Varnamale",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Kannada",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-siri-kannada-varnamale",
-        sku:"",
-        isbn:"",
-        title:"Siri Kannada Varnamale",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Kannada",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-kannada-akshara-baravanige",
-        sku:"",
-        isbn:"",
-        title:"Kannada Akshara Baravanige",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Kannada",
-        type:"Writing",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-kannada-aksharamale-activity",
-        sku:"",
-        isbn:"",
-        title:"Kannada Aksharamale Activity Book",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Kannada",
-        type:"Activity",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-akshar-jyothi",
-        sku:"",
-        isbn:"",
-        title:"Akshar Jyothi",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Hindi",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-shabdh-jyothi",
-        sku:"",
-        isbn:"",
-        title:"Shabdh Jyothi",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Hindi",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-akshar-gnan",
-        sku:"",
-        isbn:"",
-        title:"Akshar Gnan",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Hindi",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-swar-gnan",
-        sku:"",
-        isbn:"",
-        title:"Swar Gnan",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Hindi",
-        type:"Reader",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-hindi-bharhakadi",
-        sku:"",
-        isbn:"",
-        title:"Hindi Bharhakadi",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Hindi",
-        type:"Activity",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-draw-colour-a",
-        sku:"",
-        isbn:"",
-        title:"My Book of Draw & Colour – A",
-        series:"Little Master's",
-        class:null,
-        levels:["nursery"],
-        subject:"Creative Learning",
-        type:"Drawing & Colouring",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-draw-colour-b",
-        sku:"",
-        isbn:"",
-        title:"My Book of Draw & Colour – B",
-        series:"Little Master's",
-        class:null,
-        levels:["lkg"],
-        subject:"Creative Learning",
-        type:"Drawing & Colouring",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-draw-colour-c",
-        sku:"",
-        isbn:"",
-        title:"My Book of Draw & Colour – C",
-        series:"Little Master's",
-        class:null,
-        levels:["ukg"],
-        subject:"Creative Learning",
-        type:"Drawing & Colouring",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-art-craft-a",
-        sku:"",
-        isbn:"",
-        title:"Art & Craft – A",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Creative Learning",
-        type:"Art & Craft",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-rhymes-a",
-        sku:"",
-        isbn:"",
-        title:"My Book of Rhymes – A",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Creative Learning",
-        type:"Rhymes",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"el-first-patterns",
-        sku:"",
-        isbn:"",
-        title:"My First Book of Patterns",
-        series:"",
-        class:null,
-        levels:[],
-        subject:"Creative Learning",
-        type:"Patterns",
-        category:"early-learning",
-        medium:"",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    /* =====================================================
-       EXAM PREPARATION
-       CLASS 8
-
-       Only verified combined editions are added currently.
-    ===================================================== */
-
-    {
-        id:"lba-8-combined",
-        sku:"",
-        isbn:"",
-        title:"LBA – Combined",
-        series:"LBA",
-        family:"LBA",
-        class:8,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"ia-8-combined",
-        sku:"",
-        isbn:"",
-        title:"Internal Assessment – Combined",
-        series:"Internal Assessment",
-        family:"Internal Assessment",
-        class:8,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-    {
-        id:"workbook-8-combined",
-        sku:"",
-        isbn:"",
-        title:"Workbook – Combined",
-        series:"Workbooks",
-        family:"Workbooks",
-        class:8,
-        subject:"Combined",
-        category:"exam",
-        medium:"English",
-        mrp:null,
-        cover:"",
-        active:true
-    },
-
-
-    /* =====================================================
-       EXAM PREPARATION
-       CLASS 9
-    ===================================================== */
-
-    ...[
-        [
-            "english",
-            "English",
-            "English I Language",
-            "English"
-        ],
-
-        [
-            "kannada",
-            "Kannada",
-            "Kannada I Language",
-            "Kannada"
-        ],
-
-        [
-            "hindi",
-            "Hindi",
-            "Hindi III Language",
-            "Hindi"
-        ],
-
-        [
-            "mathematics",
-            "Mathematics",
-            "Mathematics",
-            "English"
-        ],
-
-        [
-            "science",
-            "Science",
-            "Science",
-            "English"
-        ],
-
-        [
-            "social-science",
-            "Social Science",
-            "Social Science",
-            "English"
-        ]
-
-    ].flatMap(function(item){
-
-        return [
-
-            {
-                id:
-                    "lba-9-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "LBA – " +
-                    item[1],
-
-                series:"LBA",
-
-                family:"LBA",
-
-                class:9,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            },
-
-            {
-                id:
-                    "ia-9-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "Internal Assessment – " +
-                    item[1],
-
-                series:
-                    "Internal Assessment",
-
-                family:
-                    "Internal Assessment",
-
-                class:9,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            },
-
-            {
-                id:
-                    "workbook-9-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "Workbook – " +
-                    item[1],
-
-                series:"Workbooks",
-
-                family:"Workbooks",
-
-                class:9,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            }
-
-        ];
-
-    }),
-
-
-    /* =====================================================
-       EXAM PREPARATION
-       CLASS 10
-    ===================================================== */
-
-    ...[
-        [
-            "english",
-            "English",
-            "English I Language",
-            "English"
-        ],
-
-        [
-            "kannada",
-            "Kannada",
-            "Kannada I Language",
-            "Kannada"
-        ],
-
-        [
-            "hindi",
-            "Hindi",
-            "Hindi III Language",
-            "Hindi"
-        ],
-
-        [
-            "mathematics",
-            "Mathematics",
-            "Mathematics",
-            "English"
-        ],
-
-        [
-            "science",
-            "Science",
-            "Science",
-            "English"
-        ],
-
-        [
-            "social-science",
-            "Social Science",
-            "Social Science",
-            "English"
-        ]
-
-    ].flatMap(function(item){
-
-        return [
-
-            {
-                id:
-                    "lba-10-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "LBA – " +
-                    item[1],
-
-                series:"LBA",
-
-                family:"LBA",
-
-                class:10,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            },
-
-            {
-                id:
-                    "ia-10-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "Internal Assessment – " +
-                    item[1],
-
-                series:
-                    "Internal Assessment",
-
-                family:
-                    "Internal Assessment",
-
-                class:10,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            },
-
-            {
-                id:
-                    "workbook-10-" +
-                    item[0],
-
-                sku:"",
-
-                isbn:"",
-
-                title:
-                    "Workbook – " +
-                    item[1],
-
-                series:"Workbooks",
-
-                family:"Workbooks",
-
-                class:10,
-
-                subject:
-                    item[2],
-
-                category:"exam",
-
-                medium:
-                    item[3],
-
-                mrp:null,
-
-                cover:"",
-
-                active:true
-            }
-
-        ];
-
-    })
-
-];
-
-/*
-=========================================================
-CATALOGUE DATA ACCESS
-=========================================================
-Returns only active catalogue records.
-
-Keep catalogue data access here rather than inside
-individual catalogue pages or selection/cart logic.
-=========================================================
-*/
-
-function catalogue() {
-  if (!Array.isArray(window.CAMBRIDGE_CATALOGUE)) {
-    console.error(
-      "Cambridge Catalogue: CAMBRIDGE_CATALOGUE data is unavailable."
-    );
-
-    return [];
-  }
-
-  return window.CAMBRIDGE_CATALOGUE.filter(
-    book =>
-      book &&
-      typeof book === "object" &&
-      book.active !== false
-  );
-}
-
-window.catalogue = catalogue;
-
-
-/*
-=========================================================
-OPTIONAL CATALOGUE VALIDATION
-=========================================================
-
-Validation is intentionally NOT a dependency of the
-customer-facing catalogue.
-
-Normal visitors:
-- validator is not downloaded
-- validator is not executed
-- catalogue behaviour is unchanged
-
-Developer/data check:
-Add ?validate=1 to the page URL.
-
-Example:
-school-books.html?class=8&validate=1
-
-If the validator fails to load or contains an error,
-the catalogue must continue working normally.
-=========================================================
-*/
-
-(function loadCatalogueValidatorSafely() {
+(function (global) {
   "use strict";
 
-  /*
-   * Browser-only diagnostic.
-   *
-   * This guard also allows catalogue-data.js
-   * to be used later by non-browser tools/tests.
-   */
-  if (
-    typeof window === "undefined" ||
-    typeof document === "undefined"
-  ) {
-    return;
+  const records = [];
+  const cls = value => [String(value)];
+  const earlyAll = ["Nursery", "LKG", "UKG"];
+
+  function add(book) {
+    records.push({
+      sku: "",
+      isbn: "",
+      series: "",
+      medium: "",
+      mrp: null,
+      cover: "",
+      active: true,
+      ...book,
+      class: Array.isArray(book.class) ? [...book.class] : cls(book.class)
+    });
   }
 
-  try {
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+  /* =====================================================
+     SCHOOL BOOKS — CLASSES 1–4
+  ===================================================== */
+  [1, 2, 3, 4].forEach(classNumber => {
+    [1, 2].forEach(semester => add({
+      id: `semester-${classNumber}-${semester}`,
+      title: `Semester ${semester}`,
+      series: "Semester Series",
+      class: cls(classNumber),
+      subject: "Semester",
+      category: "school",
+      medium: "English"
+    }));
+  });
 
-    /*
-     * Do absolutely nothing during
-     * normal customer browsing.
-     */
-    if (
-      params.get("validate") !== "1"
-    ) {
-      return;
-    }
+  /* =====================================================
+     SCHOOL BOOKS — CLASSES 5–10
+     Language subjects remain English-medium textbook records.
+  ===================================================== */
+  const schoolBooks = [
+    ["english-reader", "English Reader", "English"],
+    ["english-workbook", "English Workbook", "English"],
+    ["kannada-reader", "Kannada Reader", "Kannada"],
+    ["kannada-workbook", "Kannada Workbook", "Kannada"],
+    ["hindi-reader", "Hindi Reader", "Hindi"],
+    ["hindi-workbook", "Hindi Workbook", "Hindi"],
+    ["mathematics", "Mathematics", "Mathematics"],
+    ["science", "Science", "Science"],
+    ["social-science", "Social Science", "Social Science"]
+  ];
 
-    /*
-     * Prevent accidental duplicate loading.
-     */
-    if (
-      window.CambridgeCatalogueValidator
-    ) {
-      window.CambridgeCatalogueValidator.run(
-        window.CAMBRIDGE_CATALOGUE
-      );
+  [5, 6, 7, 8, 9, 10].forEach(classNumber => {
+    schoolBooks.forEach(([idPrefix, title, subject]) => add({
+      id: `${idPrefix}-${classNumber}`,
+      title,
+      class: cls(classNumber),
+      subject,
+      category: "school",
+      medium: "English"
+    }));
+  });
 
-      return;
-    }
+  /* =====================================================
+     HONEST SUCCESS SERIES — SCHOOL EXAM/GUIDE RANGE
+  ===================================================== */
+  const hssBase = [
+    ["combined", "Combined", "Combined", "English"],
+    ["english", "English", "English I Language", "English"],
+    ["kannada", "Kannada", "Kannada I Language", "Kannada"],
+    ["hindi", "Hindi", "Hindi III Language", "English"],
+    ["mathematics", "Mathematics", "Mathematics", "English"]
+  ];
 
-    if (
-      document.querySelector(
-        'script[data-cambridge-catalogue-validator="true"]'
-      )
-    ) {
-      return;
-    }
-
-    const script =
-      document.createElement(
-        "script"
-      );
-
-    /*
-     * Resolve relative to catalogue-data.js itself.
-     *
-     * This is safer than assuming every HTML page
-     * will always live in the repository root.
-     */
-    const currentScript =
-      document.currentScript;
-
-    if (
-      currentScript &&
-      currentScript.src
-    ) {
-      script.src =
-        new URL(
-          "catalogue-validator.js",
-          currentScript.src
-        ).href;
-    } else {
-      /*
-       * Safe fallback for the current
-       * repository structure.
-       */
-      script.src =
-        "js/catalogue-validator.js";
-    }
-
-    script.async = true;
-
-    script.dataset
-      .cambridgeCatalogueValidator =
-      "true";
-
-    /*
-     * Validator failure must NEVER
-     * stop the catalogue.
-     */
-    script.onerror =
-      function () {
-        console.warn(
-          "Cambridge Catalogue: optional validator could not be loaded. Catalogue operation is unaffected."
-        );
-      };
-
-    document.head.appendChild(
-      script
-    );
-
-  } catch (error) {
-
-    /*
-     * Validation infrastructure is diagnostic only.
-     * Never rethrow this error.
-     */
-    console.warn(
-      "Cambridge Catalogue: optional validation could not start. Catalogue operation is unaffected.",
-      error
-    );
+  function addHss(classNumber, idSuffix, titleSuffix, subject, medium, displaySubject) {
+    add({
+      id: `hs-${classNumber}-${idSuffix}`,
+      title: `Honest Success Series – ${titleSuffix}`,
+      series: "Honest Success Series",
+      family: "Honest Success Series",
+      class: cls(classNumber),
+      subject,
+      ...(displaySubject ? { displaySubject } : {}),
+      category: "exam",
+      medium
+    });
   }
-})();
+
+  hssBase.forEach(x => addHss(8, ...x));
+  addHss(8, "science", "Science", "Science", "English");
+  addHss(8, "social-science", "Social Science", "Social Science", "English");
+
+  hssBase.forEach(x => addHss(9, ...x));
+  addHss(9, "vignana", "Vignana", "Science", "Kannada", "Vignana");
+  addHss(9, "samaja", "Samaja", "Social Science", "Kannada", "Samaja");
+
+  hssBase.forEach(x => addHss(10, ...x));
+  addHss(10, "science", "Science", "Science", "English");
+  addHss(10, "social-science", "Social Science", "Social Science", "English");
+  addHss(10, "vignana", "Vignana", "Science", "Kannada", "Vignana");
+  addHss(10, "samaja-vignana", "Samaja", "Social Science", "Kannada", "Samaja");
+
+  /* =====================================================
+     EARLY LEARNING
+     Legacy blank level mappings previously behaved as available across
+     Nursery/LKG/UKG. That behaviour is preserved explicitly using class arrays.
+  ===================================================== */
+  const earlyBooks = [
+    ["el-abc-book", "Little Master's ABC Book", "English", "Reader"],
+    ["el-my-book-alphabet", "My Book of Alphabet", "English", "Reader"],
+    ["el-my-book-words", "My Book of Words", "English", "Reader"],
+    ["el-capital-letter-writing", "Capital Letter Writing", "English", "Writing"],
+    ["el-small-letter-writing", "Small Letter Writing", "English", "Writing"],
+    ["el-english-capital-activity", "English Capital Activity", "English", "Activity"],
+    ["el-numbers-0-9", "Numbers 0–9", "Mathematics", "Numbers"],
+    ["el-counting-1-20", "Counting Numbers 1 to 20", "Mathematics", "Numbers"],
+    ["el-play-learn-1-20", "Play & Learn Numbers 1 to 20", "Mathematics", "Writing"],
+    ["el-numbers-activities-0-50", "Numbers with Activities 0 to 50", "Mathematics", "Activity"],
+    ["el-akshara-parichaya", "Akshara Parichaya", "Kannada", "Reader"],
+    ["el-kannada-varnamale", "Kannada Varnamale", "Kannada", "Reader"],
+    ["el-siri-kannada-varnamale", "Siri Kannada Varnamale", "Kannada", "Reader"],
+    ["el-kannada-akshara-baravanige", "Kannada Akshara Baravanige", "Kannada", "Writing"],
+    ["el-kannada-aksharamale-activity", "Kannada Aksharamale Activity Book", "Kannada", "Activity"],
+    ["el-akshar-jyothi", "Akshar Jyothi", "Hindi", "Reader"],
+    ["el-shabdh-jyothi", "Shabdh Jyothi", "Hindi", "Reader"],
+    ["el-akshar-gnan", "Akshar Gnan", "Hindi", "Reader"],
+    ["el-swar-gnan", "Swar Gnan", "Hindi", "Reader"],
+    ["el-hindi-bharhakadi", "Hindi Bharhakadi", "Hindi", "Activity"],
+    ["el-art-craft-a", "Art & Craft – A", "Creative Learning", "Art & Craft"],
+    ["el-rhymes-a", "My Book of Rhymes – A", "Creative Learning", "Rhymes"],
+    ["el-first-patterns", "My First Book of Patterns", "Creative Learning", "Patterns"]
+  ];
+
+  earlyBooks.forEach(([id, title, subject, type]) => add({
+    id,
+    title,
+    class: earlyAll,
+    subject,
+    type,
+    category: "early-learning"
+  }));
+
+  [
+    ["el-draw-colour-a", "My Book of Draw & Colour – A", "Nursery"],
+    ["el-draw-colour-b", "My Book of Draw & Colour – B", "LKG"],
+    ["el-draw-colour-c", "My Book of Draw & Colour – C", "UKG"]
+  ].forEach(([id, title, className]) => add({
+    id,
+    title,
+    series: "Little Master's",
+    class: [className],
+    subject: "Creative Learning",
+    type: "Drawing & Colouring",
+    category: "early-learning"
+  }));
+
+  /* =====================================================
+     EXAM PREPARATION — CLASS 8
+  ===================================================== */
+  [
+    ["lba-8-combined", "LBA – Combined", "LBA"],
+    ["ia-8-combined", "Internal Assessment – Combined", "Internal Assessment"],
+    ["workbook-8-combined", "Workbook – Combined", "Workbooks"]
+  ].forEach(([id, title, series]) => add({
+    id,
+    title,
+    series,
+    family: series,
+    class: cls(8),
+    subject: "Combined",
+    category: "exam",
+    medium: "English"
+  }));
+
+  /* =====================================================
+     EXAM PREPARATION — CLASSES 9–10
+     Current known guide media are English/Kannada only.
+  ===================================================== */
+  const examSubjects = [
+    ["english", "English", "English I Language", "English"],
+    ["kannada", "Kannada", "Kannada I Language", "Kannada"],
+    ["hindi", "Hindi", "Hindi III Language", "English"],
+    ["mathematics", "Mathematics", "Mathematics", "English"],
+    ["science", "Science", "Science", "English"],
+    ["social-science", "Social Science", "Social Science", "English"]
+  ];
+
+  const examFamilies = [
+    ["lba", "LBA", "LBA"],
+    ["ia", "Internal Assessment", "Internal Assessment"],
+    ["workbook", "Workbook", "Workbooks"]
+  ];
+
+  [9, 10].forEach(classNumber => {
+    examSubjects.forEach(([subjectId, titleSubject, subject, medium]) => {
+      examFamilies.forEach(([idPrefix, titlePrefix, series]) => add({
+        id: `${idPrefix}-${classNumber}-${subjectId}`,
+        title: `${titlePrefix} – ${titleSubject}`,
+        series,
+        family: series,
+        class: cls(classNumber),
+        subject,
+        category: "exam",
+        medium
+      }));
+    });
+  });
+
+  global.CAMBRIDGE_CATALOGUE = records;
+
+  /* Active catalogue accessor used by older pages. */
+  global.catalogue = function catalogue() {
+    return Array.isArray(global.CAMBRIDGE_CATALOGUE)
+      ? global.CAMBRIDGE_CATALOGUE.filter(book => book && typeof book === "object" && book.active !== false)
+      : [];
+  };
+
+  /* Optional developer-only validator: add ?validate=1 to a catalogue URL. */
+  if (typeof document !== "undefined") {
+    try {
+      const params = new URLSearchParams(global.location.search);
+      if (params.get("validate") === "1") {
+        const script = document.createElement("script");
+        const currentScript = document.currentScript;
+        script.src = currentScript && currentScript.src
+          ? new URL("catalogue-validator.js", currentScript.src).href
+          : "js/catalogue-validator.js";
+        script.async = true;
+        script.dataset.cambridgeCatalogueValidator = "true";
+        script.onerror = () => console.warn("Cambridge Catalogue: optional validator could not be loaded.");
+        document.head.appendChild(script);
+      }
+    } catch (error) {
+      console.warn("Cambridge Catalogue: optional validation could not start.", error);
+    }
+  }
+})(window);
