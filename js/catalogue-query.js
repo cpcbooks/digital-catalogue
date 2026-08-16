@@ -72,52 +72,17 @@
     uniqueValues
   });
 
-  // Query-driven browsing pages share the same navigation-state service.
-  // Loading it here keeps page markup free from navigation implementation details.
-  function enableNavigationState() {
-    const start = () => {
-      const Navigation = global.CambridgeCatalogueNavigation;
-      if (!Navigation) return;
-      Navigation.captureBookLinks(document, () => {
-        const state = {};
-        const search = document.getElementById("search");
-        const subject = document.getElementById("subject");
-        const family = document.getElementById("family");
-        if (search) state.search = search.value;
-        if (subject) state.subject = subject.value;
-        if (family) state.family = family.value;
-        return state;
-      });
-
-      // Allow the page's own DOMContentLoaded render to finish first.
-      setTimeout(() => Navigation.restore({
-        apply: state => {
-          const search = document.getElementById("search");
-          const subject = document.getElementById("subject");
-          const family = document.getElementById("family");
-          if (search && typeof state.search === "string") search.value = state.search;
-          if (subject && typeof state.subject === "string") subject.value = state.subject;
-          if (family && typeof state.family === "string") family.value = state.family;
-          if (typeof global.render === "function") global.render();
-        }
-      }), 0);
-    };
-
-    if (global.CambridgeCatalogueNavigation) {
-      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
-      else start();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = "js/catalogue-navigation.js?v=20260816-1";
-    script.onload = () => {
-      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
-      else start();
-    };
-    script.onerror = () => console.warn("Cambridge Catalogue: navigation-state module failed to load.");
-    document.head.appendChild(script);
-  }
-
-  enableNavigationState();
+  /*
+   * IMPORTANT NAVIGATION RULE
+   * -------------------------
+   * Ordinary catalogue -> View Book -> Back navigation is deliberately left
+   * to the browser's native history/scroll restoration.
+   *
+   * Do NOT persist or replay scroll position here. A previous implementation
+   * stored page scroll in sessionStorage and restored it on every page load,
+   * which caused stale jumps after refresh and later revisits.
+   *
+   * The separate My Selection / Final Checklist flow may use its own one-time
+   * return context; that is intentionally not part of this query layer.
+   */
 })(window);
