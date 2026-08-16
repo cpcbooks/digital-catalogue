@@ -1,14 +1,8 @@
 /* Cambridge Digital Catalogue — shared data-access/query layer.
    Pages should use this module instead of knowing storage/schema details.
-   Backward compatibility for legacy Early Learning `levels` is isolated here. */
+   Canonical school-stage model: `class` is an array; there is no `levels` field. */
 (function (global) {
   "use strict";
-
-  const EARLY_CLASS_TO_LEGACY_LEVEL = {
-    NUR: "nursery",
-    LKG: "lkg",
-    UKG: "ukg"
-  };
 
   function all() {
     return Array.isArray(global.CAMBRIDGE_CATALOGUE) ? global.CAMBRIDGE_CATALOGUE : [];
@@ -22,26 +16,23 @@
     if (value === null || value === undefined || value === "") return "";
     const raw = String(value).trim();
     const upper = raw.toUpperCase();
-    if (upper === "NURSERY" || upper === "NUR") return "NUR";
+    if (upper === "NURSERY" || upper === "NUR") return "Nursery";
     if (upper === "LKG") return "LKG";
     if (upper === "UKG") return "UKG";
     if (/^(?:[1-9]|10)$/.test(raw)) return raw;
-    return upper;
+    return raw;
+  }
+
+  function classValues(book) {
+    if (!book) return [];
+    const values = Array.isArray(book.class) ? book.class : [book.class];
+    return [...new Set(values.map(normalizeClass).filter(Boolean))];
   }
 
   function matchesClass(book, classValue) {
-    if (!book) return false;
     const wanted = normalizeClass(classValue);
     if (!wanted) return true;
-
-    const direct = normalizeClass(book.class);
-    if (direct) return direct === wanted;
-
-    // Temporary compatibility only. Remove after verified Early Learning
-    // records have been migrated from `levels` to `class`.
-    const legacy = EARLY_CLASS_TO_LEGACY_LEVEL[wanted];
-    if (!legacy || !Array.isArray(book.levels)) return false;
-    return book.levels.length === 0 || book.levels.includes(legacy);
+    return classValues(book).includes(wanted);
   }
 
   function byCategory(category) {
@@ -58,13 +49,21 @@
   }
 
   function uniqueValues(books, field) {
-    return [...new Set((books || []).map(book => book && book[field]).filter(Boolean))];
+    const values = [];
+    (books || []).forEach(book => {
+      if (!book) return;
+      const value = book[field];
+      if (Array.isArray(value)) value.forEach(v => { if (v) values.push(v); });
+      else if (value) values.push(value);
+    });
+    return [...new Set(values)];
   }
 
   global.CambridgeCatalogueQuery = Object.freeze({
     all,
     active,
     normalizeClass,
+    classValues,
     matchesClass,
     byCategory,
     byCategoryAndClass,
@@ -72,17 +71,7 @@
     uniqueValues
   });
 
-  /*
-   * IMPORTANT NAVIGATION RULE
-   * -------------------------
-   * Ordinary catalogue -> View Book -> Back navigation is deliberately left
-   * to the browser's native history/scroll restoration.
-   *
-   * Do NOT persist or replay scroll position here. A previous implementation
-   * stored page scroll in sessionStorage and restored it on every page load,
-   * which caused stale jumps after refresh and later revisits.
-   *
-   * The separate My Selection / Final Checklist flow may use its own one-time
-   * return context; that is intentionally not part of this query layer.
-   */
+  /* Ordinary catalogue -> View Book -> Back navigation is deliberately left
+     to the browser's native history/scroll restoration. Do not persist/replay
+     scroll positions in this query layer. */
 })(window);
