@@ -1,4 +1,10 @@
-/* Compact persistent My Selection pane */
+/* Compact persistent My Selection pane — shared catalogue UI */
+
+/* The floating pane is now the single selection shortcut. */
+.selection-bar {
+  display: none !important;
+}
+
 .cambridge-floating-selection {
   left: auto !important;
   right: max(16px, env(safe-area-inset-right)) !important;
