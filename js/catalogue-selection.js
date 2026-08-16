@@ -4,472 +4,908 @@
 
   const ORDER_KEY = "cambridgeOrder";
   const MAX_QUANTITY = 10000;
+  const CHANGE_EVENT = "cambridge-selection-change";
 
-  function validQty(v) {
-    const n = Number(v);
+  function validQty(value) {
+    const n = Number(value);
     return Number.isInteger(n) && n >= 1 && n <= MAX_QUANTITY;
   }
 
-  function order() {
-    let a = [];
+  function readOrder() {
+    let items = [];
 
     try {
-      const v = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
-      if (Array.isArray(v)) a = v;
-    } catch (e) {}
+      const parsed = JSON.parse(
+        localStorage.getItem(ORDER_KEY) || "[]"
+      );
 
-    return a
-      .filter(x => x && typeof x === "object")
-      .map(x => ({
-        ...x,
-        quantity: validQty(x.quantity) ? Number(x.quantity) : 1
+      if (Array.isArray(parsed)) {
+        items = parsed;
+      }
+    } catch (error) {
+      console.warn(
+        "Cambridge Catalogue: could not read selection.",
+        error
+      );
+    }
+
+    return items
+      .filter(
+        item =>
+          item &&
+          typeof item === "object"
+      )
+      .map(item => ({
+        ...item,
+        quantity: validQty(item.quantity)
+          ? Number(item.quantity)
+          : 1
       }));
   }
 
-  function save(a) {
+  function saveOrder(items) {
     try {
-      localStorage.setItem(ORDER_KEY, JSON.stringify(a));
+      localStorage.setItem(
+        ORDER_KEY,
+        JSON.stringify(items)
+      );
+
       return true;
-    } catch (e) {
+    } catch (error) {
+      console.error(
+        "Cambridge Catalogue: could not save selection.",
+        error
+      );
+
       alert(
         "Your selection could not be saved on this device. Please try again."
       );
+
       return false;
     }
   }
 
-  function key(x) {
-    if (x.id) return "id:" + x.id;
-    if (x.sku) return "sku:" + x.sku;
-    if (x.isbn) return "isbn:" + x.isbn;
+  function itemKey(item) {
+    if (item.id) {
+      return "id:" + item.id;
+    }
+
+    if (item.sku) {
+      return "sku:" + item.sku;
+    }
+
+    if (item.isbn) {
+      return "isbn:" + item.isbn;
+    }
 
     return [
       "book",
-      x.title || "",
-      x.series || "",
-      x.class || "",
-      x.level || "",
-      x.subject || "",
-      x.medium || ""
+      item.title || "",
+      item.series || "",
+      item.class || "",
+      item.level || "",
+      item.subject || "",
+      item.medium || ""
     ].join(":");
   }
 
-  function indexOfBook(book, a = order()) {
-    const k = key(book);
+  function indexOfBook(
+    book,
+    items = readOrder()
+  ) {
+    const wanted = itemKey(book);
 
-    return a.findIndex(
-      x => x.type !== "custom-kit" && key(x) === k
+    return items.findIndex(
+      item =>
+        item.type !== "custom-kit" &&
+        itemKey(item) === wanted
     );
   }
 
   function selectedItem(book) {
-    const a = order();
-    const i = indexOfBook(book, a);
+    const items = readOrder();
 
-    return i < 0 ? null : a[i];
+    const index = indexOfBook(
+      book,
+      items
+    );
+
+    return index < 0
+      ? null
+      : items[index];
   }
 
   function selectedCount() {
-    return order().filter(x => x.type !== "custom-kit").length;
+    return readOrder().filter(
+      item =>
+        item.type !== "custom-kit"
+    ).length;
   }
 
   function updateBar() {
-    const bar = document.getElementById("selectionBar");
-    const s = document.getElementById("selectionStatus");
+    const bar =
+      document.getElementById(
+        "selectionBar"
+      );
 
-    if (!bar || !s) return;
+    const status =
+      document.getElementById(
+        "selectionStatus"
+      );
 
-    const n = selectedCount();
+    if (!bar || !status) {
+      return;
+    }
 
-    bar.hidden = n === 0;
+    const count =
+      selectedCount();
 
-    s.innerHTML =
+    bar.hidden =
+      count === 0;
+
+    status.innerHTML =
       "<strong>" +
-      n +
+      count +
       "</strong> " +
-      (n === 1 ? "title selected" : "titles selected");
+      (
+        count === 1
+          ? "title selected"
+          : "titles selected"
+      );
   }
 
-  function add(book, extra = {}) {
-    const a = order();
+  function add(
+    book,
+    extra = {}
+  ) {
+    const items =
+      readOrder();
 
-    if (indexOfBook(book, a) >= 0) return true;
+    if (
+      indexOfBook(
+        book,
+        items
+      ) >= 0
+    ) {
+      return true;
+    }
 
-    a.push({
-      id: book.id || "",
-      sku: book.sku || "",
-      isbn: book.isbn || "",
-      title: book.title || "Untitled Book",
-      series: book.series || "",
-      family: book.family || "",
-      class: book.class || "",
-      level: extra.level || book.level || "",
-      levelName: extra.levelName || "",
-      subject: book.subject || "",
-      type: book.type || "",
-      medium: book.medium || "",
-      mrp: Number.isFinite(book.mrp) ? book.mrp : null,
-      cover: book.cover || "",
+    items.push({
+      id:
+        book.id || "",
+
+      sku:
+        book.sku || "",
+
+      isbn:
+        book.isbn || "",
+
+      title:
+        book.title ||
+        "Untitled Book",
+
+      series:
+        book.series || "",
+
+      family:
+        book.family || "",
+
+      class:
+        book.class || "",
+
+      level:
+        extra.level ||
+        book.level ||
+        "",
+
+      levelName:
+        extra.levelName || "",
+
+      subject:
+        book.subject || "",
+
+      type:
+        book.type || "",
+
+      medium:
+        book.medium || "",
+
+      mrp:
+        Number.isFinite(
+          book.mrp
+        )
+          ? book.mrp
+          : null,
+
+      cover:
+        book.cover || "",
+
       quantity: 1
     });
 
-    return save(a);
-  }
-
-  function setQty(book, value) {
-    let n = Number(value);
-
-    if (!Number.isFinite(n)) return false;
-
-    n = Math.trunc(n);
-
-    if (n < 1) return remove(book);
-
-    if (n > MAX_QUANTITY) {
-      n = MAX_QUANTITY;
-    }
-
-    const a = order();
-    const i = indexOfBook(book, a);
-
-    if (i < 0) {
-      if (!add(book, window.SELECTION_EXTRA || {})) {
-        return false;
-      }
-
-      return setQty(book, n);
-    }
-
-    a[i].quantity = n;
-
-    return save(a);
+    return saveOrder(items);
   }
 
   function remove(book) {
-    const a = order();
-    const i = indexOfBook(book, a);
+    const items =
+      readOrder();
 
-    if (i < 0) return true;
+    const index =
+      indexOfBook(
+        book,
+        items
+      );
 
-    a.splice(i, 1);
+    if (index < 0) {
+      return true;
+    }
 
-    return save(a);
+    items.splice(
+      index,
+      1
+    );
+
+    return saveOrder(items);
+  }
+
+  function setQty(
+    book,
+    value
+  ) {
+    let quantity =
+      Number(value);
+
+    if (
+      !Number.isFinite(
+        quantity
+      )
+    ) {
+      return false;
+    }
+
+    quantity =
+      Math.trunc(quantity);
+
+    if (quantity < 1) {
+      return remove(book);
+    }
+
+    if (
+      quantity >
+      MAX_QUANTITY
+    ) {
+      quantity =
+        MAX_QUANTITY;
+    }
+
+    const items =
+      readOrder();
+
+    const index =
+      indexOfBook(
+        book,
+        items
+      );
+
+    if (index < 0) {
+      if (
+        !add(
+          book,
+          window.SELECTION_EXTRA ||
+            {}
+        )
+      ) {
+        return false;
+      }
+
+      return setQty(
+        book,
+        quantity
+      );
+    }
+
+    items[index].quantity =
+      quantity;
+
+    return saveOrder(items);
+  }
+
+  function emitChange() {
+    window.dispatchEvent(
+      new CustomEvent(
+        CHANGE_EVENT
+      )
+    );
   }
 
   function detailsUrl(book) {
     const base =
       "book-details.html?id=" +
-      encodeURIComponent(book.id || "");
+      encodeURIComponent(
+        book.id || ""
+      );
 
-    return window.SELECTION_EXTRA &&
+    const level =
+      window.SELECTION_EXTRA &&
       window.SELECTION_EXTRA.level
+        ? window.SELECTION_EXTRA.level
+        : "";
+
+    return level
       ? base +
           "&level=" +
-          encodeURIComponent(window.SELECTION_EXTRA.level)
+          encodeURIComponent(
+            level
+          )
       : base;
   }
 
   function coverNode(book) {
-    const d = document.createElement("div");
+    const wrapper =
+      document.createElement(
+        "div"
+      );
 
-    d.className = "book-cover";
+    wrapper.className =
+      "book-cover";
 
-    if (book.cover) {
-      const img = document.createElement("img");
+    if (!book.cover) {
+      wrapper.textContent =
+        "BOOK COVER";
 
-      img.src = book.cover;
-      img.alt = (book.title || "Book") + " cover";
-      img.loading = "lazy";
-
-      img.onerror = () => {
-        d.innerHTML = "";
-        d.textContent = "BOOK COVER";
-      };
-
-      d.appendChild(img);
-    } else {
-      d.textContent = "BOOK COVER";
+      return wrapper;
     }
 
-    return d;
+    const image =
+      document.createElement(
+        "img"
+      );
+
+    image.src =
+      book.cover;
+
+    image.alt =
+      (book.title || "Book") +
+      " cover";
+
+    image.loading =
+      "lazy";
+
+    image.onerror = () => {
+      wrapper.innerHTML = "";
+
+      wrapper.textContent =
+        "BOOK COVER";
+    };
+
+    wrapper.appendChild(
+      image
+    );
+
+    return wrapper;
   }
 
   function actionNode(book) {
-    const wrap = document.createElement("div");
-    wrap.className = "book-actions";
+    const actions =
+      document.createElement(
+        "div"
+      );
 
-    const view = document.createElement("a");
+    actions.className =
+      "book-actions";
 
-    view.className = "view-book";
-    view.href = detailsUrl(book);
-    view.textContent = "View Book →";
+    /*
+     * VIEW BOOK
+     */
+    const view =
+      document.createElement(
+        "a"
+      );
 
-    wrap.appendChild(view);
+    view.className =
+      "view-book";
 
-    const item = selectedItem(book);
+    view.href =
+      detailsUrl(book);
 
-    if (!item) {
-      const b = document.createElement("button");
+    view.textContent =
+      "View Book →";
 
-      b.type = "button";
-      b.className = "add-book";
-      b.textContent = "+ Add to Selection";
+    actions.appendChild(
+      view
+    );
 
-      b.onclick = () => {
-        if (add(book, window.SELECTION_EXTRA || {})) {
-          refresh();
+    const selected =
+      selectedItem(book);
+
+    /*
+     * NOT YET SELECTED
+     */
+    if (!selected) {
+      const addButton =
+        document.createElement(
+          "button"
+        );
+
+      addButton.type =
+        "button";
+
+      addButton.className =
+        "add-book";
+
+      addButton.textContent =
+        "+ Add to Selection";
+
+      addButton.onclick =
+        () => {
+          if (
+            add(
+              book,
+              window.SELECTION_EXTRA ||
+                {}
+            )
+          ) {
+            emitChange();
+          }
+        };
+
+      actions.appendChild(
+        addButton
+      );
+
+      return actions;
+    }
+
+    /*
+     * QUANTITY CONTROL
+     */
+    const control =
+      document.createElement(
+        "div"
+      );
+
+    control.className =
+      "qty-control";
+
+    const minus =
+      document.createElement(
+        "button"
+      );
+
+    minus.type =
+      "button";
+
+    minus.setAttribute(
+      "aria-label",
+      "Decrease quantity"
+    );
+
+    minus.textContent =
+      "−";
+
+    const input =
+      document.createElement(
+        "input"
+      );
+
+    input.type =
+      "text";
+
+    input.inputMode =
+      "numeric";
+
+    input.pattern =
+      "[0-9]*";
+
+    input.autocomplete =
+      "off";
+
+    input.enterKeyHint =
+      "done";
+
+    input.maxLength =
+      5;
+
+    input.value =
+      String(
+        selected.quantity
+      );
+
+    input.setAttribute(
+      "aria-label",
+      "Quantity"
+    );
+
+    const plus =
+      document.createElement(
+        "button"
+      );
+
+    plus.type =
+      "button";
+
+    plus.setAttribute(
+      "aria-label",
+      "Increase quantity"
+    );
+
+    plus.textContent =
+      "+";
+
+    const error =
+      document.createElement(
+        "div"
+      );
+
+    error.className =
+      "qty-error";
+
+    error.setAttribute(
+      "aria-live",
+      "polite"
+    );
+
+    /*
+     * ERROR HELPERS
+     */
+    const clearError =
+      () => {
+        control.classList.remove(
+          "invalid"
+        );
+
+        error.textContent =
+          "";
+      };
+
+    const showError =
+      message => {
+        control.classList.add(
+          "invalid"
+        );
+
+        error.textContent =
+          message;
+      };
+
+    /*
+     * Always restore from
+     * CURRENT stored quantity.
+     *
+     * This prevents the stale-state
+     * bug we found earlier.
+     */
+    const restoreCurrent =
+      () => {
+        const current =
+          selectedItem(book);
+
+        input.value =
+          String(
+            current
+              ? current.quantity
+              : selected.quantity
+          );
+      };
+
+    /*
+     * MINUS
+     */
+    minus.onclick =
+      () => {
+        clearError();
+
+        const current =
+          selectedItem(book);
+
+        if (!current) {
+          emitChange();
+          return;
+        }
+
+        const quantity =
+          Number(
+            current.quantity
+          );
+
+        /*
+         * 1 → minus
+         * removes selection.
+         */
+        if (quantity <= 1) {
+          if (
+            remove(book)
+          ) {
+            emitChange();
+          }
+
+          return;
+        }
+
+        if (
+          setQty(
+            book,
+            quantity - 1
+          )
+        ) {
+          emitChange();
         }
       };
 
-      wrap.appendChild(b);
-
-      return wrap;
-    }
-
-    const q = document.createElement("div");
-    q.className = "qty-control";
-
-    const minus = document.createElement("button");
-
-    minus.type = "button";
-    minus.setAttribute("aria-label", "Decrease quantity");
-    minus.textContent = "−";
-
-    const input = document.createElement("input");
-
-    input.type = "text";
-    input.inputMode = "numeric";
-    input.pattern = "[0-9]*";
-    input.autocomplete = "off";
-    input.enterKeyHint = "done";
-    input.maxLength = 5;
-    input.value = String(item.quantity);
-    input.setAttribute("aria-label", "Quantity");
-
-    const plus = document.createElement("button");
-
-    plus.type = "button";
-    plus.setAttribute("aria-label", "Increase quantity");
-    plus.textContent = "+";
-
-    const error = document.createElement("div");
-
-    error.className = "qty-error";
-    error.setAttribute("aria-live", "polite");
-
-    const clearError = () => {
-      q.classList.remove("invalid");
-      error.textContent = "";
-    };
-
-    const showError = message => {
-      q.classList.add("invalid");
-      error.textContent = message;
-    };
-
-    minus.onclick = () => {
-      clearError();
-
-      /*
-       * IMPORTANT:
-       * Always read the latest stored quantity.
-       * Do not rely on the quantity that existed when
-       * this control was originally rendered.
-       */
-      const current = selectedItem(book);
-
-      if (!current) {
-        refresh();
-        return;
-      }
-
-      const qty = Number(current.quantity);
-
-      if (qty <= 1) {
-        if (remove(book)) refresh();
-      } else if (setQty(book, qty - 1)) {
-        refresh();
-      }
-    };
-
-    plus.onclick = () => {
-      clearError();
-
-      /*
-       * Same fresh-state rule as the minus button.
-       */
-      const current = selectedItem(book);
-
-      if (!current) {
-        if (add(book, window.SELECTION_EXTRA || {})) {
-          refresh();
-        }
-
-        return;
-      }
-
-      const qty = Number(current.quantity);
-
-      if (qty >= MAX_QUANTITY) {
-        showError("Maximum quantity is 10,000.");
-        return;
-      }
-
-      if (setQty(book, qty + 1)) {
-        refresh();
-      }
-    };
-
-    input.oninput = () => {
-      const digits = input.value.replace(/\D/g, "");
-
-      input.value = digits;
-
-      /*
-       * Blank is temporarily allowed while the user
-       * is editing the field.
-       */
-      if (digits === "") {
-        showError("Enter a quantity from 0 to 10,000.");
-        return;
-      }
-
-      const n = Number(digits);
-
-      if (
-        digits.length > 5 ||
-        !Number.isSafeInteger(n) ||
-        n > MAX_QUANTITY
-      ) {
-        input.value = String(
-          selectedItem(book)?.quantity || item.quantity
-        );
-
-        showError("Maximum quantity is 10,000.");
-
-        return;
-      }
-
-      /*
-       * 0 is a valid temporary editing value.
-       * The item is removed only when editing is committed
-       * through blur or Enter.
-       */
-      if (n === 0) {
+    /*
+     * PLUS
+     */
+    plus.onclick =
+      () => {
         clearError();
-        return;
-      }
 
-      clearError();
+        const current =
+          selectedItem(book);
 
-      setQty(book, n);
-    };
+        if (!current) {
+          if (
+            add(
+              book,
+              window.SELECTION_EXTRA ||
+                {}
+            )
+          ) {
+            emitChange();
+          }
 
-    input.onblur = () => {
-      const digits = input.value.replace(/\D/g, "");
-
-      /*
-       * Completely blank input does NOT remove the title.
-       * Restore the latest valid quantity instead.
-       */
-      if (digits === "") {
-        input.value = String(
-          selectedItem(book)?.quantity || item.quantity
-        );
-
-        showError("Enter a quantity from 0 to 10,000.");
-
-        return;
-      }
-
-      const n = Number(digits);
-
-      if (
-        !Number.isSafeInteger(n) ||
-        n > MAX_QUANTITY
-      ) {
-        input.value = String(
-          selectedItem(book)?.quantity || item.quantity
-        );
-
-        showError(
-          n > MAX_QUANTITY
-            ? "Maximum quantity is 10,000."
-            : "Enter a quantity from 0 to 10,000."
-        );
-
-        return;
-      }
-
-      /*
-       * Our locked behaviour:
-       *
-       * Type 0
-       * → finish editing
-       * → remove the title from My Selection.
-       */
-      if (n === 0) {
-        if (remove(book)) {
-          refresh();
+          return;
         }
 
-        return;
-      }
+        const quantity =
+          Number(
+            current.quantity
+          );
 
-      input.value = String(n);
+        if (
+          quantity >=
+          MAX_QUANTITY
+        ) {
+          showError(
+            "Maximum quantity is 10,000."
+          );
 
-      clearError();
-    };
+          return;
+        }
 
-    input.onkeydown = e => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        input.blur();
-      }
-    };
+        if (
+          setQty(
+            book,
+            quantity + 1
+          )
+        ) {
+          emitChange();
+        }
+      };
 
-    q.append(minus, input, plus);
+    /*
+     * MANUAL QUANTITY ENTRY
+     */
+    input.oninput =
+      () => {
+        const digits =
+          input.value.replace(
+            /\D/g,
+            ""
+          );
 
-    wrap.append(q, error);
+        input.value =
+          digits;
 
-    return wrap;
+        /*
+         * Blank is temporarily
+         * allowed while editing.
+         */
+        if (
+          digits === ""
+        ) {
+          showError(
+            "Enter a quantity from 0 to 10,000."
+          );
+
+          return;
+        }
+
+        const quantity =
+          Number(digits);
+
+        /*
+         * Prevent > 10,000
+         * immediately.
+         */
+        if (
+          digits.length > 5 ||
+          !Number.isSafeInteger(
+            quantity
+          ) ||
+          quantity >
+            MAX_QUANTITY
+        ) {
+          restoreCurrent();
+
+          showError(
+            "Maximum quantity is 10,000."
+          );
+
+          return;
+        }
+
+        /*
+         * 0 is allowed while
+         * the user is editing.
+         *
+         * Removal happens only
+         * after blur / Enter.
+         */
+        if (
+          quantity === 0
+        ) {
+          clearError();
+          return;
+        }
+
+        clearError();
+
+        setQty(
+          book,
+          quantity
+        );
+      };
+
+    /*
+     * USER FINISHES EDITING
+     */
+    input.onblur =
+      () => {
+        const digits =
+          input.value.replace(
+            /\D/g,
+            ""
+          );
+
+        /*
+         * Blank does NOT remove.
+         * Restore previous valid
+         * quantity.
+         */
+        if (
+          digits === ""
+        ) {
+          restoreCurrent();
+
+          showError(
+            "Enter a quantity from 0 to 10,000."
+          );
+
+          return;
+        }
+
+        const quantity =
+          Number(digits);
+
+        if (
+          !Number.isSafeInteger(
+            quantity
+          ) ||
+          quantity >
+            MAX_QUANTITY
+        ) {
+          restoreCurrent();
+
+          showError(
+            quantity >
+              MAX_QUANTITY
+              ? "Maximum quantity is 10,000."
+              : "Enter a quantity from 0 to 10,000."
+          );
+
+          return;
+        }
+
+        /*
+         * LOCKED BEHAVIOUR:
+         *
+         * Type 0
+         * → finish editing
+         * → remove title.
+         */
+        if (
+          quantity === 0
+        ) {
+          if (
+            remove(book)
+          ) {
+            emitChange();
+          }
+
+          return;
+        }
+
+        input.value =
+          String(quantity);
+
+        clearError();
+      };
+
+    /*
+     * ENTER commits the field.
+     */
+    input.onkeydown =
+      event => {
+        if (
+          event.key ===
+          "Enter"
+        ) {
+          event.preventDefault();
+
+          input.blur();
+        }
+      };
+
+    control.append(
+      minus,
+      input,
+      plus
+    );
+
+    actions.append(
+      control,
+      error
+    );
+
+    return actions;
   }
 
   /*
-   * Keep different open catalogue tabs synchronized.
+   * Synchronize selection changes
+   * between different browser tabs.
    */
-  window.addEventListener("storage", e => {
-    if (
-      e.key === ORDER_KEY &&
-      typeof refresh === "function"
-    ) {
-      refresh();
+  window.addEventListener(
+    "storage",
+    event => {
+      if (
+        event.key ===
+        ORDER_KEY
+      ) {
+        emitChange();
+      }
     }
-  });
+  );
 
   /*
-   * Expose the shared catalogue-selection API.
+   * EXPLICIT SHARED API
    *
-   * Existing pages can continue calling the same function
-   * names, so the refactor does not change their behaviour.
+   * Catalogue pages now access
+   * selection behaviour through:
+   *
+   * window.CambridgeSelection
+   *
+   * instead of depending on many
+   * generic global functions.
    */
-  Object.assign(window, {
-    CAMBRIDGE_ORDER_KEY: ORDER_KEY,
-    CAMBRIDGE_MAX_QUANTITY: MAX_QUANTITY,
+  window.CambridgeSelection =
+    Object.freeze({
+      ORDER_KEY,
+      MAX_QUANTITY,
+      CHANGE_EVENT,
 
-    order,
-    validQty,
-    save,
-    key,
-    indexOfBook,
-    selectedItem,
-    selectedCount,
-    updateBar,
-    add,
-    setQty,
-    remove,
-    detailsUrl,
-    coverNode,
-    actionNode
-  });
+      validQty,
+      readOrder,
+      saveOrder,
+      itemKey,
+      indexOfBook,
+      selectedItem,
+      selectedCount,
+      updateBar,
+      add,
+      remove,
+      setQty,
+      detailsUrl,
+      coverNode,
+      actionNode
+    });
 })();
