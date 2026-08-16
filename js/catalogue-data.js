@@ -1506,3 +1506,33 @@ window.CAMBRIDGE_CATALOGUE = [
     })
 
 ];
+
+/*
+=========================================================
+CATALOGUE DATA ACCESS
+=========================================================
+Returns only active catalogue records.
+
+Keep catalogue data access here rather than inside
+individual catalogue pages or selection/cart logic.
+=========================================================
+*/
+
+function catalogue() {
+  if (!Array.isArray(window.CAMBRIDGE_CATALOGUE)) {
+    console.error(
+      "Cambridge Catalogue: CAMBRIDGE_CATALOGUE data is unavailable."
+    );
+
+    return [];
+  }
+
+  return window.CAMBRIDGE_CATALOGUE.filter(
+    book =>
+      book &&
+      typeof book === "object" &&
+      book.active !== false
+  );
+}
+
+window.catalogue = catalogue;
