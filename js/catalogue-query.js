@@ -1,7 +1,6 @@
 /* Cambridge Digital Catalogue — shared data-access/query layer.
-   Canonical school-stage model: `class` is an array; there is no runtime
-   `levels` field. Legacy source records are normalized immediately here until
-   the source file itself is physically cleaned. */
+   Canonical school-stage model: `class` is always an array.
+   Nursery/LKG/UKG and Classes 1–10 use the same field. */
 (function (global) {
   "use strict";
 
@@ -16,37 +15,8 @@
     return raw;
   }
 
-  function canonicalize(book) {
-    if (!book || typeof book !== "object" || Array.isArray(book)) return book;
-
-    if (!Array.isArray(book.class)) {
-      const direct = normalizeClass(book.class);
-      if (direct) book.class = [direct];
-      else if (book.category === "early-learning" && Array.isArray(book.levels)) {
-        book.class = book.levels.length
-          ? [...new Set(book.levels.map(normalizeClass).filter(Boolean))]
-          : ["Nursery", "LKG", "UKG"];
-      } else book.class = [];
-    } else {
-      book.class = [...new Set(book.class.map(normalizeClass).filter(Boolean))];
-    }
-
-    if (book.category === "school") book.medium = "English";
-    if (book.category === "exam" && String(book.medium || "").trim().toLowerCase() === "hindi") book.medium = "English";
-    if (Object.prototype.hasOwnProperty.call(book, "levels")) delete book.levels;
-    return book;
-  }
-
-  function ensureCanonical() {
-    if (!Array.isArray(global.CAMBRIDGE_CATALOGUE)) return [];
-    global.CAMBRIDGE_CATALOGUE.forEach(canonicalize);
-    return global.CAMBRIDGE_CATALOGUE;
-  }
-
-  ensureCanonical();
-
   function all() {
-    return ensureCanonical();
+    return Array.isArray(global.CAMBRIDGE_CATALOGUE) ? global.CAMBRIDGE_CATALOGUE : [];
   }
 
   function active() {
@@ -54,9 +24,8 @@
   }
 
   function classValues(book) {
-    if (!book) return [];
-    const values = Array.isArray(book.class) ? book.class : [book.class];
-    return [...new Set(values.map(normalizeClass).filter(Boolean))];
+    if (!book || !Array.isArray(book.class)) return [];
+    return [...new Set(book.class.map(normalizeClass).filter(Boolean))];
   }
 
   function matchesClass(book, classValue) {
