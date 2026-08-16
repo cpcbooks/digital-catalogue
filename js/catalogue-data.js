@@ -1536,3 +1536,147 @@ function catalogue() {
 }
 
 window.catalogue = catalogue;
+
+
+/*
+=========================================================
+OPTIONAL CATALOGUE VALIDATION
+=========================================================
+
+Validation is intentionally NOT a dependency of the
+customer-facing catalogue.
+
+Normal visitors:
+- validator is not downloaded
+- validator is not executed
+- catalogue behaviour is unchanged
+
+Developer/data check:
+Add ?validate=1 to the page URL.
+
+Example:
+school-books.html?class=8&validate=1
+
+If the validator fails to load or contains an error,
+the catalogue must continue working normally.
+=========================================================
+*/
+
+(function loadCatalogueValidatorSafely() {
+  "use strict";
+
+  /*
+   * Browser-only diagnostic.
+   *
+   * This guard also allows catalogue-data.js
+   * to be used later by non-browser tools/tests.
+   */
+  if (
+    typeof window === "undefined" ||
+    typeof document === "undefined"
+  ) {
+    return;
+  }
+
+  try {
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    /*
+     * Do absolutely nothing during
+     * normal customer browsing.
+     */
+    if (
+      params.get("validate") !== "1"
+    ) {
+      return;
+    }
+
+    /*
+     * Prevent accidental duplicate loading.
+     */
+    if (
+      window.CambridgeCatalogueValidator
+    ) {
+      window.CambridgeCatalogueValidator.run(
+        window.CAMBRIDGE_CATALOGUE
+      );
+
+      return;
+    }
+
+    if (
+      document.querySelector(
+        'script[data-cambridge-catalogue-validator="true"]'
+      )
+    ) {
+      return;
+    }
+
+    const script =
+      document.createElement(
+        "script"
+      );
+
+    /*
+     * Resolve relative to catalogue-data.js itself.
+     *
+     * This is safer than assuming every HTML page
+     * will always live in the repository root.
+     */
+    const currentScript =
+      document.currentScript;
+
+    if (
+      currentScript &&
+      currentScript.src
+    ) {
+      script.src =
+        new URL(
+          "catalogue-validator.js",
+          currentScript.src
+        ).href;
+    } else {
+      /*
+       * Safe fallback for the current
+       * repository structure.
+       */
+      script.src =
+        "js/catalogue-validator.js";
+    }
+
+    script.async = true;
+
+    script.dataset
+      .cambridgeCatalogueValidator =
+      "true";
+
+    /*
+     * Validator failure must NEVER
+     * stop the catalogue.
+     */
+    script.onerror =
+      function () {
+        console.warn(
+          "Cambridge Catalogue: optional validator could not be loaded. Catalogue operation is unaffected."
+        );
+      };
+
+    document.head.appendChild(
+      script
+    );
+
+  } catch (error) {
+
+    /*
+     * Validation infrastructure is diagnostic only.
+     * Never rethrow this error.
+     */
+    console.warn(
+      "Cambridge Catalogue: optional validation could not start. Catalogue operation is unaffected.",
+      error
+    );
+  }
+})();
