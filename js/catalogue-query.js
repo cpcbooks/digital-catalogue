@@ -1,16 +1,9 @@
 /* Cambridge Digital Catalogue — shared data-access/query layer.
-   Pages should use this module instead of knowing storage/schema details.
-   Canonical school-stage model: `class` is an array; there is no `levels` field. */
+   Canonical school-stage model: `class` is an array; there is no runtime
+   `levels` field. Legacy source records are normalized immediately here until
+   the source file itself is physically cleaned. */
 (function (global) {
   "use strict";
-
-  function all() {
-    return Array.isArray(global.CAMBRIDGE_CATALOGUE) ? global.CAMBRIDGE_CATALOGUE : [];
-  }
-
-  function active() {
-    return all().filter(book => book && book.active !== false);
-  }
 
   function normalizeClass(value) {
     if (value === null || value === undefined || value === "") return "";
@@ -21,6 +14,43 @@
     if (upper === "UKG") return "UKG";
     if (/^(?:[1-9]|10)$/.test(raw)) return raw;
     return raw;
+  }
+
+  function canonicalize(book) {
+    if (!book || typeof book !== "object" || Array.isArray(book)) return book;
+
+    if (!Array.isArray(book.class)) {
+      const direct = normalizeClass(book.class);
+      if (direct) book.class = [direct];
+      else if (book.category === "early-learning" && Array.isArray(book.levels)) {
+        book.class = book.levels.length
+          ? [...new Set(book.levels.map(normalizeClass).filter(Boolean))]
+          : ["Nursery", "LKG", "UKG"];
+      } else book.class = [];
+    } else {
+      book.class = [...new Set(book.class.map(normalizeClass).filter(Boolean))];
+    }
+
+    if (book.category === "school") book.medium = "English";
+    if (book.category === "exam" && String(book.medium || "").trim().toLowerCase() === "hindi") book.medium = "English";
+    if (Object.prototype.hasOwnProperty.call(book, "levels")) delete book.levels;
+    return book;
+  }
+
+  function ensureCanonical() {
+    if (!Array.isArray(global.CAMBRIDGE_CATALOGUE)) return [];
+    global.CAMBRIDGE_CATALOGUE.forEach(canonicalize);
+    return global.CAMBRIDGE_CATALOGUE;
+  }
+
+  ensureCanonical();
+
+  function all() {
+    return ensureCanonical();
+  }
+
+  function active() {
+    return all().filter(book => book && book.active !== false);
   }
 
   function classValues(book) {
@@ -70,8 +100,4 @@
     byId,
     uniqueValues
   });
-
-  /* Ordinary catalogue -> View Book -> Back navigation is deliberately left
-     to the browser's native history/scroll restoration. Do not persist/replay
-     scroll positions in this query layer. */
 })(window);
