@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — AI / Developer Working Rules
 
+Last updated: 2026-08-16 17:52 IST (UTC+05:30)
+
 These rules exist to prevent regressions, duplicate implementations and loss of project context.
 
 ## Before changing code
@@ -51,6 +53,14 @@ Update docs:
 - before ending a long development session
 
 Do not paste chat transcripts. Summarize durable state and decisions.
+
+### Timestamp standard
+
+Every documentation checkpoint must include both date and time using CPC's working timezone:
+
+`YYYY-MM-DD HH:MM IST (UTC+05:30)`
+
+For chronological logs such as `DECISIONS.md` and `CHANGELOG.md`, meaningful entries should carry their own timestamp when known. For state/reference documents, maintain a `Last updated:` timestamp near the top. Git commit history remains the authoritative machine-level audit trail; documentation timestamps are for fast human recovery and sequencing.
 
 ## Required documentation updates
 
