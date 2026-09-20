@@ -2,6 +2,20 @@
 
 Record durable decisions here. Do not rewrite history when a decision changes; add a new entry explaining the superseding decision.
 
+## 2026-09-20 10:51 IST — Cover-led publication cards and direct Home escape
+
+**Decision:** publication browsers should use a shared cover-led responsive card system rather than one full-width row per book. Desktop uses a multi-column grid; mobile uses compact horizontal cards with the cover at left and book information/actions at right.
+
+**Reason:** full-width rows consume excessive vertical space and make a customer catalogue feel more like an administrative listing. Covers are an important discovery cue, while mobile needs fast scanning without tiny two-column cards.
+
+**Decision:** internal catalogue browsing pages should provide both a direct `Home` route and a contextual parent/back route.
+
+**Reason:** users should be able to leave a deep catalogue path immediately without repeatedly backing through every hierarchy level, while still retaining the contextual return route.
+
+**Implementation:** shared publication presentation rules live in `css/publication-browser.css`. New publication browsers should reuse this system rather than create another page-specific list layout.
+
+---
+
 ## 2026-08-16 — Git documentation is project memory
 
 **Decision:** Git `/docs` is the persistent source for project state and architectural decisions rather than relying on chat history.
