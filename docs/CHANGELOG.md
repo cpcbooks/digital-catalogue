@@ -4,6 +4,16 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 
 ## 2026-09-20
 
+### 10:51 IST — Publication browsing UX upgrade
+
+- Added shared `publication-browser.css` for consistent publication-card presentation.
+- Replaced dense full-width School Books and School Exam Preparation rows with cover-led desktop grids.
+- Added compact horizontal publication cards for mobile instead of shrinking desktop grids into tiny cards.
+- Prepared College and University and Competitive Exam browsers to use the same shared card system when verified titles are populated.
+- Added compact direct `Home` + contextual parent navigation to these publication browsers.
+- Recorded the shared card/navigation contract in `AGENTS.md` and the decision log for future Codex sessions.
+- Code was structurally updated in Git; live GitHub Pages visual/device verification is still required after deployment.
+
 ### 08:57 IST — Project recovery on new laptop
 
 - Cloned the current `main` branch on the new development laptop.
