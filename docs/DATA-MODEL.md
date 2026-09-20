@@ -2,57 +2,82 @@
 
 This document is the authoritative catalogue-field guide. Update it before/with schema-level changes.
 
-## Core publication record
+Detailed Supabase implementation direction lives in `SUPABASE-CATALOGUE-ARCHITECTURE.md`.
 
-Target shape (fields are added only when supported by real CPC data):
+## Publication Master V1
 
-```js
-{
-  id: "permanent-catalogue-id",
-  title: "Customer-facing publication title",
-  series: "Series name",
-  category: "early-learning | school | higher-education | competitive-exams",
-  class: ["LKG"],
-  subject: "Mathematics",
-  medium: "English",
-  bookType: "Textbook",
-  isbn: null,
-  mrp: null,
-  cover: null,
-  active: true
-}
+Validated against the curated CPC sample Publication Master on 2026-09-20.
+
+Canonical catalogue fields:
+
+- Catalogue Section
+- Series
+- Book Title
+- Class/Stage
+- Subject
+- Medium
+- Language Position
+- Book Type
+- SKU ID (optional business identifier; internal mapping, not identity)
+- MRP
+- ISBN
+- Author
+- Co Author
+- Pages
+- Length (cm)
+- Breadth (cm)
+- Thickness (cm)
+- Weight (kg)
+- Status
+
+The hidden/legacy `Category` column in the working Excel is intentionally excluded from V1. Do not add it to the canonical database unless a later real discovery requirement cannot be represented by section + series + class/stage + subject + book type.
+
+## Identity
+
+Every publication gets a database-generated immutable UUID. Do not derive identity from title, ISBN or SKU.
+
+SKU is optional and should not be invented merely to satisfy the catalogue database.
+
+## Catalogue Section
+
+Controlled values:
+
+- `Early Learning`
+- `School Learning`
+- `College and University`
+- `Competitive Exams`
+
+## Book Title
+
+Store CPC's official/customer-facing publication title. Do not reconstruct the title from Series + Subject + Class, and do not automatically prepend a series name when it is not part of the official title.
+
+## Series
+
+Nullable. Use only for a genuine publication family/series such as Little Master's, Inspiring, Honest Success Series, LBA, Marks Scorer or Key To Success.
+
+Do not use a generic book format such as `Workbook` as Series unless CPC genuinely markets it as a named series.
+
+## Class / Stage
+
+Database type: array of strings.
+
+Examples:
+
+```text
+["LKG"]
+["8"]
+["2nd PUC"]
+["5", "6", "7"]
+[]
 ```
 
-## `id`
-
-Required permanent catalogue identity. Do not derive business identity from title text.
-
-## `class`
-
-For Nursery through Class 10, this is the only school-stage field.
-
-Type: array of strings.
-
-Known school-stage vocabulary:
-
-- `Nursery`
-- `LKG`
-- `UKG`
-- `1` through `10`
-
-A title spanning classes uses multiple values, e.g.:
-
-```js
-class: ["5", "6", "7"]
-```
+An empty array means intentionally not class/stage restricted within its catalogue section. This supports Early Learning titles that can be used across stages without inventing an `All` class.
 
 Do not introduce a parallel `level` field.
 
-Playgroup appears in the current homepage UI but must be verified against actual product data before it is locked into the canonical class vocabulary.
+## Subject
 
-## `subject`
-
-The academic/language subject of the book.
+Nullable normalized academic subject.
 
 Examples:
 
@@ -62,49 +87,93 @@ Examples:
 - Kannada
 - Hindi
 - Social Science
+- Environmental Studies
+- Economics
 
-Subject does not determine medium.
+Customer-facing Kannada titles can map to normalized subjects, e.g. `Vignana` → `Science`, `Samaja Vignana` → `Social Science`.
 
-## `medium`
+Subject may be blank for multi-subject or non-subject-specific publications such as combined guides, art/activity titles or semester books.
 
-The edition/instruction medium.
+## Medium
 
-Known values currently needed:
+Nullable and independent of Subject.
 
-- English
-- Kannada
+Current controlled values:
 
-Rules:
+- `English`
+- `Kannada`
 
-- regular textbooks are English medium unless verified otherwise
-- a Kannada subject textbook may still have `medium: "English"`
-- Kannada medium is used only for an actual Kannada-medium edition
-- guides for higher school classes are a known area where English/Kannada medium variants may exist; verify against real master data before bulk assignment
+Important CPC rule: Medium is used where CPC genuinely distinguishes medium-specific publications, principally guides/question banks and similar exam-preparation products. Ordinary textbooks/readers/workbooks should not automatically receive `English` medium merely because their content is English.
 
-## Higher Education
+Do not infer medium from subject.
 
-Do not invent the final field set until CPC's actual PUC/Degree titles are inspected.
+## Language Position
 
-Expected need may include distinctions such as 1st PUC, 2nd PUC, degree/course/semester, but these must be based on actual catalogue structure.
+Nullable controlled values:
 
-## Competitive Exams
+- `First Language`
+- `Second Language`
+- `Third Language`
 
-Do not reuse `class` for exam names. A dedicated exam/category taxonomy should be introduced after inspecting actual CPC competitive-exam titles.
+Use only where the publication is actually classified that way. Do not infer school language-position rules for PUC/other segments.
+
+Combined-guide shorthand such as `Combined K-I (EM)` remains in the official title in V1; do not add a catalogue-wide `language` field until a real filtering requirement justifies it.
+
+## Book Type
+
+Required generic publication format. Initial controlled values:
+
+- Textbook
+- Reader
+- Semester Book
+- Workbook
+- Writing Book
+- Activity Book
+- Drawing Book
+- Rhymes Book
+- Guide
+- Combined Guide
+- Question Bank
+- Assessment Book
+
+Do not encode language into Book Type. Example: use `Subject = Kannada` + `Book Type = Reader`, not `Kannada Reader`.
+
+## Commercial and physical fields
+
+- MRP: nullable non-negative decimal
+- ISBN: nullable text, preserving the customer-facing/hyphenated form
+- Author / Co Author: nullable V1 text fields
+- Pages: nullable positive integer
+- Length/Breadth/Thickness: nullable centimetre values
+- Weight: nullable kilograms
+
+Do not over-normalize contributors in V1; contributor relationship tables can be introduced later if real catalogue requirements justify them.
+
+## Status
+
+Required; default `Active` for verified current catalogue records.
+
+Initial values:
+
+- Active
+- Discontinued
+- Out of Print
+- Archived
 
 ## Internal product mapping
 
-Internal operational identifiers live in Supabase `product_mappings`, keyed by permanent catalogue `product_id`.
+Internal operational identifiers remain separate from public catalogue presentation in Supabase `product_mappings`.
 
-Fields include:
+Target mapping:
 
-- SKU
-- ISBN
-- Tally Item Name
-- Tally Stock Item ID (optional/future)
-- ERP Item ID (optional/future)
+`publication id → SKU → ISBN/reference → Tally Item Name → optional Tally/ERP identifiers`
 
-Customer-facing catalogue records and internal Tally terminology remain separate.
+Tally Item Name is not the catalogue title and must never become publication identity.
+
+## Assets and catalogue content
+
+Covers, back covers, sample PDFs and digital resources belong to a publication asset layer rather than being encoded into product identity. Existing GitHub assets may remain during the pilot; full Supabase Storage migration is deferred until the database-backed catalogue is verified.
 
 ## Submitted request snapshots
 
-Submitted requests preserve customer-visible product data as immutable snapshots. Internal fulfilment mappings are resolved separately server-side and also snapshotted on request lines/components when available.
+Selection/Submit Request is an add-on to the catalogue. Submitted requests preserve customer-visible product data as immutable snapshots. Internal fulfilment mappings are resolved separately server-side and also snapshotted when available.
