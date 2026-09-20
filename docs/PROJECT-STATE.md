@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-09-20 IST (UTC+05:30)
+Last updated: 2026-09-20 19:10 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -28,38 +28,11 @@ The Supabase pilot Browse → Book Details → Selection flow has been live-veri
 
 Supabase project: **CPC Digital Catalogue** (`ysaxagxortpxyifyaydx`).
 
-Request add-on tables:
-
-- `requests`
-- `request_items`
-- `request_kit_components`
-- `product_mappings`
-
-RLS is enabled. The request system remains secondary and should stay stable during catalogue migration.
+Request add-on tables: `requests`, `request_items`, `request_kit_components`, `product_mappings`. RLS is enabled. The request system remains secondary and should stay stable during catalogue migration.
 
 ## Publication Master V1 — FROZEN FOR PILOT
 
-Canonical fields:
-
-- Catalogue Section
-- Series
-- Book Title
-- Class/Stage
-- Subject
-- Medium
-- Language Position
-- Book Type
-- SKU ID
-- MRP
-- ISBN
-- Author
-- Co Author
-- Pages
-- Length (cm)
-- Breadth (cm)
-- Thickness (cm)
-- Weight (kg)
-- Status
+Canonical fields: Catalogue Section, Series, Book Title, Class/Stage, Subject, Medium, Language Position, Book Type, SKU ID, MRP, ISBN, Author, Co Author, Pages, Length (cm), Breadth (cm), Thickness (cm), Weight (kg), Status.
 
 Key rules: Category excluded; Book Type controlled; Medium optional and never inferred from subject; Class/Stage array-based; empty class array means intentionally unrestricted; UUID is publication identity; SKU optional; Tally/ERP mapping remains private; no catalogue-wide Language field or edition hierarchy in V1.
 
@@ -67,16 +40,7 @@ Key rules: Category excluded; Book Type controlled; Medium optional and never in
 
 Migration `20260920103408_create_catalogue_publication_master_v1` created `public.publications` and `public.publication_assets`, constraints/indexes, automatic `updated_at`, RLS and read-only public catalogue policies.
 
-Approved pilot data:
-
-- 33 Active publications total
-- 9 Early Learning
-- 22 School Learning
-- 2 College and University
-- 0 Competitive Exams in this pilot batch
-- 6 deliberately class-unrestricted records represented by an empty `class_stage` array
-
-Hidden Excel Category was not imported. Blank Status defaulted to Active. No full catalogue migration has occurred.
+Approved pilot data: 33 Active publications total; 9 Early Learning; 22 School Learning; 2 College and University; 0 Competitive Exams; 6 deliberately class-unrestricted records represented by an empty `class_stage` array. Hidden Excel Category was not imported. Blank Status defaulted to Active. No full catalogue migration has occurred.
 
 ## Canonical publication identity / operational mapping bridge — IMPLEMENTED
 
@@ -92,11 +56,7 @@ Rules:
 - `product_mappings` currently contains zero rows, so no legacy mapping data required backfill at migration time.
 - Do not expose `product_mappings`, Tally item names, Tally stock IDs or ERP IDs to public catalogue clients.
 
-Target direction:
-
-`publications.id (UUID) → product_mappings.publication_id → SKU / Tally / ERP identifiers`
-
-When request submission is migrated, resolve new UUID-based catalogue selections through `publication_id`; retain legacy `product_id` compatibility only as long as needed for old/static catalogue requests.
+Target direction: `publications.id (UUID) → product_mappings.publication_id → SKU / Tally / ERP identifiers`.
 
 ## Supabase frontend pilot adapter — WORKING
 
@@ -108,17 +68,24 @@ The public publishable Supabase key is used in browser configuration; service-ro
 
 `js/catalogue-data.js` remains the normal/default catalogue source. It still contains legacy placeholder/static records and some obsolete assumptions. Supabase Publication Master V1 is the intended future source of truth.
 
-## Asset direction
+## Publication asset/storage pilot — COMPLETE
 
-Actual publication images should ultimately live in **Supabase Storage**. `publication_assets` stores the publication relationship and public asset metadata/path; the Publication Master Excel should not grow cover-image columns merely for website rendering.
+Actual publication images live in the public **`publication-assets` Supabase Storage** bucket. `publication_assets` stores the canonical publication relationship, asset type, storage path, public URL, ordering and active/primary state; the Publication Master Excel must not grow cover-image columns merely for website rendering.
 
-Asset migration remains a separate phase. Start with a small representative set of real covers before bulk migration.
+The first deliberately small pilot imported and verified exactly four PNG assets:
+
+- `10th LBA Science` (`22a9f39f-fd15-43dd-af31-caf2190ae48f`): primary `cover` and `back_cover`
+- `My Book of Draw & Colour - 3` (`0a334b1e-3eb6-49eb-8a7a-747794df871b`): primary `cover` and `back_cover`
+
+Each Storage object and public URL was verified; all four corresponding active `publication_assets` records exist. The Supabase Browse pilot renders both front covers, and each Book Details gallery renders front and back covers in order.
+
+The supplied LBA English images were intentionally not imported because they are English Second Language assets and do not match the current pilot publication. No publication metadata was changed and no bulk image migration has occurred.
+
+`scripts/upload-publication-assets.mjs` is the admin-only importer. It accepts UTF-8 JSON manifests with or without a BOM, requires `SUPABASE_SERVICE_ROLE_KEY` from the local environment, and must never receive a service-role key through a repository file.
 
 ## Immediate next step
 
-**Build the asset/storage pilot next:** create the publication asset bucket/policy architecture, connect a few representative real cover images to canonical publication UUIDs, and verify Browse + Book Details rendering. Do not bulk-migrate all covers yet.
-
-After the asset pilot, continue with universal Search/Browse architecture and full Publication Master migration planning.
+Continue universal Search/Browse architecture and full Publication Master migration planning. Keep the asset pilot constrained while gathering confirmed asset-to-publication mappings; do not bulk-migrate covers or import the unconfirmed LBA English assets.
 
 ## Migration rules
 
@@ -133,8 +100,6 @@ After the asset pilot, continue with universal Search/Browse architecture and fu
 
 ## Development definition of done
 
-For meaningful changes:
-
-**Inspect current Git → read relevant docs → implement smallest coherent change → test affected flows → verify → update docs → commit.**
+For meaningful changes: **Inspect current Git → read relevant docs → implement smallest coherent change → test affected flows → verify → update docs → commit.**
 
 Do not claim a feature is complete solely because code was written.
