@@ -2,6 +2,32 @@
 
 Record durable decisions here. Do not rewrite history when a decision changes; add a new entry explaining the superseding decision.
 
+## 2026-09-20 22:40 IST — Publication Master V1 refined after pilot
+
+**Decision:** refine the pilot Publication Master rules before the full CPC dataset is prepared. These decisions supersede conflicting field/value details in the earlier 15:53 pilot-freeze entry while preserving its overall lean-master principle.
+
+- `Category` remains excluded and has been removed from the working master.
+- `Language Position` is removed from V1. First/Second/Third Language may remain in the customer-facing Book Title where applicable, but is not separately maintained for current catalogue discovery.
+- `Description` is added as optional customer-facing publication metadata and is already supported by Supabase/Book Details.
+- `Book Title` stores the complete customer-facing publication name even when Series is stored separately.
+- `Series` is optional and only for genuine CPC product families. Generic names/formats such as Workbook, Q-Bank and Internal Assessment are not Series.
+- `Class/Stage` is optional and controlled. Empty means intentionally not class-specific. Multiple specific stages are allowed; Excel uses ` | ` and import tooling normalizes to an array. Current values: Nursery, LKG, UKG, 1–10, 1st PUC, 2nd PUC.
+- `Subject` is optional, controlled-but-extensible and single-valued in the master. Combined/multi-subject books may leave it blank.
+- `Medium` remains optional and controlled as English/Kannada; it is never inferred from Subject.
+- `Book Type` is required and controlled-but-extensible. Current approved values: Textbook, Guide, Combined Guide, Question Bank, Workbook, Activity Book, Writing Book, Drawing Book, Reader, Semester Book, Assessment Book, Rhymes Book, Map Book.
+- `Catalogue Section` remains required with Early Learning, School Learning, College and University, Competitive Exams. PUC and Degree/college remain combined under College and University for now because current volume does not justify separate top-level sections.
+- `ISBN` canonical storage/input format is ISBN-13 digits only, no spaces/hyphens. Display formatting is separate. Future validation should verify the ISBN-13 check digit.
+- `Status` values are Active, Upcoming, Inactive, Discontinued. `Upcoming` may display as `Coming Soon` to customers.
+- `SKU ID` is deliberately parked; CPC will decide the convention later. Do not invent SKUs to unblock pilot/full-master preparation.
+
+**Controlled-value policy:** current lists are V1 approved values based on the sample, not permanent closed taxonomies. The full CPC catalogue may reveal legitimate additions. Validator/import configuration should make deliberate additions easy while preventing ad-hoc spelling/case variants.
+
+**Migration direction:** the 33 Supabase records are pilot data. Once the complete master is validated, it is acceptable to back up and replace the pilot publication dataset with one clean full-master import. Recreated UUIDs require publication asset mappings to be recreated/remapped. A permanent SKU/matching strategy becomes necessary before repeated production update cycles, not before the one-time pilot-to-production reset.
+
+**Customer journey:** the existing Selection → Review → Submit Request flow is already implemented and Supabase-backed. Do not rebuild it as the next catalogue architecture task. Remaining catalogue completion is primarily real data/taxonomy coverage for College and University, Competitive Exams, and verification of universal Browse/Search against the broader dataset.
+
+---
+
 ## 2026-09-20 15:53 IST — Publication Master V1 frozen for Supabase pilot
 
 **Decision:** freeze the lean Publication Master V1 after validation against the curated CPC sample dataset and proceed to a Supabase pilot without further speculative fields.
