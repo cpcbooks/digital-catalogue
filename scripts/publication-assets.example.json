@@ -1,0 +1,30 @@
+[
+  {
+    "publicationId": "22a9f39f-fd15-43dd-af31-caf2190ae48f",
+    "assetType": "cover",
+    "file": "/absolute/path/10th LBA Science - Front.png",
+    "isPrimary": true,
+    "sortOrder": 0
+  },
+  {
+    "publicationId": "22a9f39f-fd15-43dd-af31-caf2190ae48f",
+    "assetType": "back_cover",
+    "file": "/absolute/path/10th LBA Science - Back.png",
+    "isPrimary": false,
+    "sortOrder": 1
+  },
+  {
+    "publicationId": "0a334b1e-3eb6-49eb-8a7a-747794df871b",
+    "assetType": "cover",
+    "file": "/absolute/path/Draw & Colour - 3 - Front.png",
+    "isPrimary": true,
+    "sortOrder": 0
+  },
+  {
+    "publicationId": "0a334b1e-3eb6-49eb-8a7a-747794df871b",
+    "assetType": "back_cover",
+    "file": "/absolute/path/Draw & Colour - 3 - Back.png",
+    "isPrimary": false,
+    "sortOrder": 1
+  }
+]
