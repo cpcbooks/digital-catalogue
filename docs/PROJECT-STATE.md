@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-09-20 16:07 IST (UTC+05:30)
+Last updated: 2026-09-20 16:20 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -63,11 +63,9 @@ Canonical fields:
 
 Key rules: Category excluded; Book Type controlled; Medium optional and never inferred from subject; Class/Stage array-based; empty class array means intentionally unrestricted; UUID is publication identity; SKU optional; Tally/ERP mapping remains private; no catalogue-wide Language field or edition hierarchy in V1.
 
-## Supabase catalogue pilot — DATABASE FOUNDATION CREATED
+## Supabase catalogue pilot — DATABASE + PILOT DATA READY
 
-Migration `20260920103408_create_catalogue_publication_master_v1` was applied successfully on 2026-09-20.
-
-Created:
+Migration `20260920103408_create_catalogue_publication_master_v1` created:
 
 - `public.publications`
 - `public.publication_assets`
@@ -77,34 +75,58 @@ Created:
 - public SELECT policies restricted to Active publications / active assets belonging to Active publications
 - browser INSERT/UPDATE/DELETE privileges revoked
 
-Verification after migration:
+The approved Excel pilot was imported after validation.
 
-- both catalogue tables have RLS enabled
-- `anon` has SELECT but not INSERT on both tables
-- catalogue tables currently contain zero pilot publications; no production/static catalogue data was replaced
-- Supabase security advisor reported no new catalogue-table security warning. Its four `RLS enabled, no policy` informational findings are the pre-existing private request/product-mapping tables, intentionally inaccessible directly to browser roles.
-- performance advisor reports new indexes as unused, expected while the catalogue tables contain no pilot data and have not served queries yet; do not remove them based on pre-pilot usage statistics.
+Current pilot counts:
 
-Authoritative architecture: `docs/SUPABASE-CATALOGUE-ARCHITECTURE.md`.
+- 33 Active publications total
+- 9 Early Learning
+- 22 School Learning
+- 2 College and University
+- 0 Competitive Exams in this pilot batch
+- 6 deliberately class-unrestricted records represented by an empty `class_stage` array
+
+Hidden Excel Category was not imported. Blank Status defaulted to Active. No full catalogue migration has occurred.
+
+## Supabase frontend pilot adapter — CREATED, NOT LIVE
+
+`js/catalogue-supabase-adapter.js` now provides an opt-in adapter that:
+
+- reads Active rows from `publications`
+- reads active `publication_assets`
+- converts canonical Supabase rows into the existing `CAMBRIDGE_CATALOGUE` frontend shape
+- preserves UUID as both `id` and `productId`
+- maps `class_stage` to the existing `class` array
+- maps canonical Book Type to legacy `type` where required
+- derives the legacy category only as a compatibility bridge (`early-learning`, `school`, `exam`, `college-university`, `competitive-exams`)
+- maps primary cover assets when available
+- exposes `compareWithStatic()` for pilot comparison
+- does **not** automatically overwrite `window.CAMBRIDGE_CATALOGUE`
+
+Important: the adapter intentionally requires the public Supabase anon key to be supplied by the caller. No secret/service-role credential is committed. Before browser pilot activation, use the project's public anon/publishable credential only.
 
 ## Current static catalogue state
 
-`js/catalogue-data.js` remains the live catalogue source during the pilot. Existing frontend contracts and working catalogue/request journeys must remain functional. Do not perform a big-bang replacement.
+`js/catalogue-data.js` remains the live catalogue source. It still contains legacy placeholder/static records and some now-obsolete assumptions (for example textbook medium defaults). Do not clean those up as part of the pilot unless required for a specific compatibility test; Supabase Publication Master V1 is the intended future source of truth.
 
 ## Immediate next step
 
-**Import the curated Publication Master pilot dataset into `public.publications`, then validate records before building the frontend Supabase adapter.**
+**Wire a safe, explicit pilot/test page or opt-in mode to `catalogue-supabase-adapter.js`, provide the public anon/publishable key through browser configuration, and compare representative journeys without switching the production catalogue source.**
 
-Sequence:
+Test at minimum:
 
-1. prepare deterministic import mapping from the approved Excel columns to `public.publications`
-2. import the curated ~30-row pilot only
-3. validate counts, null semantics, controlled values, class arrays, medium rules and duplicate risks
-4. attach/reuse existing cover URLs only where confidently mapped; do not bulk-migrate assets yet
-5. build Supabase data adapter mapping canonical records into the existing frontend contract
-6. test representative Early Learning / School / PUC / search journeys against pilot data
-7. compare with static behaviour
-8. only then plan bulk migration and eventual retirement of `catalogue-data.js` as authoritative source
+1. Early Learning class-specific publication
+2. Early Learning class-unrestricted publication
+3. School textbook
+4. School guide
+5. Combined guide
+6. LBA / Question Bank
+7. Kannada-medium normalized subject case
+8. College / 2nd PUC publication
+9. Browse/search result rendering
+10. Book details and selection/request identity compatibility
+
+Only after those pass should the live pages be migrated incrementally.
 
 ## Migration rules
 
@@ -114,6 +136,7 @@ Sequence:
 - Do not expose `product_mappings` or Tally/ERP fields to the browser.
 - Do not invent missing publication values.
 - Do not add lookup tables/fields merely because they might be useful someday.
+- Do not commit Supabase service-role credentials.
 
 ## Development definition of done
 
