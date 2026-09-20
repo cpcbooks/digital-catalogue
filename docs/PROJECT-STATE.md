@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-08-16 20:49 IST (UTC+05:30)
+Last updated: 2026-09-20 09:00 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -76,17 +76,19 @@ Current catalogue record count remains structurally equivalent to the prior sour
 
 Do **not** continue product mapping/staff workflow yet.
 
-**NEXT: Higher Education taxonomy/data design from actual CPC titles, then Higher Education implementation.**
+The College and University and Competitive Exams navigation and publication-browser shells are implemented and linked from the homepage. Both use the central catalogue dataset and show honest empty states because no verified PUC, Degree, or competitive-exam titles have been added yet.
+
+The homepage search, Browse All Series and Subjects & Book Types now route into one shared `browse.html` discovery page. It searches the existing central catalogue and provides filters from actual category, class, series, subject and book-type values. This change still needs live visual/browser verification after publication.
+
+**NEXT: obtain verified CPC title data for 1st PUC, 2nd PUC, Degree and Competitive Exams.** The user asked to continue site structure first while those lists are unavailable. Define the minimum taxonomy from the actual titles when they arrive, then populate and test the browsers and shared Book Details/selection flow.
 
 Current roadmap:
 
-1. Higher Education
-2. Competitive Exams
-3. Universal Browse + Global Search engine
-4. Wire homepage Browse All Series / Subjects & Book Types / top search into the universal discovery engine
-5. Full regression testing
-6. Populate product mappings (SKU / ISBN / Tally Item Name / internal identifiers)
-7. Staff request dashboard + notifications
+1. Verified College and University / Competitive Exams data and taxonomy
+2. Verify and refine the shared Browse + Search page in browser
+3. Full regression testing
+4. Populate product mappings (SKU / ISBN / Tally Item Name / internal identifiers)
+5. Staff request dashboard + notifications
 
 ## Important recovered decisions
 
@@ -115,13 +117,13 @@ Current roadmap:
 
 The homepage already visually contains:
 
-- Higher Education
-- Competitive Exams
-- top catalogue search
-- Browse All Series
-- Subjects & Book Types
+- College and University (linked)
+- Competitive Exams (linked)
+- top catalogue search (linked to shared Browse)
+- Browse All Series (linked to shared Browse)
+- Subjects & Book Types (linked to shared Browse)
 
-These are not all functionally wired yet. Do not redesign them unnecessarily; implement the missing journeys using shared architecture.
+Featured-book buttons are still placeholders. Do not redesign working sections unnecessarily; connect remaining journeys through shared architecture.
 
 ## Development definition of done
 

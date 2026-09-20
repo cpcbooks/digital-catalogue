@@ -1115,7 +1115,8 @@ footer p {
 }
 
 
-.discovery-card button {
+.discovery-card button,
+.discovery-card a {
 
     grid-column: 2;
 
@@ -1133,6 +1134,8 @@ footer p {
     font-weight: 800;
 
     cursor: pointer;
+
+    text-decoration: none;
 
 }
 
@@ -1258,7 +1261,8 @@ footer p {
     }
 
 
-    .discovery-card button {
+    .discovery-card button,
+    .discovery-card a {
 
         grid-column: 2;
 

@@ -2,6 +2,20 @@
 
 This is a concise functional changelog, not a commit-by-commit transcript.
 
+## 2026-09-20
+
+### 08:57 IST — Project recovery on new laptop
+
+- Cloned the current `main` branch on the new development laptop.
+- Reconciled project state and roadmap with the already implemented College and University and Competitive Exams navigation/browser shells.
+- Confirmed that verified titles are still required before those sections can display publications.
+
+### 09:00 IST — Shared catalogue discovery structure
+
+- Added one Browse page with search and filters derived from existing catalogue records.
+- Connected homepage search, Browse All Series and Subjects & Book Types to that page.
+- Kept College and Competitive Exams product records empty pending verified title lists.
+
 ## 2026-08-16
 
 ### 18:07 IST — Catalogue schema normalization

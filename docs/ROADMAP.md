@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Roadmap
 
-Last updated: 2026-08-16 18:07 IST (UTC+05:30)
+Last updated: 2026-09-20 09:00 IST (UTC+05:30)
 
 ## Completed / verified
 
@@ -25,28 +25,32 @@ Last updated: 2026-08-16 18:07 IST (UTC+05:30)
 
 ## Current milestone — Complete catalogue discovery
 
-### 1. Higher Education — NEXT
+### 1. College and University — structure complete, data next
 
 - inspect actual CPC PUC/Degree data
 - define minimum taxonomy from real titles only
-- implement 1st PUC / 2nd PUC / Degree journeys
+- 1st PUC / 2nd PUC / Degree navigation and browser shells are implemented
+- add verified titles and test Book Details/selection for those titles
 - reuse shared selection/details architecture
 
-### 2. Competitive Exams
+### 2. Competitive Exams — structure complete, data next
 
 - inspect actual CPC competitive-exam titles
 - define exam/category taxonomy
-- implement browsing/results using shared architecture
+- VAO / Land Surveyor / Other Exams navigation and browser shells are implemented
+- add verified titles and test Book Details/selection for those titles
 
-### 3. Universal Browse + Search
+### 3. Universal Browse + Search — structure built, verification next
 
-One shared discovery engine for:
+One shared discovery page now serves:
 
 - top homepage search
 - Browse All
 - Browse All Series
 - Subjects & Book Types
-- filters based on complete catalogue taxonomy
+- filters derived from the current central catalogue records
+
+Verify the browser flow and mobile layout, then extend filters only when verified PUC/Degree/competitive-exam title data establishes the remaining taxonomy.
 
 ### 4. Regression pass
 
