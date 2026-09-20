@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Roadmap
 
-Last updated: 2026-09-20 09:00 IST (UTC+05:30)
+Last updated: 2026-09-20 22:40 IST (UTC+05:30)
 
 ## Completed / verified
 
@@ -18,62 +18,116 @@ Last updated: 2026-09-20 09:00 IST (UTC+05:30)
 - custom-kit component snapshot/mapping structure
 - secure Edge Function submission
 - successful real end-to-end request (`CPC-20260816-5645CC`)
-- canonical Nursery–Class 10 catalogue model: `class` only, array-based
-- removed catalogue `levels` field and legacy query compatibility
-- corrected school subject/medium semantics so language subject does not imply publication medium
-- updated Kit Builder, Book Details and request submission for class arrays
+- canonical array-based Class/Stage model
+- corrected subject/medium semantics
+- shared universal Browse/Search structure
+- Supabase Publication Master pilot with 33 records
+- Supabase Storage publication-asset pilot
+- front/back cover gallery verified for two pilot publications
+- portrait and landscape Browse/Book Details image rendering without cropping
+- optional publication Description field and Book Details `About this book` support
+- future sample-page asset sequence supported
+- Publication Master V1 data-entry rules refined and documented for CPC team
+- image preparation/naming rules prepared for CPC team
 
-## Current milestone — Complete catalogue discovery
+## Current milestone — Prepare and prove the full catalogue dataset
 
-### 1. College and University — structure complete, data next
+The customer request journey is already implemented. Do not rebuild it. The current priority is completing the catalogue using verified CPC publication data while keeping the working request system stable.
 
-- inspect actual CPC PUC/Degree data
-- define minimum taxonomy from real titles only
-- 1st PUC / 2nd PUC / Degree navigation and browser shells are implemented
-- add verified titles and test Book Details/selection for those titles
-- reuse shared selection/details architecture
+### 1. Complete Publication Master — team/data task in progress
 
-### 2. Competitive Exams — structure complete, data next
+CPC team prepares the full master using the current V1 rules.
 
-- inspect actual CPC competitive-exam titles
-- define exam/category taxonomy
-- VAO / Land Surveyor / Other Exams navigation and browser shells are implemented
-- add verified titles and test Book Details/selection for those titles
+Current master fields:
 
-### 3. Universal Browse + Search — structure built, verification next
+`Catalogue Section, Series, Book Title, Class/Stage, Subject, Medium, Book Type, Description, SKU ID, MRP, ISBN, Author, Co Author, Pages, Length, Breadth, Thickness, Weight, Status`
 
-One shared discovery page now serves:
+Category and Language Position are excluded. SKU convention is parked.
 
-- top homepage search
-- Browse All
-- Browse All Series
-- Subjects & Book Types
-- filters derived from the current central catalogue records
+Controlled lists are V1 approved values, not permanent closed taxonomies. Review legitimate additions when the complete data reveals them.
 
-Verify the browser flow and mobile layout, then extend filters only when verified PUC/Degree/competitive-exam title data establishes the remaining taxonomy.
+### 2. Prepare publication assets — team/data task in progress
 
-### 4. Regression pass
+For each publication, prepare a folder matching the Book Title with:
 
-Verify desktop/mobile and cross-module behaviour:
+- `front` — intended required live cover
+- `back` — recommended
+- `sample-01`, `sample-02`, ... — optional useful inside pages
+
+Preserve original aspect ratio; do not crop/stretch to a fixed portrait shape.
+
+### 3. Publication Master validator — planned
+
+Build a configuration-driven validator when useful against the incoming full dataset.
+
+It should check required fields, controlled values, class-stage formatting, ISBN-13/check digit, numeric fields and duplicates, and distinguish errors from review warnings. It must not modify Supabase during validation.
+
+The validator should make approved additions to Subject/Series/Book Type/etc. easy without rewriting the validation engine.
+
+### 4. Review full-data taxonomy
+
+Use the complete real dataset to confirm whether any V1 additions are needed, especially:
+
+- new Book Types
+- new Subjects
+- genuine Series
+- Degree/college stages
+- Competitive Exam taxonomy
+
+Do not invent speculative fields before the real data demonstrates the need.
+
+### 5. Controlled pilot-to-production publication migration
+
+Once the complete master passes review:
+
+1. export/back up the 33-record pilot dataset and current pilot asset mappings;
+2. intentionally clear/replace the pilot publication dataset;
+3. align Supabase schema/constraints with the final approved V1 rules;
+4. import the clean full Publication Master;
+5. remap/import publication assets to the new publication UUIDs;
+6. verify record counts and representative publications before switching catalogue reliance fully to the production dataset.
+
+Because SKU is parked, this reset is preferred over building complex update matching around disposable pilot records. A permanent business identifier/matching strategy must be resolved before repeated production update cycles.
+
+### 6. Complete College and University
+
+Structure already exists. Use the full verified data to populate/test 1st PUC, 2nd PUC, Degree and other college/university publications. Keep them under the combined `College and University` top-level section for V1 unless full catalogue volume proves a split is necessary.
+
+### 7. Complete Competitive Exams
+
+Structure already exists. Use verified real titles to establish the actual exam taxonomy and populate/test the section. Avoid taxonomy based only on assumptions or placeholders.
+
+### 8. Universal Browse/Search verification
+
+The shared discovery page already serves homepage search/Browse All and related filtering. Verify it against the full production dataset and extend filters only where the real data establishes a need.
+
+### 9. Full regression pass
+
+Verify desktop/mobile and cross-module behaviour after the production dataset is loaded:
 
 - navigation/back
+- Browse/Search/filtering
+- Book Details and image galleries
+- portrait/landscape/sample pages
 - selection persistence
-- add/remove
-- quantities including max/zero behaviour
+- add/remove and quantities
 - custom kits
-- Book Details
 - floating My Selection entry
 - request details/review
 - Supabase submission
 
-## After catalogue discovery
+## After full catalogue migration
+
+### Permanent publication/SKU update strategy
+
+Decide CPC's SKU convention and production master update/matching workflow. Do not rely on title matching for long-term repeated imports.
 
 ### Product master mapping
 
-Populate verified:
+Populate verified operational mappings as required:
 
 - SKU
-- ISBN
+- ISBN/reference
 - Tally Item Name
 - optional Tally stock item identifier
 - future ERP identifier
@@ -95,3 +149,4 @@ Do not introduce without a concrete requirement:
 - complex CRM inside the catalogue
 - duplicated search systems
 - speculative Higher Education/competitive-exam fields
+- arbitrary SKU generation merely to unblock catalogue migration
