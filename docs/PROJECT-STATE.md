@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-09-20 IST (UTC+05:30)
+Last updated: 2026-09-20 18:52 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -108,17 +108,26 @@ The public publishable Supabase key is used in browser configuration; service-ro
 
 `js/catalogue-data.js` remains the normal/default catalogue source. It still contains legacy placeholder/static records and some obsolete assumptions. Supabase Publication Master V1 is the intended future source of truth.
 
-## Asset direction
+## Publication asset/storage pilot — COMPLETE
 
-Actual publication images should ultimately live in **Supabase Storage**. `publication_assets` stores the publication relationship and public asset metadata/path; the Publication Master Excel should not grow cover-image columns merely for website rendering.
+Actual publication images live in the public **`publication-assets` Supabase Storage** bucket. `publication_assets` stores the canonical publication relationship, asset type, storage path, public URL, ordering and active/primary state; the Publication Master Excel must not grow cover-image columns merely for website rendering.
 
-Asset migration remains a separate phase. Start with a small representative set of real covers before bulk migration.
+The first deliberately small pilot imported and verified exactly four PNG assets:
+
+- `10th LBA Science` (`22a9f39f-fd15-43dd-af31-caf2190ae48f`): primary `cover` and `back_cover`
+- `My Book of Draw & Colour - 3` (`0a334b1e-3eb6-49eb-8a7a-747794df871b`): primary `cover` and `back_cover`
+
+Each storage object and public URL returned HTTP 200 with `image/png`; all four corresponding active `publication_assets` records were verified. The Supabase Browse pilot renders both front covers, and each Book Details gallery renders front and back covers in order.
+
+The supplied LBA English images were intentionally not imported: they are English Second Language assets and do not match the current pilot publication. No publication metadata was changed and no bulk image migration has occurred.
+
+`scripts/upload-publication-assets.mjs` is the admin-only importer. It supports UTF-8 JSON manifests with or without a BOM, requires `SUPABASE_SERVICE_ROLE_KEY` from the local environment, and must never receive a service-role key through a repository file.
 
 ## Immediate next step
 
-**Build the asset/storage pilot next:** create the publication asset bucket/policy architecture, connect a few representative real cover images to canonical publication UUIDs, and verify Browse + Book Details rendering. Do not bulk-migrate all covers yet.
+Keep the pilot constrained while gathering confirmed asset-to-publication mappings. Extend it only with verified source images and canonical publication UUIDs; do not bulk-migrate covers or import the unconfirmed LBA English assets.
 
-After the asset pilot, continue with universal Search/Browse architecture and full Publication Master migration planning.
+Continue universal Search/Browse architecture and full Publication Master migration planning independently of the asset pilot.
 
 ## Migration rules
 

@@ -102,7 +102,10 @@ async function upload(item) {
   console.log(`✓ ${publication.title}: ${item.assetType} → ${relativePath}`);
 }
 
-const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+// Windows editors may prefix UTF-8 JSON with U+FEFF. JSON.parse rejects it,
+// so remove only that optional byte-order mark before parsing the manifest.
+const manifestText = (await fs.readFile(manifestPath, "utf8")).replace(/^\uFEFF/, "");
+const manifest = JSON.parse(manifestText);
 if (!Array.isArray(manifest) || !manifest.length) throw new Error("Manifest must be a non-empty JSON array.");
 for (const item of manifest) await upload(item);
 console.log(`Imported ${manifest.length} publication asset(s).`);
