@@ -15,6 +15,7 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 - Added one Browse page with search and filters derived from existing catalogue records.
 - Connected homepage search, Browse All Series and Subjects & Book Types to that page.
 - Kept College and Competitive Exams product records empty pending verified title lists.
+- Refined search to match multiple words across title, class, subject and series after live testing.
 
 ## 2026-08-16
 

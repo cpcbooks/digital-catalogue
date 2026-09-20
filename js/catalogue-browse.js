@@ -37,13 +37,13 @@
   }
 
   function render() {
-    const term = search.value.trim().toLocaleLowerCase();
+    const terms = search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     const matched = books.filter(book => {
       if (Object.entries(fields).some(([field, select]) => select.value && !values(book, field).includes(select.value))) return false;
-      if (!term) return true;
+      if (!terms.length) return true;
       const classes = query.classValues(book);
       const searchable = [book.title, book.series, book.family, book.subject, book.displaySubject, book.type, book.bookType, book.medium, categoryNames[book.category], ...classes, ...classes.map(value => "Class " + value)].filter(Boolean).join(" ").toLocaleLowerCase();
-      return searchable.includes(term);
+      return terms.every(term => searchable.includes(term));
     });
 
     summary.textContent = `${matched.length} publication${matched.length === 1 ? "" : "s"} found`;
