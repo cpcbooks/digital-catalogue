@@ -2,6 +2,28 @@
 
 Record durable decisions here. Do not rewrite history when a decision changes; add a new entry explaining the superseding decision.
 
+## 2026-09-20 15:53 IST — Publication Master V1 frozen for Supabase pilot
+
+**Decision:** freeze the lean Publication Master V1 after validation against the curated CPC sample dataset and proceed to a Supabase pilot without further speculative fields.
+
+Canonical dimensions are Catalogue Section, Series, Book Title, Class/Stage, Subject, Medium, Language Position and Book Type, plus commercial/physical/status fields documented in `DATA-MODEL.md`.
+
+**Category is excluded from V1.** In the sample data it alternated between subject-like and book-type-like meanings. Discovery groupings should be derived from the canonical dimensions unless a future concrete requirement proves a separate Category is necessary.
+
+**Book Type stays.** It describes the generic publication format independently of Subject and Series. Use controlled generic values such as Textbook, Reader, Workbook, Guide, Combined Guide and Question Bank; do not encode language into Book Type.
+
+**Medium is optional.** Ordinary textbooks/readers/workbooks are not automatically classified as English medium. Use English/Kannada only where CPC genuinely distinguishes medium-specific publications, principally guides/question banks and similar products.
+
+**Class/Stage is array-based in the database.** An empty array means intentionally not class/stage restricted within the catalogue section; do not invent an `All` stage.
+
+**Publication identity is database-generated and immutable.** SKU is optional business data and is not the primary key. Tally/ERP mapping remains separate from public catalogue presentation.
+
+**Migration strategy:** keep `catalogue-data.js` live while a curated Supabase pilot is imported and verified. Do not perform a big-bang replacement or move all covers to Storage at the same time.
+
+See `SUPABASE-CATALOGUE-ARCHITECTURE.md` for the implementation blueprint.
+
+---
+
 ## 2026-09-20 11:33 IST — Catalogue is the primary product
 
 **Decision:** CPC Digital Catalogue is fundamentally a catalogue/discovery product. Selection, Review and Submit Request are secondary convenience features, not the system's primary purpose.
