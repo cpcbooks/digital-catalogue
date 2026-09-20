@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-09-20 15:53 IST (UTC+05:30)
+Last updated: 2026-09-20 16:07 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -12,7 +12,7 @@ Build a premium, accurate, easy-to-use **CPC Digital Catalogue** that helps cust
 
 Primary journey:
 
-`Discover/Browse/Search → Category/Section → Class/Stage → Publications → Book Details`
+`Discover/Browse/Search → Section → Class/Stage → Publications → Book Details`
 
 Optional continuation:
 
@@ -20,23 +20,7 @@ Optional continuation:
 
 ## Current customer journey
 
-Implemented and working:
-
-1. Homepage / catalogue entry
-2. Early Learning browsing
-3. School Learning browsing
-4. School book lists
-5. College and University navigation/browser shell
-6. Competitive Exams navigation/browser shell
-7. Shared Browse/Search discovery page
-8. Book Details
-9. Build Your Own Kit
-10. Shared My Selection
-11. Quantity editing and validation
-12. Request Details form
-13. Review Request
-14. Send Request through Supabase Edge Function
-15. Success state with CPC request reference
+Implemented and working: homepage, Early Learning, School Learning, school book lists, College and University shell, Competitive Exams shell, shared Browse/Search, Book Details, Kit Builder, My Selection, request details/review/submission and Supabase-backed request success.
 
 The recent UI consistency pass has been live-verified by the user. UI is intentionally deprioritized now except for blocking bugs.
 
@@ -44,27 +28,16 @@ The recent UI consistency pass has been live-verified by the user. UI is intenti
 
 Supabase project: **CPC Digital Catalogue** (`ysaxagxortpxyifyaydx`).
 
-Verified existing public tables on 2026-09-20:
+Existing request add-on tables remain:
 
 - `requests`
 - `request_items`
 - `request_kit_components`
 - `product_mappings`
 
-RLS is enabled on all four existing business tables.
-
-Existing request add-on infrastructure:
-
-- atomic `submit_catalogue_request(jsonb)` database function
-- `submit-catalogue-request` Edge Function
-- browser roles cannot directly read/write request tables
-- internal SKU/Tally mappings are resolved server-side rather than trusted from browser input
-
-The request system is secondary and should remain stable while catalogue architecture is migrated.
+RLS is enabled. The request system remains secondary and should stay stable during catalogue migration.
 
 ## Publication Master V1 — FROZEN FOR PILOT
-
-The lean schema has been validated against a curated CPC sample dataset covering Early Learning, class-independent titles, school textbooks/readers/workbooks, individual and combined guides, LBA English/Kannada medium, Internal Assessment, Marks Scorer and PUC titles.
 
 Canonical fields:
 
@@ -76,7 +49,7 @@ Canonical fields:
 - Medium
 - Language Position
 - Book Type
-- SKU ID (optional internal/business identifier)
+- SKU ID
 - MRP
 - ISBN
 - Author
@@ -88,50 +61,50 @@ Canonical fields:
 - Weight (kg)
 - Status
 
-Important decisions:
+Key rules: Category excluded; Book Type controlled; Medium optional and never inferred from subject; Class/Stage array-based; empty class array means intentionally unrestricted; UUID is publication identity; SKU optional; Tally/ERP mapping remains private; no catalogue-wide Language field or edition hierarchy in V1.
 
-- hidden/legacy `Category` is excluded from Supabase V1
-- Book Type remains a controlled generic publication-format field
-- Medium is optional and used only where CPC genuinely distinguishes medium-specific publications; ordinary textbooks are not automatically English medium
-- Class/Stage is array-based in the database; empty array means intentionally not stage-restricted within the section
-- publication identity is a database-generated immutable UUID
-- SKU is optional and is not publication identity
-- Tally/ERP mapping remains private and separate
-- no catalogue-wide `language` field in V1
-- no edition/publication-family hierarchy in V1
+## Supabase catalogue pilot — DATABASE FOUNDATION CREATED
 
-Authoritative details: `docs/DATA-MODEL.md` and `docs/SUPABASE-CATALOGUE-ARCHITECTURE.md`.
+Migration `20260920103408_create_catalogue_publication_master_v1` was applied successfully on 2026-09-20.
+
+Created:
+
+- `public.publications`
+- `public.publication_assets`
+- catalogue constraints and indexes
+- automatic `updated_at` trigger
+- RLS on both tables
+- public SELECT policies restricted to Active publications / active assets belonging to Active publications
+- browser INSERT/UPDATE/DELETE privileges revoked
+
+Verification after migration:
+
+- both catalogue tables have RLS enabled
+- `anon` has SELECT but not INSERT on both tables
+- catalogue tables currently contain zero pilot publications; no production/static catalogue data was replaced
+- Supabase security advisor reported no new catalogue-table security warning. Its four `RLS enabled, no policy` informational findings are the pre-existing private request/product-mapping tables, intentionally inaccessible directly to browser roles.
+- performance advisor reports new indexes as unused, expected while the catalogue tables contain no pilot data and have not served queries yet; do not remove them based on pre-pilot usage statistics.
+
+Authoritative architecture: `docs/SUPABASE-CATALOGUE-ARCHITECTURE.md`.
 
 ## Current static catalogue state
 
-`js/catalogue-data.js` remains the live catalogue source during the pilot.
+`js/catalogue-data.js` remains the live catalogue source during the pilot. Existing frontend contracts and working catalogue/request journeys must remain functional. Do not perform a big-bang replacement.
 
-Existing frontend contracts such as array-based `class`, shared query logic, Kit Builder, Book Details, publication browsers and selection must continue working while the backend source is introduced.
+## Immediate next step
 
-Do not perform a big-bang replacement.
-
-## Current publication-browser UX
-
-- `css/publication-browser.css` is the shared presentation contract for publication cards.
-- publication browsers use cover-led multi-column cards on desktop and compact horizontal cards on mobile.
-- internal catalogue pages expose direct Home plus contextual parent/back navigation where appropriate.
-- Early Learning, School Learning, College and University, Competitive Exams, Kit Builder and Book Details follow the shared navigation approach.
-- the previous one-book-per-full-width-row pattern should not be reintroduced without a specific UX reason.
-
-## Immediate architecture priority
-
-**NEXT: implement the Supabase catalogue pilot architecture from `docs/SUPABASE-CATALOGUE-ARCHITECTURE.md`, without switching the live catalogue source yet.**
+**Import the curated Publication Master pilot dataset into `public.publications`, then validate records before building the frontend Supabase adapter.**
 
 Sequence:
 
-1. create versioned catalogue migration for `publications` and `publication_assets`
-2. add constraints/indexes/RLS/public read surface
-3. import the curated ~30-row Publication Master pilot
-4. validate data semantics and security
-5. build a Supabase data adapter that maps canonical records into the current frontend catalogue contract
-6. test representative catalogue journeys and universal discovery against the pilot
-7. compare with current static behaviour
-8. only then plan bulk master-data migration and eventual retirement of `catalogue-data.js` as authoritative source
+1. prepare deterministic import mapping from the approved Excel columns to `public.publications`
+2. import the curated ~30-row pilot only
+3. validate counts, null semantics, controlled values, class arrays, medium rules and duplicate risks
+4. attach/reuse existing cover URLs only where confidently mapped; do not bulk-migrate assets yet
+5. build Supabase data adapter mapping canonical records into the existing frontend contract
+6. test representative Early Learning / School / PUC / search journeys against pilot data
+7. compare with static behaviour
+8. only then plan bulk migration and eventual retirement of `catalogue-data.js` as authoritative source
 
 ## Migration rules
 
@@ -141,15 +114,6 @@ Sequence:
 - Do not expose `product_mappings` or Tally/ERP fields to the browser.
 - Do not invent missing publication values.
 - Do not add lookup tables/fields merely because they might be useful someday.
-
-## Navigation/UX rules already learned
-
-- Internal catalogue pages should expose a compact direct Home route plus the contextual parent/back route where practical.
-- Back navigation on internal/section pages should be consistently placed at the top-left of the content area; do not center the Back control just because the hero content is centered.
-- Preserve browser-native Back/scroll restoration for ordinary View Book navigation.
-- Do not persist stale scroll positions and replay them on refresh/revisit.
-- My Selection is shared across catalogue sections.
-- Preserve working Review Request UI/backend while catalogue architecture is developed.
 
 ## Development definition of done
 
