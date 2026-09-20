@@ -4,6 +4,17 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 
 ## 2026-09-20
 
+### Navigation + publication-browser consistency audit
+
+- Migrated Early Learning Individual Books from the legacy full-width row layout to the shared responsive publication-card system.
+- Standardized Early Learning Individual Books to `Home | contextual level` navigation.
+- Simplified School Exam Preparation presentation so product families contain the same shared publication grid used elsewhere; subject remains visible on each card and available as a filter rather than creating a second nested visual hierarchy.
+- Added the shared `Home | contextual parent` navigation pattern to School class pages, Early Learning level pages, Kit Builder and Book Details.
+- Category landing pages now expose the same compact Home navigation rather than a visually different Back control.
+- Book Details keeps its contextual source return while also providing a direct Home route.
+- Existing selection, quantity, filtering, kit and request-flow behaviour was preserved.
+- Live GitHub Pages visual/device verification remains required after deployment.
+
 ### 10:51 IST — Publication browsing UX upgrade
 
 - Added shared `publication-browser.css` for consistent publication-card presentation.
