@@ -49,6 +49,7 @@ School Exam Preparation (Honest Success, LBA, etc.) is part of School Learning a
 
 Preserve user context.
 
+- Internal catalogue pages should offer a compact direct **Home** route as well as the contextual parent/back route; users must not need to backtrack page-by-page to reach Home.
 - Category card background on Home opens the category landing page.
 - Nested shortcuts (e.g. LKG, Class 9, 2nd PUC) open that exact stage and must not trigger the parent-card navigation.
 - From a publication browser, book details Back returns to the originating browser/context.
@@ -56,6 +57,7 @@ Preserve user context.
 - Early Learning kit flows Back returns to the selected Early Learning stage (e.g. UKG), not generic Early Learning.
 - Selection/Review `Continue Browsing` should return to the context from which Selection was opened whenever that context is available.
 - Prefer native browser history for immediate detail-page returns and scroll restoration. Never replay stale saved scroll positions after refresh or unrelated navigation.
+- Publication listings use the shared responsive card system in `css/publication-browser.css`: cover-led multi-column cards on desktop and compact horizontal cards on mobile. Do not reintroduce one-book-per-full-width-row layouts without a specific reason.
 - Desktop may use richer discovery cards; mobile should prioritize compact, fast navigation.
 
 ## Selection behaviour
