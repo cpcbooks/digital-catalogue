@@ -22,11 +22,17 @@ Avoid repeatedly reading every documentation file or dumping large files when a 
 
 ## Project
 
-Static customer-facing digital catalogue for **Cambridge Publishing Company Pvt. Ltd. (CPC), Bengaluru**.
+Customer-facing **Digital Catalogue** for **Cambridge Publishing Company Pvt. Ltd. (CPC), Bengaluru**.
 
-Primary flow:
+**The catalogue is the primary product.** Book selection and Submit Request are secondary convenience features. Do not let request/order-management concerns drive the public catalogue architecture or turn this project into an e-commerce/order system.
 
-`Home → Category → Class/Stage → Publications/Options → Book → Selection → Review/Request`
+Primary catalogue flow:
+
+`Home → Discover/Browse/Search → Category → Class/Stage → Publications → Book Details`
+
+Optional secondary flow:
+
+`Publication → Selection → Review → Submit Request`
 
 Top-level catalogue taxonomy:
 
@@ -39,11 +45,12 @@ School Exam Preparation (Honest Success, LBA, etc.) is part of School Learning a
 
 ## Critical data rules
 
-- `js/catalogue-data.js` is the current central catalogue dataset.
+- `js/catalogue-data.js` is the current central catalogue dataset; long-term architecture is moving toward a maintainable catalogue product master rather than code being the permanent source of truth.
 - For Nursery–Class 10, use **`class`**, not a separate `level` data field. `class` is array-based in catalogue records.
 - Subject and medium are separate concepts. A Kannada subject does not imply Kannada medium.
 - Do not invent CPC titles, SKU, ISBN, MRP, Tally item names, covers or other product data.
 - Preserve internal operational identifiers for backend/team use, but do not trust browser-submitted internal identifiers as authoritative.
+- Design publication data primarily for catalogue discovery, filtering, product presentation, editions and digital resources; request fields are references/snapshots, not the publication model's organizing principle.
 
 ## UX / navigation contract
 
@@ -66,10 +73,11 @@ Preserve user context.
 - Selection persists while users browse.
 - A compact floating selection pane is expected across catalogue pages when items are selected.
 - Avoid creating a second competing cart/selection implementation.
+- Selection/request functionality is an add-on to the catalogue, not the primary product scope.
 
 ## Backend
 
-Supabase is used for submitted request persistence/integration. Follow the existing backend architecture and inspect current implementation before changing it.
+Supabase is used for submitted request persistence/integration and is the planned backend foundation for a maintainable catalogue product master. Follow the existing backend architecture and inspect current implementation before changing it.
 
 Never expose service-role or secret credentials in client-side code.
 
