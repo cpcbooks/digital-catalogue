@@ -2,105 +2,162 @@
 
 ## Architectural principle
 
-Prefer one shared catalogue architecture over page-specific implementations. Pages may present different journeys, but product identity, selection, book details, request submission and discovery should reuse shared contracts.
+Prefer one shared catalogue architecture over page-specific implementations. Pages may present different journeys, but publication identity, discovery, book details, selection and request submission should reuse shared contracts.
 
-## Catalogue product identity
+**The Digital Catalogue is the primary product.** Selection/Submit Request is a secondary convenience feature and must not drive catalogue architecture.
 
-Every publication should have a permanent catalogue `id`. This ID is the stable bridge between:
+## Catalogue data ownership direction
+
+Current production source:
+
+`js/catalogue-data.js → catalogue UI`
+
+Target direction:
+
+`Supabase Publication Master → shared catalogue query/adapter → catalogue UI`
+
+The static source remains production truth until the Supabase pilot is verified. Do not perform a big-bang replacement.
+
+See `DATA-MODEL.md` and `SUPABASE-CATALOGUE-ARCHITECTURE.md`.
+
+## Catalogue publication identity
+
+Every publication receives an immutable database UUID. This is the stable bridge between:
 
 - catalogue data
 - selections
 - book details
+- assets
 - submitted request snapshots
-- future SKU/ISBN/Tally mapping
+- SKU/ISBN/Tally/ERP mapping
 
-Customer-visible labels and internal operational names must not be treated as identity.
+Customer-visible labels, ISBN, SKU and internal operational names must not be treated as database identity.
 
-## School-stage classification
+## Publication classification
 
-For Nursery through Class 10, use **`class` only**. Do not model the same concept using both `level` and `class`.
+V1 uses a lean set of independent dimensions validated against real CPC data:
 
-`class` is an array so a publication can apply to more than one class without duplicating the product record.
+- Catalogue Section
+- Series
+- Class/Stage
+- Subject
+- Medium
+- Language Position
+- Book Type
+
+`Category` is intentionally excluded from canonical V1 because the sample master showed it overlapping inconsistently with Subject and Book Type. Add it later only if a real catalogue-discovery requirement cannot be represented by the existing dimensions.
+
+## Class / stage
+
+Use one array field for applicable class/stage values in the canonical publication record.
 
 Examples:
 
-```js
-class: ["Nursery"]
-class: ["LKG"]
-class: ["8"]
-class: ["6", "7", "8"]
+```text
+["LKG"]
+["8"]
+["2nd PUC"]
+["5", "6", "7"]
+[]
 ```
 
-Legacy `levels` compatibility is temporary technical debt and should be removed after the catalogue data is migrated and verified.
+An empty array means intentionally not class/stage restricted within its catalogue section. Do not introduce a parallel `level` field or an artificial `All` value.
+
+The existing frontend `class` contract can be preserved through the data adapter while the backend uses the clearer `class_stage` name.
 
 ## Subject vs medium
 
 These fields answer different questions:
 
-- `subject`: what is being studied (e.g. Mathematics, Science, Kannada, English)
-- `medium`: language medium/edition of the publication (e.g. English, Kannada)
+- `subject`: normalized academic subject, e.g. `Science`
+- `medium`: actual medium-specific edition where CPC distinguishes one, e.g. `English` or `Kannada`
 
 Never infer one from the other.
 
-Example: a Class 4 Kannada textbook can have:
+Important verified CPC rule: ordinary textbooks/readers/workbooks are not automatically assigned English medium. Medium is primarily relevant to guides/question banks and other products that genuinely have medium-specific editions.
 
-```js
-subject: "Kannada"
-medium: "English"
-```
+## Book type
 
-if it belongs to the English-medium school publication set.
+Book Type is a controlled generic format such as Textbook, Reader, Workbook, Guide, Combined Guide or Question Bank. Do not encode language into Book Type; use Subject for English/Kannada/Hindi distinctions.
 
-Regular textbooks are treated as English medium unless the actual publication master establishes a separate medium edition. Kannada-medium guides/editions must be explicitly represented from verified data.
+## Catalogue content and assets
 
-## Higher Education and Competitive Exams
+Publication metadata and publication assets are separate concerns.
 
-Do not force these domains into school-only fields merely for convenience.
+`publications` owns canonical product/catalogue data.
 
-Before implementation, inspect real CPC titles and introduce only the minimum additional taxonomy needed (for example PUC year/course/degree/exam). Avoid speculative fields.
+`publication_assets` owns covers, back covers, sample PDFs and digital-resource references.
 
-The universal Browse/Search engine must be designed after these taxonomies are known so it does not have to be rewritten around school-only assumptions.
+Existing GitHub cover paths may remain during the pilot. Full Supabase Storage migration is intentionally deferred.
+
+## Internal product mapping
+
+Internal operational identifiers remain private and separate from public catalogue data.
+
+Target mapping:
+
+`publication id → SKU → ISBN/reference → Tally Item Name → optional Tally/ERP identifiers`
+
+The existing `product_mappings` table remains the operational bridge during migration. The browser must not receive Tally/ERP fields.
 
 ## Universal discovery
 
 Global search and Browse All should share one engine/page rather than duplicate filtering logic.
 
-Intended concept:
+The Supabase-backed discovery layer should query the same canonical publication dimensions used by section/class browsers:
 
-- homepage search → universal browse/search results with query
-- Browse All → same engine without query
-- Browse All Series → same engine with series-oriented entry/filter
-- Subjects & Book Types → same engine with subject/type-oriented entry/filter
+- section
+- class/stage
+- series
+- subject
+- medium
+- language position
+- book type
+- title/search text
+
+Do not build separate product taxonomies for different pages.
 
 ## Selection architecture
 
-Selections are shared across catalogue sections through the existing `cambridgeOrder` contract.
+Selections remain shared across catalogue sections through the existing `cambridgeOrder` contract.
 
 Both normal books and custom kits are valid top-level selections. Custom kits contain component book snapshots.
 
+During backend migration, adapt canonical Supabase publication records into the existing frontend contract rather than rewriting selection UI at the same time.
+
 ## Request architecture
 
-A customer submission is an **order request**, not a confirmed sales order.
+A customer submission is a request, not a confirmed sales order.
 
 Supabase stores immutable request snapshots. Internal fulfilment mapping is separate from customer-facing catalogue terminology.
 
-Authoritative internal mapping is:
-
-`catalogue product id → SKU → ISBN → Tally Item Name → optional Tally/ERP identifiers`
-
-The backend must never trust customer/browser-supplied internal identifiers as authoritative.
+The existing request system is working and should remain largely frozen during the catalogue pilot.
 
 ## Security boundary
 
 Public browser:
 
-- can browse static catalogue
+- can read approved Active catalogue data
 - can maintain local selection/request draft
 - can call controlled submission endpoint
-- cannot directly read/write private request tables
+- cannot write catalogue master data
+- cannot directly read/write private request or mapping tables
 - never receives service-role credentials
 
-Supabase Edge Function + database function form the trusted submission boundary.
+Future staff catalogue management requires authenticated roles/RLS; do not weaken catalogue-table write security for convenience.
+
+## Migration principle
+
+Use a strangler/pilot migration rather than a big-bang rewrite:
+
+1. create canonical Supabase catalogue tables
+2. import curated pilot rows
+3. keep `catalogue-data.js` live
+4. build a shared Supabase-to-current-contract adapter
+5. test representative catalogue journeys and search/filtering
+6. compare against static behaviour
+7. migrate verified master data in batches
+8. retire static source only after regression verification
 
 ## Navigation principle
 
