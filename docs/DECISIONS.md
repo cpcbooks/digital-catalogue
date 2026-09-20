@@ -2,6 +2,25 @@
 
 Record durable decisions here. Do not rewrite history when a decision changes; add a new entry explaining the superseding decision.
 
+## 2026-09-20 11:33 IST — Catalogue is the primary product
+
+**Decision:** CPC Digital Catalogue is fundamentally a catalogue/discovery product. Selection, Review and Submit Request are secondary convenience features, not the system's primary purpose.
+
+**Reason:** customers should get full value from discovering, browsing, searching and understanding CPC publications even if they never submit a request. Designing the architecture around order/request processing would distort the catalogue and create unnecessary e-commerce/ERP scope.
+
+**Consequences:**
+
+- Architecture priority is publication master → taxonomy → discovery/search → publication detail/content → catalogue maintenance → selection/request add-on.
+- The canonical publication model must be designed around CPC publishing needs: title/series, class or academic stage, subject, medium, book type, edition, ISBN, MRP, covers, descriptions, features, samples/digital resources and status.
+- Selection/request records reference catalogue publications; request-specific snapshots/workflow must not become the organizing principle for publication data.
+- Staff/admin work should be catalogue-management-first. Request management can remain a smaller secondary module.
+- Do not expand into sales-order processing, accounting, dispatch or ERP functionality unless explicitly required later.
+- Existing request submission infrastructure remains valid and can stay largely frozen while catalogue architecture is developed.
+
+**Next architecture task:** use verified CPC item data to design and validate the canonical Product/Publication Master schema before implementing a database migration.
+
+---
+
 ## 2026-09-20 10:51 IST — Cover-led publication cards and direct Home escape
 
 **Decision:** publication browsers should use a shared cover-led responsive card system rather than one full-width row per book. Desktop uses a multi-column grid; mobile uses compact horizontal cards with the cover at left and book information/actions at right.
