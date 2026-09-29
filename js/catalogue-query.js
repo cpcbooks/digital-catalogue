@@ -58,6 +58,25 @@
     return [...new Set(values)];
   }
 
+  function browseValues(book, field) {
+    if (field === "class") return classValues(book);
+    const value = field === "type" ? book.type || book.bookType : book[field];
+    return value ? [String(value)] : [];
+  }
+
+  function browseMatches(books, filters, search, categoryNames) {
+    const activeFilters = filters || {};
+    const names = categoryNames || {};
+    const terms = String(search || "").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    return (books || []).filter(book => {
+      if (Object.entries(activeFilters).some(([field, value]) => value && !browseValues(book, field).includes(value))) return false;
+      if (!terms.length) return true;
+      const classes = classValues(book);
+      const searchable = [book.title, book.series, book.family, book.subject, book.displaySubject, book.type, book.bookType, book.medium, names[book.category], ...classes, ...classes.map(value => "Class " + value)].filter(Boolean).join(" ").toLocaleLowerCase();
+      return terms.every(term => searchable.includes(term));
+    });
+  }
+
   global.CambridgeCatalogueQuery = Object.freeze({
     all,
     active,
@@ -67,6 +86,8 @@
     byCategory,
     byCategoryAndClass,
     byId,
-    uniqueValues
+    uniqueValues,
+    browseValues,
+    browseMatches
   });
 })(window);

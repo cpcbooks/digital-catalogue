@@ -24,20 +24,13 @@
     if (view === "series") document.getElementById("browseTitle").textContent = "Browse all series";
     if (view === "subjects") document.getElementById("browseTitle").textContent = "Subjects & book types";
 
-    function values(book, field) { if (field === "class") return query.classValues(book); const value = field === "type" ? book.type || book.bookType : book[field]; return value ? [String(value)] : []; }
     function classOrder(value) { const early = { Nursery: -3, LKG: -2, UKG: -1 }; return Object.prototype.hasOwnProperty.call(early, value) ? early[value] : Number(value) || 999; }
-    function addOptions(field) { const distinct = [...new Set(books.flatMap(book => values(book, field)))]; distinct.sort((a,b) => field === "class" ? classOrder(a)-classOrder(b) : a.localeCompare(b)); distinct.forEach(value => { const option=document.createElement("option"); option.value=value; option.textContent=field === "category" ? categoryNames[value] || value : value; fields[field].appendChild(option); }); }
+    function addOptions(field) { const distinct = [...new Set(books.flatMap(book => query.browseValues(book, field)))]; distinct.sort((a,b) => field === "class" ? classOrder(a)-classOrder(b) : a.localeCompare(b)); distinct.forEach(value => { const option=document.createElement("option"); option.value=value; option.textContent=field === "category" ? categoryNames[value] || value : value; fields[field].appendChild(option); }); }
     function currentBrowseUrl() { const p=new URLSearchParams(location.search); p.delete("returnTo"); return location.pathname.split("/").pop()+"?"+p.toString(); }
 
     function render() {
-      const terms = search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-      const matched = books.filter(book => {
-        if (Object.entries(fields).some(([field, select]) => select.value && !values(book, field).includes(select.value))) return false;
-        if (!terms.length) return true;
-        const classes = query.classValues(book);
-        const searchable = [book.title,book.series,book.family,book.subject,book.displaySubject,book.type,book.bookType,book.medium,categoryNames[book.category],...classes,...classes.map(value=>"Class "+value)].filter(Boolean).join(" ").toLocaleLowerCase();
-        return terms.every(term => searchable.includes(term));
-      });
+      const filters = Object.fromEntries(Object.entries(fields).map(([field, select]) => [field, select.value]));
+      const matched = query.browseMatches(books, filters, search.value, categoryNames);
       summary.textContent = `${matched.length} publication${matched.length === 1 ? "" : "s"} found`;
       results.replaceChildren();
       if (!matched.length) { const empty=document.createElement("div"); empty.className="browse-empty"; const heading=document.createElement("h2"); heading.textContent="No matching publications"; const help=document.createElement("p"); help.textContent="Try another search term or clear a filter."; empty.append(heading,help); results.appendChild(empty); return; }
