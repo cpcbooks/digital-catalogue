@@ -1,0 +1,50 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { createBrowserSandbox, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
+
+function adapter() {
+  const sandbox = createBrowserSandbox();
+  loadBrowserScript(sandbox, "js/catalogue-supabase-adapter.js");
+  return sandbox.window.CambridgeSupabaseCatalogue;
+}
+
+test("maps current publication sections to legacy catalogue categories", () => {
+  const catalogue = adapter();
+  assert.equal(catalogue.categoryFor({ catalogue_section: "Early Learning" }), "early-learning");
+  assert.equal(catalogue.categoryFor({ catalogue_section: "School Learning", book_type: "Guide" }), "exam");
+  assert.equal(catalogue.categoryFor({ catalogue_section: "School Learning", book_type: "Textbook" }), "school");
+});
+
+test("normalizes a Supabase publication row to the existing browser contract", () => {
+  const catalogue = adapter();
+  const book = catalogue.toLegacyBook({
+    id: "20000000-0000-4000-8000-000000000001",
+    title: "Synthetic Nursery Numbers",
+    catalogue_section: "Early Learning",
+    book_type: "Writing Book",
+    class_stage: [" Nursery ", "Nursery"],
+    status: "Active",
+    mrp: "135.50",
+    pages: "32",
+    author: null
+  }, []);
+  assert.equal(book.category, "early-learning");
+  assert.deepEqual(Array.from(book.class), ["Nursery"]);
+  assert.equal(book.type, "Writing");
+  assert.equal(book.mrp, 135.5);
+  assert.equal(book.pages, 32);
+  assert.equal(book.active, true);
+});
+
+test("uses an active primary cover and orders active sample-page assets", () => {
+  const catalogue = adapter();
+  const book = catalogue.toLegacyBook({ id: "20000000-0000-4000-8000-000000000002", title: "Synthetic Assets", status: "Active" }, [
+    { asset_type: "cover", url: "https://assets.example.test/first.png", active: true, sort_order: 2 },
+    { asset_type: "cover", url: "https://assets.example.test/primary.png", active: true, is_primary: true, sort_order: 9 },
+    { asset_type: "sample_page", url: "https://assets.example.test/page-two.png", active: true, sort_order: 2 },
+    { asset_type: "sample_page", url: "https://assets.example.test/page-one.png", active: true, sort_order: 1 },
+    { asset_type: "sample_page", url: "https://assets.example.test/inactive.png", active: false, sort_order: 0 }
+  ]);
+  assert.equal(book.cover, "https://assets.example.test/primary.png");
+  assert.deepEqual(book.images.samples, ["https://assets.example.test/page-one.png", "https://assets.example.test/page-two.png"]);
+});
