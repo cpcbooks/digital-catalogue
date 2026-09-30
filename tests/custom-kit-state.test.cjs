@@ -34,6 +34,15 @@ test("keeps an incomplete kit as working state and reports remaining selections"
   assert.equal(state.count(), 2);
   assert.equal(state.remaining(), 6);
   assert.equal(state.isComplete(), false);
+  assert.equal(state.canReview(), true);
+});
+
+test("does not require a configured minimum to review a working kit", () => {
+  const state = kit(null, false);
+  assert.equal(state.canReview(), false);
+  state.add({ id: "playgroup-book" });
+  assert.equal(state.canReview(), true);
+  assert.equal(state.isComplete(), false);
 });
 
 test("completes at and above the supplied minimum", () => {

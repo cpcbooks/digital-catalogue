@@ -39,6 +39,7 @@
     function selectedIds() { return [...selected.keys()]; }
     function selectedItems() { return [...selected.values()]; }
     function remaining() { return minimum === null ? null : Math.max(minimum - count(), 0); }
+    function canReview() { return count() > 0; }
     function isComplete() { return completionEnabled && count() >= minimum; }
 
     return Object.freeze({
@@ -51,6 +52,7 @@
       selectedIds,
       selectedItems,
       remaining,
+      canReview,
       isComplete
     });
   }
