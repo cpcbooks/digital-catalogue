@@ -8,6 +8,7 @@
     if (value === null || value === undefined || value === "") return "";
     const raw = String(value).trim();
     const upper = raw.toUpperCase();
+    if (upper === "PLAYGROUP") return "Playgroup";
     if (upper === "NURSERY" || upper === "NUR") return "Nursery";
     if (upper === "LKG") return "LKG";
     if (upper === "UKG") return "UKG";
@@ -64,6 +65,11 @@
     return value ? [String(value)] : [];
   }
 
+  function classOrder(value) {
+    const early = { Playgroup: -4, Nursery: -3, LKG: -2, UKG: -1 };
+    return Object.prototype.hasOwnProperty.call(early, value) ? early[value] : Number(value) || 999;
+  }
+
   function browseMatches(books, filters, search, categoryNames) {
     const activeFilters = filters || {};
     const names = categoryNames || {};
@@ -88,6 +94,7 @@
     byId,
     uniqueValues,
     browseValues,
+    classOrder,
     browseMatches
   });
 })(window);

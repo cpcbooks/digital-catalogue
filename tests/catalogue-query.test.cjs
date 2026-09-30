@@ -10,8 +10,9 @@ function queryWithCatalogue() {
   return sandbox.window.CambridgeCatalogueQuery;
 }
 
-test("normalizes current Nursery and kindergarten class aliases", () => {
+test("normalizes supported Early Learning stage names and existing aliases", () => {
   const query = queryWithCatalogue();
+  assert.equal(query.normalizeClass(" playgroup "), "Playgroup");
   assert.equal(query.normalizeClass(" nur "), "Nursery");
   assert.equal(query.normalizeClass("lkg"), "LKG");
   assert.equal(query.normalizeClass("5"), "5");
@@ -28,6 +29,18 @@ test("deduplicates normalized class values and filters a category by class", () 
   const nursery = query.byCategoryAndClass("early-learning", "nur");
   assert.deepEqual(Array.from(query.classValues(nursery[0])), ["Nursery"]);
   assert.deepEqual(nursery.map(book => book.title), ["Nursery Numbers"]);
+});
+
+test("filters synthetic Playgroup publications as an Early Learning stage", () => {
+  const query = queryWithCatalogue();
+  const playgroup = query.byCategoryAndClass("early-learning", " playgroup ");
+  assert.deepEqual(playgroup.map(book => book.title), ["Playgroup Patterns"]);
+});
+
+test("orders supported Early Learning stages before numbered classes", () => {
+  const query = queryWithCatalogue();
+  const stages = ["UKG", "2", "Nursery", "LKG", "Playgroup", "10"];
+  assert.deepEqual(stages.sort((a, b) => query.classOrder(a) - query.classOrder(b)), ["Playgroup", "Nursery", "LKG", "UKG", "2", "10"]);
 });
 
 test("treats an empty requested class as an unrestricted category filter", () => {

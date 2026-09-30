@@ -9,7 +9,7 @@
     "higher-education",
     "competitive-exams"
   ]);
-  const EARLY_CLASSES = new Set(["Nursery", "LKG", "UKG"]);
+  const EARLY_CLASSES = new Set(["Playgroup", "Nursery", "LKG", "UKG"]);
   const SCHOOL_CLASSES = new Set(["1","2","3","4","5","6","7","8","9","10"]);
   const TEXT_FIELDS = ["sku","isbn","series","family","subject","displaySubject","medium","type","cover","description"];
 
@@ -22,6 +22,7 @@
     const raw = String(value).trim();
     if (/^(?:[1-9]|10)$/.test(raw)) return raw;
     const upper = raw.toUpperCase();
+    if (upper === "PLAYGROUP") return "Playgroup";
     if (upper === "NURSERY" || upper === "NUR") return "Nursery";
     if (upper === "LKG") return "LKG";
     if (upper === "UKG") return "UKG";
@@ -58,7 +59,7 @@
         const values = book.class.map(normalizedClass).filter(Boolean);
         if (new Set(values).size !== values.length) warnings.push(issue("warning","DUPLICATE_CLASS","class contains duplicate values.",book,index));
         if (["early-learning","school","exam"].includes(book.category) && values.length === 0) errors.push(issue("error","CLASS_REQUIRED","This catalogue category requires at least one class value.",book,index));
-        if (book.category === "early-learning" && values.some(v => !EARLY_CLASSES.has(v))) errors.push(issue("error","INVALID_EARLY_CLASS","Early Learning class values must be Nursery, LKG or UKG.",book,index));
+        if (book.category === "early-learning" && values.some(v => !EARLY_CLASSES.has(v))) errors.push(issue("error","INVALID_EARLY_CLASS","Early Learning class values must be Playgroup, Nursery, LKG or UKG.",book,index));
         if (["school","exam"].includes(book.category) && values.some(v => !SCHOOL_CLASSES.has(v))) errors.push(issue("error","INVALID_SCHOOL_CLASS","School/Exam class values must be 1–10.",book,index));
       }
 

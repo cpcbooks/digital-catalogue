@@ -24,8 +24,7 @@
     if (view === "series") document.getElementById("browseTitle").textContent = "Browse all series";
     if (view === "subjects") document.getElementById("browseTitle").textContent = "Subjects & book types";
 
-    function classOrder(value) { const early = { Nursery: -3, LKG: -2, UKG: -1 }; return Object.prototype.hasOwnProperty.call(early, value) ? early[value] : Number(value) || 999; }
-    function addOptions(field) { const distinct = [...new Set(books.flatMap(book => query.browseValues(book, field)))]; distinct.sort((a,b) => field === "class" ? classOrder(a)-classOrder(b) : a.localeCompare(b)); distinct.forEach(value => { const option=document.createElement("option"); option.value=value; option.textContent=field === "category" ? categoryNames[value] || value : value; fields[field].appendChild(option); }); }
+    function addOptions(field) { const distinct = [...new Set(books.flatMap(book => query.browseValues(book, field)))]; distinct.sort((a,b) => field === "class" ? query.classOrder(a)-query.classOrder(b) : a.localeCompare(b)); distinct.forEach(value => { const option=document.createElement("option"); option.value=value; option.textContent=field === "category" ? categoryNames[value] || value : value; fields[field].appendChild(option); }); }
     function currentBrowseUrl() { const p=new URLSearchParams(location.search); p.delete("returnTo"); return location.pathname.split("/").pop()+"?"+p.toString(); }
 
     function render() {

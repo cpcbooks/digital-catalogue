@@ -36,3 +36,25 @@ test("reports duplicate identifiers and invalid class structure", () => {
   assert.ok(report.errors.some(issue => issue.code === "DUPLICATE_ID"));
   assert.ok(report.errors.some(issue => issue.code === "CLASS_NOT_ARRAY"));
 });
+
+test("accepts all supported Early Learning stages including Playgroup", () => {
+  for (const stage of ["Playgroup", "Nursery", "LKG", "UKG"]) {
+    const report = validator().validateCatalogue([validRecord({
+      id: "30000000-0000-4000-8000-0000000000" + (stage.length + 10),
+      category: "early-learning",
+      class: [stage],
+      medium: ""
+    })]);
+    assert.equal(report.valid, true, stage + " should be accepted");
+  }
+});
+
+test("rejects an unsupported Early Learning stage", () => {
+  const report = validator().validateCatalogue([validRecord({
+    category: "early-learning",
+    class: ["Reception"],
+    medium: ""
+  })]);
+  assert.equal(report.valid, false);
+  assert.ok(report.errors.some(issue => issue.code === "INVALID_EARLY_CLASS"));
+});
