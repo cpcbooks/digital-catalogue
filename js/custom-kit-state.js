@@ -9,6 +9,7 @@
   }
 
   function configuredMinimum(value) {
+    if (value === null || value === undefined || value === "") return null;
     const minimum = Number(value);
     if (!Number.isSafeInteger(minimum) || minimum < 1) throw new Error("Custom Kit minimum must be a positive integer.");
     return minimum;
@@ -16,6 +17,7 @@
 
   function create(options) {
     const minimum = configuredMinimum(options && options.minimum);
+    const completionEnabled = minimum !== null && !(options && options.completionEnabled === false);
     const selected = new Map();
 
     function add(item) {
@@ -36,11 +38,12 @@
     function count() { return selected.size; }
     function selectedIds() { return [...selected.keys()]; }
     function selectedItems() { return [...selected.values()]; }
-    function remaining() { return Math.max(minimum - count(), 0); }
-    function isComplete() { return count() >= minimum; }
+    function remaining() { return minimum === null ? null : Math.max(minimum - count(), 0); }
+    function isComplete() { return completionEnabled && count() >= minimum; }
 
     return Object.freeze({
       minimum,
+      completionEnabled,
       add,
       remove,
       contains,

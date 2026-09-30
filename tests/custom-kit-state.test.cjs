@@ -2,10 +2,10 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createBrowserSandbox, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 
-function kit(minimum) {
+function kit(minimum, completionEnabled) {
   const sandbox = createBrowserSandbox();
   loadBrowserScript(sandbox, "js/custom-kit-state.js");
-  return sandbox.window.CambridgeCustomKitState.create({ minimum });
+  return sandbox.window.CambridgeCustomKitState.create({ minimum, completionEnabled });
 }
 
 test("starts as an incomplete but valid empty working kit", () => {
@@ -52,4 +52,14 @@ test("uses the supplied minimum rather than a permanent eight-title rule", () =>
   for (const id of ["one", "two", "three", "four"]) state.add({ id });
   assert.equal(state.minimum, 4);
   assert.equal(state.isComplete(), true);
+});
+
+test("keeps an unconfigured minimum as incomplete working state", () => {
+  const state = kit(null, false);
+  state.add({ id: "playgroup-book" });
+  assert.equal(state.minimum, null);
+  assert.equal(state.completionEnabled, false);
+  assert.equal(state.remaining(), null);
+  assert.equal(state.isComplete(), false);
+  assert.equal(state.count(), 1);
 });
