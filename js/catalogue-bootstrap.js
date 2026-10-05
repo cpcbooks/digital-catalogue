@@ -53,6 +53,14 @@
     global.CAMBRIDGE_CATALOGUE = books;
     return { source: "supabase", books, cached: false };
   }
+  async function standardKitDefinitions() {
+    if (requestedSource !== "supabase") return [];
+    if (!global.CambridgeSupabaseCatalogue) throw new Error("Supabase catalogue adapter is not loaded.");
+    return global.CambridgeSupabaseCatalogue.loadStandardKitDefinitions({
+      supabaseUrl: config.supabaseUrl,
+      anonKey: config.publishableKey
+    });
+  }
 
   // Keep an explicit pilot choice through local catalogue navigation. Static is
   // deliberately the default, so it does not add noise to ordinary URLs.
@@ -69,6 +77,7 @@
   global.CambridgeCatalogueBootstrap = Object.freeze({
     requestedSource: requestedSource === "supabase" ? "supabase" : "static",
     ready,
+    standardKitDefinitions,
     withSource,
     clearCache: function () { try { sessionStorage.removeItem(CACHE_KEY); } catch (_) {} }
   });

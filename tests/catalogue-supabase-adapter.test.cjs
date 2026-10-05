@@ -48,3 +48,20 @@ test("uses an active primary cover and orders active sample-page assets", () => 
   assert.equal(book.cover, "https://assets.example.test/primary.png");
   assert.deepEqual(book.images.samples, ["https://assets.example.test/page-one.png", "https://assets.example.test/page-two.png"]);
 });
+
+test("normalizes Supabase Standard Kit definitions with configured publication order", () => {
+  const catalogue = adapter();
+  const definitions = catalogue.normalizeStandardKitDefinitions([
+    { stage_code: "LKG", display_name: "Development LKG Standard Kit", enabled: true },
+    { stage_code: "UKG", display_name: "Disabled UKG Kit", enabled: false }
+  ], [
+    { stage_code: "LKG", position: 2, publication_id: "second" },
+    { stage_code: "LKG", position: 1, publication_id: "first" },
+    { stage_code: "UKG", position: 1, publication_id: "ukg-book" }
+  ]);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(definitions)), [
+    { stage: "lkg", stageCode: "lkg", displayName: "Development LKG Standard Kit", enabled: true, publicationIds: ["first", "second"] },
+    { stage: "ukg", stageCode: "ukg", displayName: "Disabled UKG Kit", enabled: false, publicationIds: ["ukg-book"] }
+  ]);
+});

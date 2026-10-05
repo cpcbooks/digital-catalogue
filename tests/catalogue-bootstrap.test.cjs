@@ -26,6 +26,30 @@ test("an explicit Supabase source is retained through local catalogue URLs", () 
   assert.equal(source.withSource("https://elsewhere.example/books"), "https://elsewhere.example/books");
 });
 
+test("Standard Kit definitions use the selected shared source", async () => {
+  const staticSource = bootstrap();
+  assert.deepEqual(Array.from(await staticSource.standardKitDefinitions()), []);
+
+  const sandbox = createBrowserSandbox({ location: {
+    href: "https://catalogue.example.test/standard-kit.html?level=lkg&catalogueSource=supabase",
+    pathname: "/standard-kit.html",
+    search: "?level=lkg&catalogueSource=supabase"
+  } });
+  sandbox.window.CambridgeSupabaseCatalogue = {
+    loadStandardKitDefinitions: async options => {
+      assert.equal(options.supabaseUrl, undefined);
+      assert.equal(options.anonKey, undefined);
+      return [{ stage: "lkg", stageCode: "lkg", enabled: true, publicationIds: ["one"] }];
+    }
+  };
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+
+  assert.deepEqual(JSON.parse(JSON.stringify(await sandbox.window.CambridgeCatalogueBootstrap.standardKitDefinitions())), [
+    { stage: "lkg", stageCode: "lkg", enabled: true, publicationIds: ["one"] }
+  ]);
+  assert.equal(sandbox.window.CambridgeCatalogueBootstrap.withSource("standard-kit.html?level=lkg"), "standard-kit.html?level=lkg&catalogueSource=supabase");
+});
+
 test("the selected Supabase source replaces the shared normalized catalogue", async () => {
   const sandbox = createBrowserSandbox({ location: {
     href: "https://catalogue.example.test/browse.html?catalogueSource=supabase",

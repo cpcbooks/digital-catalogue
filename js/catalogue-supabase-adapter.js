@@ -16,6 +16,8 @@ This file is intentionally opt-in while the pilot is validated.
   const DEFAULT_SUPABASE_URL = "https://ysaxagxortpxyifyaydx.supabase.co";
   const PUBLICATIONS_PATH = "/rest/v1/publications";
   const ASSETS_PATH = "/rest/v1/publication_assets";
+  const STANDARD_KITS_PATH = "/rest/v1/standard_kit_definitions";
+  const STANDARD_KIT_PUBLICATIONS_PATH = "/rest/v1/standard_kit_publications";
 
   function text(value) { return value === null || value === undefined ? "" : String(value).trim(); }
   function classArray(value) { if (!Array.isArray(value)) return []; return [...new Set(value.map(text).filter(Boolean))]; }
@@ -71,11 +73,30 @@ This file is intentionally opt-in while the pilot is validated.
     (assets||[]).forEach(asset=>{const key=text(asset.publication_id);if(!byPublication.has(key))byPublication.set(key,[]);byPublication.get(key).push(asset)});
     return (publications||[]).map(row=>toLegacyBook(row,byPublication.get(text(row.id))||[]));
   }
+  function normalizeStandardKitDefinitions(definitions, mappings) {
+    return (definitions || []).map(definition => {
+      const stage = text(definition.stage_code).toLowerCase();
+      return {
+        stage,
+        stageCode: stage,
+        displayName: text(definition.display_name),
+        enabled: definition.enabled === true,
+        publicationIds: (mappings || [])
+          .filter(mapping => text(mapping.stage_code).toLowerCase() === stage)
+          .sort((left, right) => Number(left.position) - Number(right.position))
+          .map(mapping => text(mapping.publication_id))
+      };
+    });
+  }
+  async function loadStandardKitDefinitions(options) {
+    const [definitions,mappings]=await Promise.all([request(`${STANDARD_KITS_PATH}?select=stage_code,display_name,enabled`,options),request(`${STANDARD_KIT_PUBLICATIONS_PATH}?select=stage_code,position,publication_id&order=stage_code.asc,position.asc`,options)]);
+    return normalizeStandardKitDefinitions(definitions,mappings);
+  }
   async function compareWithStatic(options) {
     const supabaseBooks=await load(options),staticBooks=Array.isArray(global.CAMBRIDGE_CATALOGUE)?global.CAMBRIDGE_CATALOGUE:[];
     const summarize=books=>({total:books.length,earlyLearning:books.filter(b=>b.category==="early-learning").length,school:books.filter(b=>b.category==="school").length,exam:books.filter(b=>b.category==="exam").length,collegeUniversity:books.filter(b=>b.category==="college-university").length,competitiveExams:books.filter(b=>b.category==="competitive-exams").length});
     return {static:summarize(staticBooks),supabase:summarize(supabaseBooks),supabaseBooks};
   }
   async function installPilot(options){const books=await load(options);global.CAMBRIDGE_CATALOGUE_SUPABASE_PILOT=books;return books}
-  global.CambridgeSupabaseCatalogue=Object.freeze({load,installPilot,compareWithStatic,toLegacyBook,categoryFor});
+  global.CambridgeSupabaseCatalogue=Object.freeze({load,loadStandardKitDefinitions,normalizeStandardKitDefinitions,installPilot,compareWithStatic,toLegacyBook,categoryFor});
 })(window);
