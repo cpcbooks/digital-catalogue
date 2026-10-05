@@ -1,42 +1,4 @@
--- Local preparation only. Deploy with the matching Edge Function as one pilot change.
-alter table public.publications add column if not exists custom_kit_eligible boolean;
-alter table public.requests add column if not exists idempotency_key uuid;
-create unique index if not exists requests_idempotency_key_unique on public.requests(idempotency_key) where idempotency_key is not null;
-
-create table if not exists public.early_learning_kit_rules (
-  stage_code text primary key check (stage_code in ('playgroup','nursery','lkg','ukg')),
-  enabled boolean not null default true,
-  completion_enabled boolean not null default false,
-  minimum_distinct_titles integer check (minimum_distinct_titles is null or minimum_distinct_titles > 0)
-);
-insert into public.early_learning_kit_rules(stage_code,enabled,completion_enabled,minimum_distinct_titles) values
- ('playgroup',true,false,null),('nursery',true,true,8),('lkg',true,true,8),('ukg',true,true,8)
-on conflict (stage_code) do nothing;
-
-create table if not exists public.standard_kit_definitions (
-  stage_code text primary key check (stage_code in ('playgroup','nursery','lkg','ukg')),
-  display_name text,
-  enabled boolean not null default false
-);
-create table if not exists public.standard_kit_publications (
-  stage_code text not null references public.standard_kit_definitions(stage_code) on delete cascade,
-  position integer not null check (position > 0),
-  publication_id uuid not null references public.publications(id),
-  primary key (stage_code,position), unique (stage_code,publication_id)
-);
-
--- These are internal CPC configuration tables. The SECURITY DEFINER RPC reads them;
--- browsers never need direct access.
-alter table public.early_learning_kit_rules enable row level security;
-alter table public.standard_kit_definitions enable row level security;
-alter table public.standard_kit_publications enable row level security;
-revoke all on table public.early_learning_kit_rules, public.standard_kit_definitions, public.standard_kit_publications from public, anon, authenticated;
-
-alter table public.request_items drop constraint if exists request_items_check;
-alter table public.request_items drop constraint if exists request_items_item_type_check;
-alter table public.request_items add constraint request_items_item_type_check check (item_type in ('book','custom-kit','standard-kit'));
-alter table public.request_items add constraint request_items_check check ((item_type='book' and kit_books is null) or (item_type in ('custom-kit','standard-kit') and kit_books is not null and jsonb_typeof(kit_books)='array'));
-
+-- Forward hotfix: eliminate PL/pgSQL variable/column shadowing in requirement submission RPC.
 create or replace function public.submit_catalogue_request(payload jsonb) returns jsonb language plpgsql security definer set search_path to 'public','pg_temp' as $$
 declare
   v_customer jsonb := payload->'customer';

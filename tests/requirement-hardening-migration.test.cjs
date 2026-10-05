@@ -6,7 +6,7 @@ const path = require("node:path");
 const read = file => fs.readFileSync(path.resolve(__dirname, "..", file), "utf8");
 const migration = read("supabase/migrations/20261005000000_harden_requirement_submission.sql");
 const hotfix = read("supabase/migrations/20261005170000_fix_requirement_rpc_json_location.sql");
-const runtimeHotfix = read("supabase/migrations/20261005180000_fix_requirement_rpc_id_ambiguity.sql");
+const shadowingHotfix = read("supabase/migrations/20261005220000_fix_requirement_rpc_variable_shadowing.sql");
 const edge = read("supabase/functions/submit-catalogue-request/index.ts");
 
 test("explicitly secures Kit configuration tables and submission RPC execution", () => {
@@ -21,14 +21,14 @@ test("explicitly secures Kit configuration tables and submission RPC execution",
 test("keeps nullable eligibility compatible and gives Custom Kits a truthful fallback", () => {
   assert.match(migration, /add column if not exists custom_kit_eligible boolean;/);
   assert.doesNotMatch(migration, /custom_kit_eligible boolean not null/i);
-  assert.match(migration, /publication\.custom_kit_eligible is false/);
-  assert.match(migration, /initcap\(level\)\|\|' Custom Kit'/);
+  assert.match(migration, /v_publication\.custom_kit_eligible is false/);
+  assert.match(migration, /initcap\(v_level\)\|\|' Custom Kit'/);
 });
 
 test("requires an enabled exact Standard Kit definition", () => {
-  assert.match(migration, /where stage_code=level and enabled/);
+  assert.match(migration, /where r\.stage_code=v_level and r\.enabled/);
   assert.match(migration, /raise exception 'Standard Kit is unavailable'/);
-  assert.match(migration, /configured_ids is null or configured_ids is distinct from ids/);
+  assert.match(migration, /v_configured_publication_ids is null or v_configured_publication_ids is distinct from v_publication_ids/);
   assert.match(migration, /raise exception 'Standard Kit composition is invalid'/);
 });
 
@@ -41,18 +41,13 @@ test("keeps one notes field and validates the public customer DTO", () => {
   assert.match(edge, /existingCustomers=new Set\(\["Yes","No","Not sure"\]\)/);
 });
 
-test("subtracts location allow-listed keys from JSONB, not the location key text", () => {
-  for (const source of [migration, hotfix, runtimeHotfix]) {
-    assert.match(source, /\(\(customer->'location'\) - array\['city','district','state','pincode'\]\)/);
-    assert.doesNotMatch(source, /customer->'location'\s*-\s*array/);
-  }
-});
-
-test("does not shadow request or publication IDs with a PL/pgSQL loop variable", () => {
-  for (const source of [migration, hotfix, runtimeHotfix]) {
-    assert.doesNotMatch(source, /\bid text;/);
-    assert.match(source, /select requests\.id,requests\.reference into request_id,reference/);
-    assert.match(source, /publications\.id=\(item->>'publicationId'\)::uuid/);
-    assert.match(source, /foreach publication_id_text in array ids loop/);
+test("uses v-prefixed locals and qualified SQL columns in the submission RPC", () => {
+  for (const source of [migration, shadowingHotfix]) {
+    assert.match(source, /v_request_reference/);
+    assert.match(source, /from public\.requests as r/);
+    assert.match(source, /from public\.publications as p/);
+    assert.match(source, /from public\.standard_kit_publications as skp/);
+    assert.match(source, /declare[\s\S]*v_customer jsonb[\s\S]*v_line_title text;/);
+    assert.match(source, /\(\(v_customer->'location'\) - array\['city','district','state','pincode'\]\)/);
   }
 });
