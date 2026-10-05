@@ -5,6 +5,7 @@ const path = require("node:path");
 
 const read = file => fs.readFileSync(path.resolve(__dirname, "..", file), "utf8");
 const migration = read("supabase/migrations/20261005000000_harden_requirement_submission.sql");
+const hotfix = read("supabase/migrations/20261005170000_fix_requirement_rpc_json_location.sql");
 const edge = read("supabase/functions/submit-catalogue-request/index.ts");
 
 test("explicitly secures Kit configuration tables and submission RPC execution", () => {
@@ -37,4 +38,11 @@ test("keeps one notes field and validates the public customer DTO", () => {
   assert.match(edge, /customer\.preferredContact==="email"/);
   assert.match(edge, /customer\.preferredContact==="whatsapp"/);
   assert.match(edge, /existingCustomers=new Set\(\["Yes","No","Not sure"\]\)/);
+});
+
+test("subtracts location allow-listed keys from JSONB, not the location key text", () => {
+  for (const source of [migration, hotfix]) {
+    assert.match(source, /\(\(customer->'location'\) - array\['city','district','state','pincode'\]\)/);
+    assert.doesNotMatch(source, /customer->'location'\s*-\s*array/);
+  }
 });
