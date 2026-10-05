@@ -1,149 +1,44 @@
-# CPC Digital Catalogue — Project State
+# CPC Digital Catalogue — Current Project State
 
-Last updated: 2026-09-20 18:52 IST (UTC+05:30)
+## Read this first
 
-This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
+- Branch: `codex/refactor-foundation`
+- Latest relevant checkpoint: `0f5bc96 Harden requirement submission boundary`
+- Automated baseline: **56 passing Node tests**.
+- This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
 
-## Product goal
+## Environment and data
 
-Build a premium, accurate, easy-to-use **CPC Digital Catalogue** that helps customers discover, browse, search and understand Cambridge Publishing Company publications.
+The existing Supabase project is the **DEVELOPMENT/PILOT** backend, not production. It has 33 active development publications. A separate staging project is not required now; every remote mutation, migration, import, deployment, or integration test still needs explicit approval.
 
-**The catalogue is the primary product.** Selection, custom kits and Submit Request are secondary convenience features. This is not an e-commerce/order-management system, and request workflow must not drive the catalogue architecture.
+Pilot data is sufficient for continued development. Incomplete Early Learning, SKU, asset, College, and Competitive coverage is a data-coverage limitation, not a reason to stop. The final CPC item master will later replace/refine it before launch.
 
-Primary journey:
+## Implemented application state
 
-`Discover/Browse/Search → Section → Class/Stage → Publications → Book Details`
+Publication-driven routes share one normalized catalogue-source boundary. Supabase is intended to become authoritative; static data remains development/reference/fallback until final cutover. Source context persists through listing/detail, Early Learning, and Kit journeys.
 
-Optional continuation:
+School Learning is implemented on that boundary; remaining work is data coverage, verification, and polish. Browse includes keyword/SKU/ISBN search, category/class/series/subject/type/medium filters, valid MRP, reset/chips/no-results recovery, responsive controls, and natural image proportions. Book Details has one gallery: front cover, back cover, then ordered sample pages—no separate sample viewer/action.
 
-`Select publications → Review Selection → Submit Request`
+Custom Kit supports Playgroup, Nursery, LKG, and UKG. Nursery/LKG/UKG currently require 8 distinct eligible titles; Playgroup completion is unconfigured. Builder → Review → Edit, optional names, removal, source context, and My Selection compatibility are implemented. `customKitEligible: false` excludes a title; absent remains compatible/eligible where stage membership allows.
 
-## Current customer journey
+Cambridge Standard Kit has an implemented CPC-controlled foundation and Selection/Requirement compatibility. Real compositions are intentionally unconfigured until approved canonical publication UUIDs are available; the current customer state is truthfully unavailable.
 
-Implemented and working: homepage, Early Learning, School Learning, school book lists, College and University shell, Competitive Exams shell, shared Browse/Search, Book Details, Kit Builder, My Selection, request details/review/submission and Supabase-backed request success.
+## Requirement status
 
-The Supabase pilot Browse → Book Details → Selection flow has been live-verified by the user. Catalogue data is cached in-session to reduce repeated page-load latency. UI refinements are intentionally deprioritized except for blocking usability issues.
+The working architecture is Browser → Edge Function → transactional RPC → request tables → CPC Requirement reference.
 
-## Existing Supabase state
+Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Custom Kit validation, Standard Kit type compatibility, and idempotency. The migration and Edge Function changes are **not deployed/applied remotely**. Rate limiting is not activated because the private attempts-store schema, trusted IP source, and concurrency behavior remain unverified.
 
-Supabase project: **CPC Digital Catalogue** (`ysaxagxortpxyifyaydx`).
+## Immediate next steps
 
-Request add-on tables:
+1. Review and, with explicit approval, integrate prepared Requirement hardening against the pilot backend.
+2. Verify/implement the private rate-limit design.
+3. Expand development catalogue records only where needed for missing test cases.
+4. Run the complete pilot end-to-end and manual mobile/accessibility/error regression.
+5. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
 
-- `requests`
-- `request_items`
-- `request_kit_components`
-- `product_mappings`
+Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
 
-RLS is enabled. The request system remains secondary and should stay stable during catalogue migration.
+## Protected local artifacts
 
-## Publication Master V1 — FROZEN FOR PILOT
-
-Canonical fields:
-
-- Catalogue Section
-- Series
-- Book Title
-- Class/Stage
-- Subject
-- Medium
-- Language Position
-- Book Type
-- SKU ID
-- MRP
-- ISBN
-- Author
-- Co Author
-- Pages
-- Length (cm)
-- Breadth (cm)
-- Thickness (cm)
-- Weight (kg)
-- Status
-
-Key rules: Category excluded; Book Type controlled; Medium optional and never inferred from subject; Class/Stage array-based; empty class array means intentionally unrestricted; UUID is publication identity; SKU optional; Tally/ERP mapping remains private; no catalogue-wide Language field or edition hierarchy in V1.
-
-## Supabase catalogue pilot — DATABASE + PILOT DATA READY
-
-Migration `20260920103408_create_catalogue_publication_master_v1` created `public.publications` and `public.publication_assets`, constraints/indexes, automatic `updated_at`, RLS and read-only public catalogue policies.
-
-Approved pilot data:
-
-- 33 Active publications total
-- 9 Early Learning
-- 22 School Learning
-- 2 College and University
-- 0 Competitive Exams in this pilot batch
-- 6 deliberately class-unrestricted records represented by an empty `class_stage` array
-
-Hidden Excel Category was not imported. Blank Status defaulted to Active. No full catalogue migration has occurred.
-
-## Canonical publication identity / operational mapping bridge — IMPLEMENTED
-
-Migration `link_product_mappings_to_publications_v1` adds nullable `product_mappings.publication_id uuid` with a foreign key to `publications.id`.
-
-Rules:
-
-- `publications.id` is the permanent canonical publication identity.
-- New operational mappings should reference `product_mappings.publication_id`.
-- One active mapping row per canonical publication is the V1 assumption; a unique partial index prevents duplicate non-null publication mappings.
-- Existing legacy `product_mappings.product_id text` remains temporarily as the table primary key because the current request workflow expects text product IDs.
-- The bridge is additive and does not rewrite historical request snapshots.
-- `product_mappings` currently contains zero rows, so no legacy mapping data required backfill at migration time.
-- Do not expose `product_mappings`, Tally item names, Tally stock IDs or ERP IDs to public catalogue clients.
-
-Target direction:
-
-`publications.id (UUID) → product_mappings.publication_id → SKU / Tally / ERP identifiers`
-
-When request submission is migrated, resolve new UUID-based catalogue selections through `publication_id`; retain legacy `product_id` compatibility only as long as needed for old/static catalogue requests.
-
-## Supabase frontend pilot adapter — WORKING
-
-`js/catalogue-supabase-adapter.js` reads Active publications/assets and converts them into the existing frontend contract. `catalogue-bootstrap.js` supports opt-in Supabase loading and session caching across publication-driven listing, detail, Early Learning and Custom Kit flows; source context is preserved through their local navigation.
-
-The public publishable Supabase key is used in browser configuration; service-role/secret credentials must never be committed.
-
-## Current static catalogue state
-
-`js/catalogue-data.js` remains the normal/default catalogue source. It still contains legacy placeholder/static records and some obsolete assumptions. Supabase Publication Master V1 is the intended future source of truth.
-
-## Publication asset/storage pilot — COMPLETE
-
-Actual publication images live in the public **`publication-assets` Supabase Storage** bucket. `publication_assets` stores the canonical publication relationship, asset type, storage path, public URL, ordering and active/primary state; the Publication Master Excel must not grow cover-image columns merely for website rendering.
-
-The first deliberately small pilot imported and verified exactly four PNG assets:
-
-- `10th LBA Science` (`22a9f39f-fd15-43dd-af31-caf2190ae48f`): primary `cover` and `back_cover`
-- `My Book of Draw & Colour - 3` (`0a334b1e-3eb6-49eb-8a7a-747794df871b`): primary `cover` and `back_cover`
-
-Each storage object and public URL returned HTTP 200 with `image/png`; all four corresponding active `publication_assets` records were verified. The Supabase Browse pilot renders both front covers, and each Book Details gallery renders front and back covers in order.
-
-The supplied LBA English images were intentionally not imported: they are English Second Language assets and do not match the current pilot publication. No publication metadata was changed and no bulk image migration has occurred.
-
-`scripts/upload-publication-assets.mjs` is the admin-only importer. It supports UTF-8 JSON manifests with or without a BOM, requires `SUPABASE_SERVICE_ROLE_KEY` from the local environment, and must never receive a service-role key through a repository file.
-
-## Immediate next step
-
-Keep the pilot constrained while gathering confirmed asset-to-publication mappings. Extend it only with verified source images and canonical publication UUIDs; do not bulk-migrate covers or import the unconfirmed LBA English assets.
-
-Continue universal Search/Browse architecture and full Publication Master migration planning independently of the asset pilot.
-
-## Migration rules
-
-- Keep `catalogue-data.js` available during the pilot.
-- Do not migrate all covers at once.
-- Do not redesign the working request workflow during catalogue migration.
-- Do not expose `product_mappings` or Tally/ERP fields to the browser.
-- Do not invent missing publication values.
-- Do not add lookup tables/fields merely because they might be useful someday.
-- Do not commit Supabase service-role credentials.
-- Preserve publication UUIDs when correcting publication metadata.
-
-## Development definition of done
-
-For meaningful changes:
-
-**Inspect current Git → read relevant docs → implement smallest coherent change → test affected flows → verify → update docs → commit.**
-
-Do not claim a feature is complete solely because code was written.
+`asset-import/`, `supabase/recovery/`, and `supabase/schema/` are protected/untracked local material. Do not stage or treat recovery JSON as migrations.

@@ -8,8 +8,10 @@ Product scope is governed by [01-product-requirements.md](01-product-requirement
 
 ## 1. Database principles
 
+**Prepared / pending pilot deployment:** migration `20261005000000_harden_requirement_submission.sql` prepares canonical Requirement validation, configurable Kit rules, Standard Kit request-type support, and idempotency. It is repository-local after `0f5bc96` and is not current remote database state.
+
 - PostgreSQL is the current relational database and Supabase is the current managed backend.
-- Supabase/PostgreSQL is CPC's authoritative Digital Catalogue publication master for now.
+- Supabase/PostgreSQL is intended to become CPC's authoritative Digital Catalogue publication master; the current remote project is development/pilot and static data remains a development/reference/fallback source during cutover.
 - A generated, stable publication UUID is the durable CPC catalogue identity. It is distinct from display text and external operational identifiers.
 - Catalogue data must be independent of UI layout. Normal publication, taxonomy, price, lifecycle, and asset changes are data operations, not frontend changes.
 - Use foreign keys and explicit constraints for durable business invariants; avoid encoding presentation-only assumptions as permanent constraints.
@@ -147,7 +149,7 @@ Identifier semantics:
 
 No server-side Selection table is needed for launch. My Selection may remain device-local until deliberate requirement submission. Likewise, an anonymous in-progress Custom Kit may remain local; this preserves privacy and avoids persistence just because it might later be useful.
 
-Shareable general Selection and server-persisted shareable Custom Kit links are **DEFERRED**. They need expiry, anti-enumeration, integrity, retention, and access design before any table is justified. The initial PDF Kit Summary can be generated from reviewed local state and canonical presentation data; it does not require a persisted Kit record.
+Shareable general Selection and server-persisted Custom Kit links are **DEFERRED**. They need expiry, anti-enumeration, integrity, retention, and access design before any table is justified. Custom Kit PDF output is also deferred; neither feature requires a persisted Kit record today.
 
 ### 7.2 Requirements are historical submissions, not orders
 
@@ -155,9 +157,9 @@ Retain `requests`, `request_items`, and normalized `request_kit_components`. The
 
 Target request header retains UUID, unique human reference, created-at, simple status, necessary contact/institution information, notes, and server-derived item/quantity counts. Target statuses should be constrained to the product vocabulary **Received**, **Under Review**, **Contacted**, and **Closed** (with a deliberate cancellation state only if required). Existing `new/reviewing/accepted/rejected/cancelled` are legacy/current values requiring an explicit mapping before change; no order fulfilment status is introduced.
 
-Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a custom-kit line include stage code, optional kit name, line quantity, and a snapshot. Keep a strict book-vs-kit check and unique positions.
+Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a Kit line include stage code, optional kit name where applicable, line quantity, and a snapshot. The current remote schema supports book/custom-kit; the prepared pending migration adds `standard-kit` compatibility. Keep a strict book-vs-kit check and unique positions.
 
-`request_kit_components` is worth preserving: it supports historical component-level understanding without becoming an ERP BOM. It should move from nullable legacy text `product_id` to an optional canonical `publication_id uuid` where resolvable, retain quantity-per-kit and total quantity, position, and a limited customer-facing snapshot. Its parent must be a custom-kit request item.
+`request_kit_components` is worth preserving: it supports historical component-level understanding without becoming an ERP BOM. It should move from nullable legacy text `product_id` to an optional canonical `publication_id uuid` where resolvable, retain quantity-per-kit and total quantity, position, and a limited customer-facing snapshot. Its parent is a Kit request item (custom or Standard Kit once the prepared migration is deployed).
 
 The duplicated current `request_items.kit_books jsonb` is transitional once normalized components are authoritative. Keep historical data readable, but **RETIRE new writes** to the duplicate array after a safe migration/backfill decision. Similarly, assess `customer_snapshot jsonb`: existing historic values remain, but target writes should avoid duplicating PII already represented by necessary columns unless a precise snapshot need is documented.
 
@@ -302,7 +304,7 @@ Recovery JSON remains evidence and must not be silently converted into migration
 
 ## 17. Document alignment notes
 
-Earlier product/flow/architecture documentation left Custom Kit summary output and release sequencing more open. The current UI/UX direction establishes a CPC-branded **PDF** summary as intended for launch, image export as future/optional, and Custom Kit sharing as approved with launch sequencing to be confirmed. This document adopts that direction for data implications without editing earlier documents. A later documentation-alignment pass should reconcile the wording.
+Custom Kit PDF summaries and sharing are deferred/post-launch. They are not required for launch and do not justify persisted Kit records today.
 
 ## Document status
 

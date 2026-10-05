@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — Testing & Launch Readiness
 
+> Current-state update: the repository has a Node test runner with 56 passing tests. A separate staging project is not required during current development; approved pilot integration testing may use CPC's development/pilot Supabase project.
+
 ## Purpose and scope
 
 This document defines the practical verification strategy for deciding whether the existing CPC Digital Catalogue is ready for public launch. It covers the current static HTML/CSS/JavaScript application, its transitional Supabase catalogue path, local Selection/Custom Kit state, Edge Function/RPC requirement path, Storage assets, and GitHub Pages deployment.
@@ -25,7 +27,7 @@ It does not implement tests, change infrastructure, query production customer da
 | Test/staging (not currently verified) | Supabase schema/RLS/Storage/Edge Function integration, synthetic requirement submissions, rate-limit/idempotency/security testing, migration rehearsal | Real customer data or uncontrolled load. |
 | Production | Small non-destructive smoke checks after approved deployment | Schema testing, RLS bypass attempts, rate-limit stress, active penetration testing, destructive cleanup. |
 
-A separate Supabase test/staging project is recommended before any schema, RLS, grant, Storage, Edge Function, or security migration. It is not currently verified to exist and is not created by this document.
+Use the existing development/pilot Supabase project for approved integration testing. A separate staging project is not required at this stage; every remote mutation remains explicitly approved.
 
 Use synthetic publication IDs, synthetic contact data, test-only assets, and known stage-specific Kit fixtures. Non-production test requirements must carry a clear test source/marker and be removed only through approved non-production cleanup procedures. Production records are never used as disposable fixtures or deleted by tests.
 
@@ -37,7 +39,7 @@ Use synthetic publication IDs, synthetic contact data, test-only assets, and kno
 | Module/integration | Data adapter, asset resolution, local state migration, page/module interactions | Automate early where stable. |
 | Database/security | RLS, grants, RPC validation, canonical lookup, Storage access | Automate early in test/staging. |
 | Browser/end-to-end | Core journeys across static routes, request flow, deep links | Automate later after stable seams exist. |
-| Manual UX/visual | Responsive layouts, PDF appearance, sharing hand-off, keyboard/screen-reader basics | Manual, with selected assisted checks. |
+| Manual UX/visual | Responsive layouts, unified gallery, keyboard/screen-reader basics | Manual, with selected assisted checks. |
 | Production smoke | Small public availability check after deployment | Manual/controlled, non-destructive. |
 
 No unit, browser, integration, security, or CI testing framework is currently present in the repository. There is no package manifest/build tooling and no verified GitHub Actions workflow. The minimum foundation is pure module seams plus a small automated logic/security suite and documented manual smoke checklist; tool selection is deferred.
@@ -56,9 +58,9 @@ Search cases must use representative data rather than hard-coded production titl
 
 ### Publication detail and samples
 
-Test valid and invalid publication UUID/direct links; active/inactive publication behaviour; cover and missing-cover fallback; classification/description/MRP and missing optional values; assets; Add to Selection; eligible/ineligible Kit action; sharing; related navigation when implemented; mobile and keyboard use.
+Test valid and invalid publication UUID/direct links; active/inactive publication behaviour; cover and missing-cover fallback; classification/description/MRP and missing optional values; assets; Add to Selection; eligible/ineligible Kit action; mobile and keyboard use. Publication sharing and related navigation are deferred.
 
-Sample Viewer is a core launch capability. Test single image, ordered multi-page images, PDF where supported, no sample, broken/missing asset, loading, navigation, close/back/history, mobile, keyboard/focus, large asset, and network interruption. Viewing an available sample must require neither login nor contact data.
+The unified Book Details gallery is the launch capability. Test front cover, back cover, ordered sample pages, no sample, broken/missing asset, loading, mobile, keyboard/focus, large asset, and network interruption. Viewing an available sample must require neither login nor contact data; a separate viewer or PDF is not required.
 
 ### My Selection
 
@@ -70,11 +72,9 @@ Use data-configured fixtures for Playgroup, Nursery, LKG, and UKG. Test eligible
 
 Review must remain possible below minimum. Completed actions must respect the configured rule in both browser guidance and trusted server validation; tests must not assume eight permanently.
 
-### Custom Kit PDF and sharing
+### Deferred PDF and sharing
 
-When PDF Summary is implemented, test valid completed Kit; brand, stage, optional name, covers, titles, MRP/quantities where applicable, many titles/multi-page output, missing cover, long/special-character title, output filename, desktop/mobile generation/download, print readability, and that output is not an invoice, quotation, purchase order, or payment request.
-
-For publication sharing, test native share where available, Copy Link fallback, copied URL, recipient publication, mobile, and desktop fallback. Custom Kit sharing remains pending until implementation sequencing is finalised; later tests must cover URL integrity, recipient restoration, expiry/access rules if persisted, and no requirement/order creation.
+Custom Kit PDF, Kit sharing, and publication sharing are post-launch work. They need no launch test coverage beyond ensuring their absence does not block catalogue, Selection, Kit, or Requirement flows.
 
 ### Requirement form and backend
 
@@ -123,11 +123,11 @@ Before future production migration/security work, rehearse in non-production: sc
 
 ## 6. Accessibility, responsive, browser, and performance tests
 
-Automated and manual accessibility checks cover headings/landmarks, labels/alt text, keyboard-only navigation, visible focus, dialogs/sheets, filter panel, sample viewer, Selection, Kit, forms/errors/status messages, contrast, zoom, and basic screen-reader behaviour. Automation does not establish certification.
+Automated and manual accessibility checks cover headings/landmarks, labels/alt text, keyboard-only navigation, visible focus, filter controls, unified gallery, Selection, Kit, forms/errors/status messages, contrast, zoom, and basic screen-reader behaviour. Automation does not establish certification.
 
 Test every core flow at small/typical/large mobile, tablet, laptop/desktop, and large desktop. Practical launch coverage includes current Chrome, Edge, Firefox, Safari, Chrome Android, and Safari iOS; do not create an unsupported legacy-browser burden without a CPC requirement.
 
-Measure rather than guess: homepage/Browse/detail load; image-heavy results; samples; large Kit/PDF; slow network; cold/warm cache; and Supabase latency. Establish practical targets after baseline measurement, not arbitrary enterprise SLAs.
+Measure rather than guess: homepage/Browse/detail load; image-heavy results; samples; large Kits; slow network; cold/warm cache; and Supabase latency. Establish practical targets after baseline measurement, not arbitrary enterprise SLAs.
 
 ## 7. Regression, deployment, production smoke, and recovery
 
@@ -158,7 +158,7 @@ Before schema/security changes, verify—not merely assume—database backup/rec
 | F — Privacy | Minimum data/notice/storage/log/analytics checks pass | Unapproved PII collection/exposure | Privacy/operations review |
 | G — Requirement submission | Valid/invalid/retry/transaction tests pass | Lost/duplicate/unreliable requirement flow | Integration test + controlled test submission |
 | H — Custom Kit | Configurable stage/eligibility/minimum/review tests pass | Client-only bypass or approved stages unavailable | Unit/integration/manual evidence |
-| I — Sample viewing | Image/PDF/fallback/history/mobile tests pass | Available sample unusable or identity gate imposed | Browser/device evidence |
+| I — Sample gallery | Front/back/ordered sample-page/fallback/mobile tests pass | Available sample unusable or identity gate imposed | Browser/device evidence |
 | J — Performance | Baseline measured and core flows remain responsive | Measured unacceptable core degradation | Measurement record |
 | K — Deployment/recovery | Version, smoke, rollback/backup preparation verified | Cannot identify/recover previous version | Release record + operations reviewer |
 
@@ -194,13 +194,12 @@ Future Admin testing is separate: authentication, authorization/role boundaries,
 | --- | --- |
 | Automate early | Publication normalisation/data quality; search/filter logic; Selection quantity/state; Kit minimum/configuration; payload construction; request validation; RLS/grants; server authority; requirement transaction/idempotency. |
 | Automate later | Browser journeys, visual regression where useful, cross-browser runs, deployment smoke. |
-| Manual | Publishing/brand quality, responsive/device feel, sharing hand-off, PDF appearance, screen-reader review, controlled production smoke. |
+| Manual | Publishing/brand quality, responsive/device feel, screen-reader review, controlled production smoke. |
 
-Current gaps are no test files, no test runner, no browser automation, no committed CI workflow, no verified staging project, and no release-evidence template. The minimum foundation is reusable pure functions, synthetic fixtures, a non-production Supabase project, direct RLS/RPC checks, and a small repeatable browser smoke suite. No tool is selected or installed here.
+The repository has 56 passing Node tests. Remaining verification is approved pilot integration testing for the prepared Requirement boundary, plus a small repeatable browser/manual regression suite. Sophisticated browser automation, a committed CI workflow, and a separate staging project are not initial-launch prerequisites.
 
 ## 12. Open testing questions
 
-- Will CPC approve a separate Supabase test/staging project before migrations/security work?
 - Which unit and browser automation tools fit the static repository after a small prototype?
 - Is visual regression automation valuable after the design stabilises?
 - What measured performance thresholds are acceptable for CPC's target devices/networks?

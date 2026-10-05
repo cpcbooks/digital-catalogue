@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — UI/UX Specification
 
+> Current-state update: Book Details uses one gallery (front cover → back cover → ordered sample pages), without a separate View Sample action/viewer. Browse medium/SKU/ISBN/MRP/reset controls and responsive presentation are implemented; Kit PDF/share is deferred.
+
 ## 1. Purpose and authority
 
 This document defines the UI/UX baseline for CPC Digital Catalogue. It translates Product Requirements → System Architecture → User Flows into behavioural presentation guidance. It does not redefine product scope, database architecture, security controls, or implementation framework.
@@ -181,26 +183,13 @@ Builder optimizes for cover recognition, quick title selection/removal, selected
 
 Review is distinct from building and supports covers, selected titles, quantities where applicable, removal, return to builder, optional Kit Name, and clear completion status.
 
-## 13. Custom Kit PDF, sharing, and requirement
+## 13. Deferred Kit and sharing features
 
-```mermaid
-flowchart LR
-  K[Completed Kit] --> PDF[Download CPC-branded PDF Summary]
-  K --> SH[Share Kit — sequencing TBC]
-  K --> SR[Send Requirement]
-```
+Custom Kit PDF summaries, Custom Kit sharing, and publication Share/Copy Link are deferred/post-launch. They are not launch requirements and must not add anonymous server persistence merely to support a speculative sharing flow. Existing direct publication URLs and normal catalogue navigation remain useful.
 
-The intended initial summary output is a **CPC-branded PDF**. Future image export may be added if useful. It is deliberately generated content, not a browser screenshot, quotation, invoice, purchase order, or payable-total display.
+## 14. Direct links
 
-Appropriate PDF content may include CPC branding, kit title/name, Early Learning stage, selected covers/titles, MRP where appropriate, quantities, title count, and catalogue URL/QR. Exact graphic layout is deferred.
-
-Shareable Custom Kit is approved. A recipient should inspect the kit, see selected titles, and navigate to relevant catalogue publications. It must not create an order or require requirement submission. Exact launch sequencing remains **TO BE CONFIRMED** and should not make launch dependent on anonymous server-side kit persistence unless implementation/security analysis justifies it.
-
-## 14. Publication sharing and direct links
-
-Use native device/browser sharing where available, with Copy Link fallback. This supports WhatsApp, email, Messages, and other installed applications without becoming WhatsApp-specific. Shared publication/kit links return visitors into normal catalogue exploration.
-
-Stable publication and future kit URLs should support direct/QR entry, useful context, graceful invalid/unavailable recovery, and eventual social/link previews.
+Publication URLs should continue to support direct/QR entry, useful context, and graceful invalid/unavailable recovery. Source and return context must survive relevant catalogue journeys.
 
 ## 15. Send Requirement
 
@@ -230,7 +219,7 @@ Target user-facing terminology is: **My Selection**, **Send Requirement**, **Req
 | Stale Selection/Kit | Identify unavailable publications and preserve unaffected work. |
 | Analytics failure | Never block catalogue use. |
 
-Mobile is primary: search, filters, cards, details, sample viewing, Selection, kit builder/review, forms, and sharing must be designed for touch targets and readable text rather than shrunk desktop layouts.
+Mobile is primary: search, filters, cards, details, the unified gallery, Selection, kit builder/review, and forms must be designed for touch targets and readable text rather than shrunk desktop layouts.
 
 Accessibility expectations include semantic structure, meaningful headings/labels/alt text, keyboard navigation, visible focus, accessible dialogs, announced form errors, contrast, non-colour indicators, and screen-reader-friendly controls. This document does not claim formal certification.
 
@@ -238,7 +227,7 @@ Privacy is data minimisation in the interface: browsing, samples, Selection, and
 
 ## 17. Analytics UX
 
-Aggregate product-improvement events may include visits, publication views, searches/zero-result searches, filter use, samples, shares, Add to Selection, kit start/completion/PDF/share, requirement start/submission, and deliberate contact actions. Analytics is optional to every visitor flow and does not define tracking technology.
+Analytics is deferred/post-launch. It must not block any visitor flow or expand personal-data collection without a separate privacy decision.
 
 ## 18. Visual system and maintainability
 
@@ -255,9 +244,8 @@ Centralize repeated presentation values where practical. Do not introduce a fram
 | Experience | Priority |
 | --- | --- |
 | Homepage; Browse/Search; Publication Detail gallery; My Selection; Early Learning Custom Kit Builder; Custom Kit Review; Send Requirement; Requirement Success; error/empty states | **CORE / LAUNCH** |
-| CPC-branded Custom Kit PDF Summary | **CORE / LAUNCH**, unless implementation/security analysis identifies a material reason to defer |
-| Custom Kit Share | **Approved; launch sequencing TO BE CONFIRMED** |
-| Admin Console; Requirement Tracking; Aggregate Analytics Dashboard | **PLANNED** |
+| CPC-branded Custom Kit PDF Summary; Custom Kit Share; publication Share/Copy Link | **DEFERRED / POST-LAUNCH** |
+| Admin Console; Requirement Tracking; Aggregate Analytics Dashboard | **DEFERRED / POST-LAUNCH** |
 | General Selection sharing, favourites, customer accounts, richer privacy-conscious personalisation, ERP/order-portal handoff | **FUTURE / OPTIONAL** |
 
 ## 20. Future resilience and interoperability
@@ -270,8 +258,6 @@ The catalogue remains useful independently. A future ERP-connected ordering port
 
 - What is the final pre-launch logo/header treatment?
 - What final hero copy best represents CPC at launch?
-- What visual layout should the initial Custom Kit PDF use?
-- Does Custom Kit sharing ship at launch after implementation/security review?
 - What mobile filter presentation performs best after prototype testing?
 - What final publication-card density is appropriate once complete live catalogue data is available?
 

@@ -8,7 +8,7 @@ Prefer one shared catalogue architecture over page-specific implementations. Pag
 
 ## Catalogue data ownership direction
 
-Current production source:
+Current development source choices:
 
 `js/catalogue-data.js → catalogue UI`
 
@@ -16,7 +16,7 @@ Target direction:
 
 `Supabase Publication Master → shared catalogue query/adapter → catalogue UI`
 
-The static source remains production truth until the Supabase pilot is verified. Do not perform a big-bang replacement.
+Publication-driven routes use one normalized static/Supabase boundary. Supabase is intended to become the authoritative master; static remains development/reference/fallback during migration. The current Supabase project is development/pilot, not production.
 
 See `DATA-MODEL.md` and `SUPABASE-CATALOGUE-ARCHITECTURE.md`.
 

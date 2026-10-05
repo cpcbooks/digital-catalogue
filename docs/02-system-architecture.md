@@ -118,7 +118,7 @@ flowchart TB
 
 | Boundary | Responsibility | Must not become |
 | --- | --- | --- |
-| Public experience | Discovery, information, samples, sharing, Selection, Custom Kit, and requirement initiation | An ordering/checkout portal |
+| Public experience | Discovery, information, samples, Selection, Custom Kit, Standard Kit, and requirement initiation | An ordering/checkout portal |
 | Catalogue / Publication | Customer-safe publication data, lifecycle, presentation, and asset references | A UI-specific hard-coded book list |
 | Search / Discovery | Search, filters, categories, and no-result handling over catalogue data | A permanently fixed page-level array search |
 | Selection | Publication references, quantities, and needed catalogue context | A shopping cart or reservation system |
@@ -137,7 +137,7 @@ Publication identity is a CPC/domain concept, not a provider-specific concept. I
 flowchart TB
   I[Publication identity / business data\nstable identity, title, edition, ISBN, SKU, class/stage, subject, medium,\nbook type, board/curriculum, MRP, lifecycle, future ERP mapping]
   P[Catalogue presentation\ndescription, features, display ordering, badges, discoverability,\nrelated publications, catalogue visibility]
-  A[Publication assets\nfront/back covers, sample pages/PDF, images, digital resources]
+  A[Publication assets\nfront/back covers, ordered sample pages, images, digital resources]
   I --> P
   I --> A
 ```
@@ -148,11 +148,11 @@ Catalogue content must be data-driven. Adding or changing publications, classifi
 
 ### 2.4 Selection and Custom Kit
 
-My Selection is an independent domain capability containing publication references, quantities, and needed catalogue context. It supports review, quantity changes, Custom Kit where eligible, and Send Requirement now. It may later be shareable or handed to a separate ordering portal, but no ordering behaviour is implied now.
+My Selection is an independent domain capability containing publication references, quantities, and needed catalogue context. It supports review, quantity changes, Custom Kit/Standard Kit compatibility where applicable, and Send Requirement now. Sharing is deferred; no ordering behaviour is implied.
 
 Custom Kit is a first-class catalogue capability and an Early Learning differentiator, not a catalogue-wide feature. It currently applies only to eligible Playgroup, Nursery, LKG and UKG publications/configurations. Eligibility must be data-driven/configurable rather than permanently derived from the displayed stage; other catalogue sections retain normal catalogue, My Selection and Send Requirement capabilities but do not automatically receive Custom Kit.
 
-A kit must preserve session/context identity, component publication references, quantities where applicable, and an immutable-enough snapshot when submitted as a requirement. A completed kit may be reviewed/edited, optionally named, shared by link, downloaded as a branded summary, or sent as a requirement; sharing/downloading do not require submission. Exact summary format is a later UI/Technical Design decision. No ERP kit/BOM behaviour is required.
+A kit must preserve session/context identity, component publication references, quantities where applicable, and an immutable-enough snapshot when submitted as a requirement. Custom Kits may be reviewed/edited and optionally named; Standard Kits are CPC-defined and non-editable. Sharing/downloading are deferred. No ERP kit/BOM behaviour is required.
 
 ### 2.5 Requirement trust boundary
 
@@ -198,7 +198,7 @@ The Admin Console is a separate trust boundary. Controlled Supabase/import proce
 
 For now:
 
-- Supabase/PostgreSQL owns authoritative Digital Catalogue publication data, asset metadata, catalogue lifecycle/presentation information, requirements, and necessary catalogue application data.
+- Supabase/PostgreSQL is intended to own authoritative Digital Catalogue publication data, asset metadata, catalogue lifecycle/presentation information, requirements, and necessary catalogue application data after final cutover. The current project is development/pilot; static data remains a development/reference/fallback source.
 - Supabase Storage owns catalogue assets as appropriate.
 - Future ERP ownership is deliberately undecided until such a system exists.
 

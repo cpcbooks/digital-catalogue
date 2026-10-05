@@ -1,4 +1,6 @@
-# Cambridge Digital Catalogue — Request Backend Architecture (V1)
+# Cambridge Digital Catalogue — Requirement Backend Architecture (V1)
+
+> Current-state update: `0f5bc96` prepares strict DTO validation, canonical publication snapshots, Custom Kit validation, Standard Kit compatibility, and idempotency locally. These changes have not been deployed to the Supabase development/pilot project. Rate limiting remains pending verification of the recovered private attempts store.
 
 This document records the backend decisions for the catalogue request flow so they remain recoverable independently of chat history.
 
@@ -7,13 +9,13 @@ This document records the backend decisions for the catalogue request flow so th
 The implemented customer journey is:
 
 1. Browse catalogue
-2. Add individual books and/or custom kits to `cambridgeOrder`
+2. Add individual books and/or Custom/Standard Kits to `cambridgeOrder`
 3. Review quantities in `order.html`
 4. Enter customer/contact details in `request.html`
 5. Review the complete request in `review-request.html`
 6. Submit the request to the backend
 
-The final submission step is the backend boundary. The frontend must continue to describe this as an **order request**, not a confirmed order.
+The final submission step is the backend boundary. The frontend must describe it as a **Requirement**, not an order.
 
 ## Backend platform
 
@@ -31,12 +33,13 @@ Therefore request items store snapshot fields from the submitted selection. They
 
 ### 2. Individual books and custom kits are both first-class request items
 
-A request can contain:
+A Requirement can contain:
 
 - individual catalogue titles
 - custom Early Learning kits
+- CPC-defined Standard Kits
 
-A custom kit has its own requested quantity and a snapshot of the books contained in that kit.
+A Kit has its own requested quantity and a canonical snapshot of its constituent books. Standard Kit composition is CPC-controlled; exact composition validation awaits approved definitions.
 
 ### 3. No customer login is required for V1
 

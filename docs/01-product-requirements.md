@@ -4,7 +4,7 @@
 
 CPC Digital Catalogue is a digital-first catalogue and publication discovery platform for Cambridge Publishing Company Pvt. Ltd.
 
-Its primary purpose is to present CPC's publications in an attractive, structured, searchable, informative and easily shareable digital format.
+Its primary purpose is to present CPC's publications in an attractive, structured, searchable and informative digital format.
 
 It is the digital equivalent and evolution of a traditional publication catalogue.
 
@@ -17,7 +17,7 @@ The catalogue must help visitors:
 - view publication covers and relevant information;
 - view sample pages where CPC has made samples available;
 - explore publications by relevant classifications;
-- share useful catalogue content.
+- continue browsing through direct catalogue links.
 
 The product must remain useful as a catalogue in its own right.
 
@@ -73,7 +73,7 @@ Visitors must be able to create a custom set/kit using eligible Early Learning p
 
 The product should support a clear and convenient Custom Kit experience.
 
-A completed Custom Kit may be reviewed/edited, optionally named, shared through a kit link, downloaded as a kit summary, or sent as a requirement. Sharing or downloading must not require requirement submission. The exact summary output format belongs in later UI/Technical Design.
+A completed Custom Kit may be reviewed/edited, optionally named, or sent as a requirement. Kit sharing and PDF/download summaries are deferred/post-launch and are not launch requirements.
 
 ### 3.3 Send Requirement
 
@@ -188,7 +188,7 @@ The product should be capable of associating multiple assets with a publication,
 - back cover;
 - additional images;
 - sample pages;
-- sample PDF/document;
+- ordered sample-page images where supplied; a sample PDF is not a current requirement.
 - future digital resources.
 
 The product must not assume that every publication has every asset type.
@@ -197,9 +197,7 @@ The product must not assume that every publication has every asset type.
 
 Individual publications should support stable/direct catalogue access.
 
-The product should support sharing publication links through channels such as WhatsApp and other standard sharing mechanisms.
-
-Shared links should provide useful publication context.
+Publication Share/Copy Link is deferred/post-launch; current direct catalogue links remain useful navigation only.
 
 Where practical, publication pages should support useful social/link previews containing appropriate catalogue information and imagery.
 

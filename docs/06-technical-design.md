@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — Technical Design
 
+> Current-state update: common catalogue-source routing, Browse filters/search/MRP, Custom Kit review/name/Playgroup support, and Standard Kit foundation are implemented. PDF/share/related-title features are deferred. Requirement hardening is prepared locally in `0f5bc96`, not deployed.
+
 ## Purpose and authority
 
 This is the technical-design baseline for evolving the existing CPC Digital Catalogue. It translates the approved product, architecture, flow, UI/UX, and database direction into implementation boundaries. It is based on repository and recovered-backend evidence; it does not authorize code, database, deployment, or Supabase changes.
@@ -43,7 +45,7 @@ Public configuration includes the Supabase URL and publishable key in `catalogue
 flowchart LR
   GH[GitHub repository] --> GP[GitHub Pages static hosting]
   GP --> B[Browser: HTML / CSS / JavaScript]
-  B --> SD[js/catalogue-data.js\nstatic default]
+  B --> SD[Selected normalized\nstatic or Supabase source]
   B --> Q[Query / Selection / page scripts]
   B -->|?catalogueSource=supabase| BOOT[Bootstrap + Supabase adapter]
   BOOT --> API[Supabase REST API]
@@ -96,9 +98,9 @@ flowchart LR
   F --> X[CPC reference]
 ```
 
-`catalogue-selection.js` stores selected book snapshots and quantities; it exposes shared action controls, cover fallback, floating Selection access, and return-context handling. The standalone Kit builder instead owns a local `Set` while building, hard-codes Nursery/LKG/UKG and a minimum of eight, then appends a `custom-kit` snapshot to the same `cambridgeOrder` key. It currently has no Playgroup, Kit name, local in-progress persistence, review/edit separation, PDF, or sharing.
+`catalogue-selection.js` stores Selection snapshots and quantities, with return-context handling. The Custom Kit flow supports Playgroup/Nursery/LKG/UKG, configurable completion rules, optional names, Builder → Review → Edit, and completed-Kit Selection compatibility. Kit PDF and sharing remain deferred.
 
-`request-submission.js` builds a browser payload and directly POSTs JSON to the Edge Function. The Edge Function permits CORS POST/OPTIONS, does basic shape/size checks, creates a service-role server client, and invokes the transactional RPC. The RPC preserves request snapshots and resolves available mappings. This is a useful boundary, but the recovered implementation does not yet enforce the target canonical UUID lookup/Kit eligibility minimum, idempotency, or active rate-limit call path.
+`request-submission.js` POSTs the submission DTO to the Edge Function, which invokes the transactional RPC. Commit `0f5bc96` prepares strict DTO validation, canonical snapshots, Kit validation, and idempotency locally; it is not deployed. Rate limiting remains pending verification of the private attempts store.
 
 ## 3. Existing architecture assessment
 
@@ -112,7 +114,7 @@ flowchart LR
 | Page-local catalogue renderers | Preserve specialised current journeys. | Duplicate filters/card rendering and diverge from pilot/data contract. | **REFINE** | Extract only common rendering/normalisation pieces with regression checks. |
 | GitHub Pages | Fits static public browsing, direct links, and asset delivery. | Cannot securely render per-publication social metadata or run server code. | **KEEP / REFINE** | Supabase Edge Functions cover trusted writes; static-host limits inform only future features. |
 | GitHub Actions | No workflow is present. | No visible automated validation/deploy verification. | **EXTEND** | Add lightweight checks later; retain Pages deployment approach. |
-| Request boundary | Edge Function + RPC transaction/reference is a correct direction. | Browser sends broad snapshots; anti-abuse/idempotency/canonical lookup incomplete. | **KEEP / REFINE** | Harden existing boundary, do not replace it with a Node backend. |
+| Request boundary | Edge Function + RPC transaction/reference is a correct direction. | Prepared hardening is not deployed; rate-limit design remains unverified. | **KEEP / REFINE** | Integrate the prepared boundary with approved pilot testing; do not replace it with a Node backend. |
 | Storage/assets | DB metadata plus Storage bucket supports multiple assets. | Adapter currently uses cover/back/sample-page URLs only. | **KEEP / EXTEND** | Resolve ordered samples/PDFs through a focused asset helper. |
 
 ## 4. Frontend technology decision
@@ -133,7 +135,7 @@ Refine later with a minimal workflow for syntax/lint-like checks, link/static ch
 
 | Phase | Source | Technical position |
 | --- | --- | --- |
-| Current | `catalogue-data.js` default, Supabase pilot opt-in | Keep operational fallback while validation continues. |
+| Current | Unified normalized static or Supabase source | Preserve the explicit source choice and operational fallback while validation continues. |
 | Transition | Adapter normalises Supabase `publications`/`publication_assets` into one browser contract | Expand only after parity checks cover every current route and representative data. |
 | Target | Supabase authoritative publication master | The frontend reads a customer-safe catalogue data layer; static data is retained only until cutover proof is complete, then retired deliberately. |
 
@@ -165,11 +167,11 @@ Target shared responsibilities:
 - keep page-specific grouping/navigation in page modules;
 - make detail lookup use canonical publication UUID, then render cards/assets/actions from shared helpers.
 
-Current `book-details.js` displays front/back/sample-page assets in the gallery but does not offer an explicit sample viewer, sample-PDF handling, sharing, related titles, or Kit eligibility action. Extend this page rather than rebuilding it. A small accessible dialog/route-based viewer can handle ordered images; for an available PDF use a clear open/view action with loading/error fallback. No document platform is needed.
+`book-details.js` presents front cover, back cover, and ordered sample pages in one gallery. A separate sample viewer/action and sample-PDF path are not required. Sharing and related-title actions are deferred.
 
 ### Search and filters
 
-Keep client-side filtering initially. The current general Browse route searches title, series/family, subject, type, medium, category and class; ISBN/SKU and descriptive fields need extension as real data becomes populated. Supabase can provide filtered/public rows or a search projection later, but PostgreSQL-assisted search should be introduced only after client payloads/filtering cease to be responsive at measured catalogue scale.
+Keep client-side filtering initially. Browse searches title, series/family, subject, type, medium, category, class, SKU, and ISBN, with combined filters, URL state, chips, reset, and no-results recovery. Supabase-side search is only needed if measured catalogue scale requires it.
 
 Preserve the existing combined-filter logic. Separate technical filtering state from mobile presentation: mobile can use a sheet/control while applying the same query model. Add URL state persistence, clear/reset, active chips, no-result recovery, and bounded result rendering incrementally. Do not introduce external search infrastructure without evidence.
 
@@ -194,20 +196,9 @@ Keep the current focused builder concept—stage-specific titles, selection coun
 
 The existing `kit-builder.html` has `div` click cards rather than semantic controls, hard-coded stage/minimum values, and completion-gated “Add Kit to Selection”; it cannot satisfy the approved incomplete-review or data-driven scope without extension. This is an extension/refinement, not a framework replacement.
 
-### PDF summary and Kit sharing
+### Deferred PDF and Kit sharing
 
-PDF Summary is intended for launch. Options:
-
-| Option | Assessment |
-| --- | --- |
-| Client-side PDF generation | Best target if a small vetted library can produce branded multi-page layout and embed already-public covers; no PII/server persistence; needs mobile/performance testing. |
-| Edge Function PDF | Adds deployment/runtime/dependency/asset-fetch complexity and creates a public abuse surface; not justified initially. |
-| Print-friendly HTML → Save as PDF | Lowest technical dependency and valuable fallback; output control, mobile UX, and branded consistency vary by browser. |
-| Existing repository capability | None found. |
-
-Recommend a print-friendly, dedicated Kit Summary HTML representation as the compatibility baseline, evaluated with client-side PDF generation only if browser output cannot meet the agreed branded layout. Do not add a library until a prototype validates cover loading, pagination, mobile memory, and output quality.
-
-Without persisted Kits, native sharing can share a generated PDF (where supported) or the current catalogue/stage URL. A true recipient-restorable Kit link is deferred; URL-encoded state is only viable if it is short, versioned, non-sensitive, and validated against canonical public records.
+Custom Kit PDF and sharing are deferred/post-launch. Do not add persistence or a generation dependency for them.
 
 ## 9. Requirement submission and Edge Function boundaries
 
@@ -235,11 +226,11 @@ The client `request-submission.js` should eventually construct a minimal intent 
 
 Static HTML/CSS/JS and covers already benefit from browser/GitHub Pages caching; card images use `loading="lazy"` in shared browsing/selection paths. The pilot caches normalized records in `sessionStorage` for ten minutes. Keep this as a bounded optimisation, add a schema/source version to cache invalidation when source becomes authoritative, and never cache PII/request drafts beyond deliberate local state.
 
-Use appropriate image dimensions/formats and lazy loading; load sample PDFs/images only after visitor action; avoid rendering an unbounded catalogue DOM; measure Supabase payload/asset counts before adding pagination, prefetching, CDN products, Redis, or a dedicated search service. Storage objects remain files; database asset metadata drives rendering.
+Use appropriate image dimensions/formats and lazy loading; load sample images only when needed; avoid rendering an unbounded catalogue DOM; measure Supabase payload/asset counts before adding pagination, prefetching, CDN products, Redis, or a dedicated search service. Storage objects remain files; database asset metadata drives rendering.
 
 ### Accessibility implementation seams
 
-Preserve semantic `article`, heading, link, form-label, and live-region patterns already present. Replace interactive `div` Kit cards with native buttons/checkboxes; maintain visible focus; manage focus/escape/announcements for future filter sheets and sample dialogs; use labelled quantity controls; announce dynamic result/count/error changes; keep image alternative text and missing-asset fallbacks; and ensure error summaries and fields are programmatically connected. No formal certification claim is made.
+Preserve semantic `article`, heading, link, form-label, and live-region patterns already present. Maintain visible focus, use labelled quantity controls, announce dynamic result/count/error changes, keep image alternative text and missing-asset fallbacks, and ensure error summaries and fields are programmatically connected. No formal certification claim is made.
 
 ### Analytics boundary
 
@@ -277,7 +268,7 @@ flowchart TB
 
 Source control should contain frontend source, documentation, non-secret reviewed configuration, Supabase migrations/functions/tests when created, and workflow definitions. It must not contain service roles, database credentials, access tokens, customer/request data, or Storage object exports. Recovery snapshots remain evidence, not migrations. `supabase/schema/remote-public.sql` is currently zero bytes and cannot be treated as a schema source.
 
-Test seams to establish before significant changes: pure publication normalisation, asset resolution, query/filter predicate, Selection read/migrate/update, Kit stage/completion validation, requirement intent/payload construction, configuration parsing, and Edge/RPC validation integration. No testing framework is selected or installed by this document; static/browser smoke tests and targeted automated tests can be added later around these seams.
+The repository has 56 Node tests covering key catalogue, Kit, source, and submission seams. Retain focused synthetic tests and add approved pilot integration checks for the prepared Requirement boundary; a sophisticated browser automation framework is not required for launch.
 
 ## 12. Current → target technical matrix
 
@@ -288,16 +279,16 @@ Test seams to establish before significant changes: pure publication normalisati
 | JavaScript | IIFE globals, shared modules, inline page scripts | **KEEP / REFINE** | Incremental domain modules | Adequate platform; duplicated code needs boundaries. |
 | GitHub Pages | Static public hosting | **KEEP / REFINE** | Continue Pages; add validation process later | Meets current public requirements. |
 | GitHub Actions | No workflow recovered | **EXTEND** | Add lightweight checks when approved | Missing verification automation. |
-| Catalogue source | Static default | **REPLACE gradually** | Supabase master after verified parity | Source edits cannot support data-driven catalogue. |
+| Catalogue source | Unified normalized static/Supabase boundary | **KEEP / REFINE** | Supabase master after verified parity; static development/reference fallback. | Avoid permanent duplicate business logic. |
 | Supabase client | Fetch-based pilot adapter | **KEEP / EXTEND** | Narrow public catalogue loader/projection | Existing seam is useful. |
 | Catalogue adapters | One legacy adapter | **KEEP / EXTEND** | Shared normalized contract across pages | Prevent per-page data-source branches. |
 | Publication cards | Shared CSS but multiple renderers | **REFINE** | Shared card/action/fallback helpers | Duplication produces inconsistent cards. |
 | Browse/search | Client-side general Browse | **KEEP / EXTEND** | URL state, more searchable fields, measured server assist | Sufficient at current scale. |
-| Filters | Client-side selects; no dynamic URL sync | **REFINE** | One filter model, mobile presentation separate | Improve share/back/recovery. |
-| Publication detail | Detail script/gallery | **KEEP / EXTEND** | Canonical lookup, share, sample/related/Kit actions | Existing page is a sound base. |
-| Samples | Gallery includes sample images; no viewer/PDF action | **EXTEND** | Accessible ordered image/PDF handling | Approved core feature incomplete. |
+| Filters | Combined filters, URL state, chips, reset, mobile controls | **KEEP / REFINE** | Manual accessibility/mobile verification. | No separate mobile sheet required. |
+| Publication detail | Detail script/unified gallery | **KEEP** | Canonical lookup and manual regression. | Sharing/related actions are deferred. |
+| Samples | Unified front/back/ordered sample-page gallery | **KEEP** | Verify assets and accessibility/manual regression. | No separate viewer or PDF requirement. |
 | My Selection | `cambridgeOrder` local state | **KEEP / REFINE** | UUID-first, stale validation, legacy-key migration | Local state fits launch. |
-| Custom Kit | Static inline builder, N/L/U, minimum 8 | **EXTEND** | Configurable P/N/L/U eligibility, review/local continuity/PDF | Current scope conflicts with approved scope. |
+| Custom Kit | Configurable P/N/L/U builder/review/name flow | **KEEP / REFINE** | Final data/rule configuration and manual regression. | PDF/sharing deferred. |
 | Requirement UI | Multi-step local pages | **KEEP / REFINE** | Product wording, minimal intent payload, duplicate recovery | Existing flow/persistence useful. |
 | Edge Function | CORS POST → service role RPC | **KEEP / REFINE** | Validation, abuse/idempotency/logging hardening | Correct trusted boundary, incomplete controls. |
 | Database RPC | Atomic insert/reference/snapshots | **KEEP / REFINE** | Canonical data/Kit rule validation | Correct transaction location. |
@@ -348,7 +339,7 @@ Implementation must normally follow:
 3. resolve security prerequisites and target schema additions;
 4. complete and verify Supabase catalogue/assets;
 5. transition frontend reads route by route with fallback;
-6. extend approved samples, Kit, PDF, sharing, and requirement controls;
+6. verify approved samples, Kit, and Requirement controls;
 7. verify mobile/accessibility/error behaviour;
 8. retire legacy data/paths only after their replacements are proven.
 
@@ -356,11 +347,9 @@ This is a dependency order, not permission to implement. It avoids big-bang rewr
 
 ## 16. Open technical questions
 
-- Does print-friendly HTML meet the agreed PDF Summary visual quality, or is a vetted client PDF library necessary after prototype testing?
 - At what observed catalogue/asset size should the client-side search/filter path become database-assisted?
 - Should public asset delivery use stable URLs, generated URLs, or a controlled resolver once Storage migration is complete?
 - Which privacy-conscious analytics provider, if any, fits CPC's retention and consent decisions?
-- What secure model is acceptable for durable shared Custom Kit links?
 - Which architecture and deployment boundary is justified for a future Admin Console?
 - How should GitHub Pages cache invalidation/versioning be managed when catalogue updates become routine?
 
@@ -368,9 +357,9 @@ This is a dependency order, not permission to implement. It avoids big-bang rewr
 
 The approved documents are mutually aligned on catalogue-first scope, Early Learning-only configurable Custom Kit, local Selection/working-Kit preference, MRP as information, no mandatory login, and future ERP separation.
 
-There is **documentation evolution**, not a product conflict: `03` left Kit-summary format/release sequencing open, while `04` and `05` now establish PDF as intended launch output and Kit sharing sequencing as to be confirmed. Earlier documents should be aligned later, not silently changed here.
+PDF and sharing are deliberately deferred/post-launch; they do not create a current technical decision.
 
-Actual implementation conflicts/gaps are clear: static data remains default; only Browse/Detail support the Supabase pilot; Kit excludes Playgroup and hard-codes eight; Kit has no review/name/PDF/share; samples are gallery assets rather than the approved sample viewer; sharing/related publication actions are absent; legacy order terminology persists; client payload snapshots remain broad; and submission abuse/idempotency controls are incomplete. These are evolution targets, not evidence that the application should be rebuilt.
+Current remaining gaps are primarily pilot-data coverage, final manual regression/accessibility verification, final Kit compositions, and approved integration of prepared Requirement hardening/rate limiting. Static remains a deliberate fallback; PDF/share/related-title features are deferred.
 
 ## Document status
 

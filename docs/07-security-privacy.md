@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — Security & Privacy
 
+> Current-state update: `0f5bc96` prepares strict Requirement DTO/canonical validation, Kit validation, and idempotency locally. These changes are not deployed; rate limiting remains unresolved pending verification of the private attempts store.
+
 ## Purpose and scope
 
 This document defines proportionate security and privacy direction for the existing CPC Digital Catalogue. It is based on recovered Supabase metadata and repository source, not on production data queries or active testing. It does not create policy SQL, modify application code, or change any remote object.
@@ -255,7 +257,7 @@ Launch gates:
 | Bot control | None recovered | Automated spam | Proportionate accessible challenge if needed | P0 | Launch readiness |
 | Idempotency | None recovered | Duplicate requirements | Opaque per-attempt token | P1 | Submission hardening |
 | Canonical publication validation | Legacy mapping lookup only | Integrity/snapshot mismatch | UUID/lifecycle canonical lookup | P0 | Schema/submission evolution |
-| Custom Kit validation | Browser hard-codes N/L/U and eight | Scope/minimum bypass | Configurable server enforcement | P0 | Kit evolution |
+| Custom Kit validation | Browser applies configurable development rules; remote validation is not yet deployed | Scope/minimum bypass | Deploy and integration-test configurable server enforcement | P0 | Prepared hardening |
 | Local storage | Selection and request details persisted | Shared-device/same-origin exposure | Minimise/clear PII; keep Selection local | P1 | UX/security refinement |
 | XSS | Mostly DOM/text APIs; some `innerHTML` | Future unsafe interpolation | Safe rendering discipline/tests | P2 | Ongoing |
 | CORS | Wildcard origin | Casual cross-origin use | Review origin allowlist with dev support | P2 | Hardening |

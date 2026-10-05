@@ -1,5 +1,7 @@
 # CPC Digital Catalogue — User Flows
 
+> Current-state update: Custom Kit Builder → Review → Edit is implemented for Playgroup/Nursery/LKG/UKG; Cambridge Standard Kit has a fixed CPC-controlled foundation but no real compositions yet. Sharing and PDF outputs are deferred.
+
 ## Purpose and flow principles
 
 This document defines behavioural journeys, not final screens or technical implementation. [01-product-requirements.md](01-product-requirements.md) is the product authority and [02-system-architecture.md](02-system-architecture.md) is the architecture authority.
@@ -53,20 +55,19 @@ No-result recovery should retain the visitor's agency and avoid forced contact c
 
 ## 3. Publication exploration — CORE / LAUNCH
 
-Publication details may support inspecting catalogue information and available assets, viewing a sample where available, sharing the publication, adding it to My Selection, exploring related/same-series publications where available, and continuing browsing.
+Publication details support inspecting catalogue information and available assets, viewing ordered sample pages in the unified gallery where available, adding to My Selection, and continuing browsing. Publication sharing and related/same-series recommendations are deferred.
 
 ```mermaid
 flowchart TD
   P[Publication details] --> I[Inspect information and assets]
   I --> SA{Public sample available?}
-  SA -->|Yes| V[View sample in catalogue] --> P
+  SA -->|Yes| V[Browse sample pages in Book Details gallery] --> P
   SA -->|No| P
-  P --> SH[Share publication]
+  P --> SH[Continue catalogue exploration]
   P --> MS[Add to My Selection]
-  P --> R[Related / same-series exploration]
   P --> EL{Eligible Early Learning publication?}
   EL -->|Yes| CK[Use in Custom Kit]
-  EL -->|No| R
+  EL -->|No| P
 ```
 
 No broken sample action is shown when no public sample exists. Samples return visitors to the relevant publication/catalogue context. Public sample viewing requires no login or contact information; permitted downloading is a separate CPC decision.
@@ -110,43 +111,25 @@ flowchart TD
   SE --> RK[Review Kit]
   RK --> AD[Add eligible title]
   RK --> RM[Remove title]
-  RK --> Q[Change quantity where applicable]
   RK --> N[Optional Kit Name]
   AD --> RK
   RM --> RK
-  Q --> RK
   N --> READY[Complete / Ready Kit]
   READY --> EDIT[Edit Kit]
-  READY --> SHARE[Share Kit]
-  READY --> DL[Download Kit Summary]
   READY --> SR[Send Requirement]
 ```
 
-A normal temporary kit requires no account. The recipient of a shareable kit should be able to inspect it and navigate to relevant catalogue publications. Kit sharing and downloading do not require Send Requirement. A kit summary is deliberately generated branded content, not necessarily a browser screenshot; exact PDF/image/both sequencing is **TO BE CONFIRMED** in UI/Technical Design.
+A normal temporary Kit requires no account. Durable cross-browser-session Kit persistence, Kit sharing, and Kit downloads/PDF are deferred/post-launch.
+
+Cambridge Standard Kit is a separate CPC-controlled, fixed-composition flow. Its review/Selection foundation is implemented, but every real stage remains truthfully unavailable until CPC approves canonical publication-ID compositions.
 
 ## 6. Requirement tracking — PLANNED
 
 Lightweight tracking may allow a visitor to use a reference to see limited, safe status information such as **Received**, **Under Review**, **Contacted**, or **Closed**. It must not expose another customer's requirement and must not use order-language such as Processing Order, Packed, Dispatched, or Delivered. Verification and access controls belong in Security Design.
 
-## 7. Sharing and download
+## 7. Deferred sharing and summaries
 
-### Publication sharing — CORE / LAUNCH
-
-Share a stable publication/direct link, including through WhatsApp and other standard mobile sharing paths. The recipient lands in the relevant catalogue context rather than an isolated dead end.
-
-### Custom Kit sharing — approved direction; release sequencing TO BE CONFIRMED
-
-Share a completed/reviewed Early Learning kit link that preserves enough information to safely reconstruct the intended kit for inspection and catalogue exploration. It does not submit a requirement or create an order.
-
-### Custom Kit download — approved direction; release sequencing TO BE CONFIRMED
-
-```text
-Completed/Reviewed Custom Kit → Download Kit Summary → Generate branded summary → User saves/shares externally
-```
-
-The summary may include CPC branding, optional kit name, selected covers/titles, stage, relevant catalogue information such as MRP where appropriate, title count, and a useful catalogue URL/QR. Layout and output format are deferred; this is not a document-design system.
-
-Series/category sharing and general My Selection sharing are **FUTURE / OPTIONAL**.
+Publication Share/Copy Link, Custom Kit sharing, and Kit summary/PDF output are deferred/post-launch. Direct URLs continue to support normal catalogue entry and navigation without creating a Requirement. Series/category sharing and general My Selection sharing are also **FUTURE / OPTIONAL**.
 
 ## 8. Returning visitor — CORE local continuity / FUTURE optional enhancements
 
@@ -173,9 +156,7 @@ The planned Admin Console supports creation/editing, preview-before-publish, ina
 
 ## 10. Analytics touchpoints — PLANNED
 
-Useful anonymous/aggregate events include catalogue visit, publication viewed, search performed, zero-result search, filter used, sample viewed, publication shared, Add to Selection, Custom Kit started/completed/shared, kit-summary downloaded, requirement started/submitted, and deliberate contact action.
-
-Analytics failure must not block any user flow. Analytics must not create surveillance or individual behavioural profiles.
+Analytics is deferred/post-launch. Any later aggregate measurement must avoid contact data and must not block catalogue use.
 
 ## 11. Error and recovery flows — CORE / LAUNCH
 
@@ -185,7 +166,6 @@ Analytics failure must not block any user flow. Analytics must not create survei
 | Missing cover or optional asset | Preserve publication access with a truthful fallback. |
 | Unavailable sample | Do not offer a broken action; keep publication browsing available. |
 | Inactive publication or invalid direct link | Explain gracefully and offer a relevant catalogue route. |
-| Unavailable shared kit | Explain gracefully; do not imply a requirement/order exists. |
 | Network or requirement-submission failure | Catalogue remains usable; preserve/recover work where reasonably possible. |
 | Analytics failure | Never block the visitor. |
 | Stale local Selection/Kit with inactive publication | Surface the change, preserve unaffected work where appropriate, and allow review/edit. |
@@ -195,8 +175,8 @@ Analytics failure must not block any user flow. Analytics must not create survei
 | Flow | Priority |
 | --- | --- |
 | Catalogue entry, browse, search/filter, publication details, direct/QR entry, responsive/mobile flow, and graceful empty/error states | **CORE / LAUNCH** |
-| Public sample viewing where available; publication sharing; My Selection; Early Learning Custom Kit; Send Requirement | **CORE / LAUNCH** |
-| Custom Kit sharing and kit-summary download | **Approved direction — exact launch sequencing TO BE CONFIRMED** |
+| Public sample viewing in the unified gallery; My Selection; Early Learning Custom Kit; Cambridge Standard Kit foundation; Send Requirement | **CORE / LAUNCH** |
+| Publication sharing; Custom Kit sharing and kit-summary download | **DEFERRED / POST-LAUNCH** |
 | Admin Console; aggregate analytics dashboard; lightweight requirement tracking; richer related-publication behaviour | **PLANNED** |
 | Favourites; shareable general My Selection; privacy-conscious richer personalisation; ERP/order-portal handoff; customer accounts | **FUTURE / OPTIONAL** |
 
@@ -207,8 +187,7 @@ These flows explicitly exclude checkout, payment, online ordering, shipping, inv
 ## 14. Open UX questions
 
 - What is the clearest builder presentation for an Early Learning Custom Kit on mobile and desktop?
-- Should the branded kit summary be PDF, image, or both?
-- Where should Share, Sample, and My Selection actions appear in publication details?
+- Where should My Selection and gallery actions appear in publication details?
 - How should combined filters behave on mobile?
 - What visual treatment best communicates unavailable optional assets without suggesting an error in the publication itself?
 
