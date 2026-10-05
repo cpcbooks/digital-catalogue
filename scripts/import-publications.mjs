@@ -100,7 +100,7 @@ export function planImport(records, remoteRows = [], schemaSupportsEligibility =
 }
 
 async function remoteRows(url, key) {
-  const response = await fetch(`${url.replace(/\/$/, "")}/rest/v1/publications?select=id,title,series,class_stage,subject,medium,book_type,status,custom_kit_eligible`, { headers: { apikey: key, Authorization: `Bearer ${key}`, Accept: "application/json" } });
+  const response = await fetch(`${url.replace(/\/$/, "")}/rest/v1/publications?select=id,catalogue_section,title,series,class_stage,subject,medium,book_type,status,mrp,isbn,sku,custom_kit_eligible`, { headers: { apikey: key, Authorization: `Bearer ${key}`, Accept: "application/json" } });
   if (!response.ok) {
     const body = await response.text();
     if (/custom_kit_eligible/i.test(body)) return { rows: [], schemaSupportsEligibility: false };

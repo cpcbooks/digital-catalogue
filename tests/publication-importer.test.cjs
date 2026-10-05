@@ -1,6 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
+const fs = require("node:fs");
 const { pathToFileURL } = require("node:url");
 
 const importerPromise = import(pathToFileURL(path.resolve("scripts/import-publications.mjs")).href);
@@ -70,6 +71,11 @@ test("planning is UUID-idempotent and default execution never writes", async () 
   let writes = 0;
   await importer.execute({ manifestPath, apply: false, compareRemote: false }, { writeRows: async () => { writes++; } });
   assert.equal(writes, 0);
+});
+
+test("remote comparison retains every field used for idempotent planning", async () => {
+  const source = fs.readFileSync(path.resolve("scripts/import-publications.mjs"), "utf8");
+  assert.match(source, /select=id,catalogue_section,title,series,class_stage,subject,medium,book_type,status,mrp,isbn,sku,custom_kit_eligible/);
 });
 
 test("preflight reports the custom-kit eligibility schema prerequisite", async () => {
