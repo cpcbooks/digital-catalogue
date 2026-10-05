@@ -27,14 +27,14 @@ Cambridge Standard Kit has an implemented CPC-controlled foundation, Selection/R
 
 The working architecture is Browser → Edge Function → transactional RPC → request tables → CPC Requirement reference.
 
-Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Custom Kit validation, Standard Kit type compatibility, and idempotency. The prepared migration explicitly secures internal Kit configuration tables and the submission RPC; it and the matching Edge Function are **not deployed/applied remotely**. For a controlled pilot rollout, temporarily hold Requirement submissions, apply the migration, deploy the matching Edge Function immediately, run one synthetic submission, then reopen the flow. Requirement submission accepts canonical Supabase publication UUIDs only; static data remains browse-only development/reference/fallback data. Standard Kit submission requires an enabled CPC server definition. Rate limiting is not activated because the private attempts-store schema, trusted IP source, and concurrency behavior remain unverified.
+Requirement hardening is deployed and verified on the DEVELOPMENT/PILOT backend, including the subsequent JSON/location and variable-shadowing RPC fixes. A synthetic normal-book Requirement and idempotency replay succeeded without duplicate insertion; unknown UUID and malformed payloads were safely rejected, direct anon RPC execution was denied, and negative checks created no partial writes. The verified baseline is 4 requests / 21 items / 35 components. Requirement submission accepts canonical Supabase publication UUIDs only; static data remains browse-only development/reference/fallback data. Standard Kit submission requires an enabled CPC server definition. Rate limiting remains inactive because the private attempts-store schema, trusted IP source, and concurrency behavior remain unverified.
 
 ## Immediate next steps
 
-1. Review and, with explicit approval, integrate prepared Requirement hardening against the pilot backend.
-2. Verify/implement the private rate-limit design.
-3. Expand development catalogue records only where needed for missing test cases.
-4. Run the complete pilot end-to-end and manual mobile/accessibility/error regression.
+1. Controlled deployment and remote verification of `supabase/migrations/20261005230000_prepare_development_standard_kit.sql`.
+2. Browser verification using the already-configured Chrome DevTools MCP for Standard Kit and pending Custom Kit flows.
+3. Verify/implement the private rate-limit design.
+4. Run the remaining pilot manual mobile/accessibility/error regression.
 5. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
