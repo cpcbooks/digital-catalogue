@@ -8,6 +8,12 @@ function kit(minimum, completionEnabled) {
   return sandbox.window.CambridgeCustomKitState.create({ minimum, completionEnabled });
 }
 
+function eligibleKit(minimum = 8) {
+  const sandbox = createBrowserSandbox();
+  loadBrowserScript(sandbox, "js/custom-kit-state.js");
+  return sandbox.window.CambridgeCustomKitState.create({ minimum, isEligible: item => item.customKitEligible !== false });
+}
+
 test("starts as an incomplete but valid empty working kit", () => {
   const state = kit(8);
   assert.equal(state.count(), 0);
@@ -25,6 +31,13 @@ test("adds items once, reports membership, and removes them", () => {
   assert.equal(state.selectedItems()[0].title, "Synthetic Book");
   assert.equal(state.remove(book), true);
   assert.equal(state.contains(book), false);
+});
+
+test("accepts eligible titles and rejects explicitly ineligible titles", () => {
+  const state = eligibleKit();
+  assert.equal(state.add({ id: "eligible" }), true);
+  assert.equal(state.add({ id: "ineligible", customKitEligible: false }), false);
+  assert.deepEqual(Array.from(state.selectedIds()), ["eligible"]);
 });
 
 test("keeps an incomplete kit as working state and reports remaining selections", () => {
@@ -56,6 +69,16 @@ test("completes at and above the supplied minimum", () => {
   assert.equal(state.isComplete(), true);
 });
 
+test("becomes incomplete immediately when removal drops below its configured minimum", () => {
+  const state = kit(2);
+  state.add({ id: "one" });
+  state.add({ id: "two" });
+  assert.equal(state.isComplete(), true);
+  state.remove("two");
+  assert.equal(state.remaining(), 1);
+  assert.equal(state.isComplete(), false);
+});
+
 test("uses the supplied minimum rather than a permanent eight-title rule", () => {
   const state = kit(4);
   for (const id of ["one", "two", "three", "four"]) state.add({ id });
@@ -71,4 +94,11 @@ test("keeps an unconfigured minimum as incomplete working state", () => {
   assert.equal(state.remaining(), null);
   assert.equal(state.isComplete(), false);
   assert.equal(state.count(), 1);
+});
+
+test("keeps an optional sanitized Kit name with the working state", () => {
+  const state = kit(8);
+  assert.equal(state.setName("  My   Nursery Kit  "), "My Nursery Kit");
+  assert.equal(state.getName(), "My Nursery Kit");
+  assert.equal(state.setName(""), "");
 });

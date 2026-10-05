@@ -18,11 +18,13 @@
   function create(options) {
     const minimum = configuredMinimum(options && options.minimum);
     const completionEnabled = minimum !== null && !(options && options.completionEnabled === false);
+    const eligible = options && typeof options.isEligible === "function" ? options.isEligible : () => true;
     const selected = new Map();
+    let name = "";
 
     function add(item) {
       const id = itemId(item);
-      if (!id || selected.has(id)) return false;
+      if (!id || selected.has(id) || !eligible(item)) return false;
       selected.set(id, item);
       return true;
     }
@@ -41,6 +43,8 @@
     function remaining() { return minimum === null ? null : Math.max(minimum - count(), 0); }
     function canReview() { return count() > 0; }
     function isComplete() { return completionEnabled && count() >= minimum; }
+    function setName(value) { name = String(value || "").replace(/\s+/g, " ").trim().slice(0, 80); return name; }
+    function getName() { return name; }
 
     return Object.freeze({
       minimum,
@@ -53,7 +57,9 @@
       selectedItems,
       remaining,
       canReview,
-      isComplete
+      isComplete,
+      setName,
+      getName
     });
   }
 

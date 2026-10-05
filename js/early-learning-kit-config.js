@@ -12,7 +12,18 @@
   });
 
   function stageCode(value) {
-    return String(value || "").trim().toLocaleLowerCase();
+    const code = String(value || "").trim().toLocaleLowerCase();
+    return code === "nur" ? "nursery" : code;
+  }
+
+  function belongsToStage(book, stage) {
+    const wanted = stageCode(stage);
+    return Boolean(wanted && book && Array.isArray(book.class) && book.class.some(value => stageCode(value) === wanted));
+  }
+
+  // Compatibility contract: an absent future flag preserves today's eligible Early Learning titles.
+  function isEligible(book, stage) {
+    return belongsToStage(book, stage) && book.customKitEligible !== false;
   }
 
   function createProvider(stageConfigs) {
@@ -26,6 +37,8 @@
 
   global.CambridgeEarlyLearningKitConfig = Object.freeze({
     ...createProvider(STAGES),
-    createProvider
+    createProvider,
+    belongsToStage,
+    isEligible
   });
 })(window);

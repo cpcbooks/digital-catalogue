@@ -37,6 +37,7 @@ test("builds a custom-kit-shaped backend payload supported by the current reques
     id: "KIT-SYNTHETIC",
     type: "custom-kit",
     title: "Synthetic LKG Kit",
+    kitName: "My Starter Kit",
     class: ["LKG"],
     quantity: 1,
     books
@@ -46,6 +47,7 @@ test("builds a custom-kit-shaped backend payload supported by the current reques
   assert.equal(payload.items[0].componentCount, undefined);
   assert.equal(payload.items[0].books.length, 2);
   assert.equal(payload.items[0].class, "LKG");
+  assert.equal(payload.items[0].kitName, "My Starter Kit");
 });
 
 test("rejects a missing selection before constructing a request", () => {
