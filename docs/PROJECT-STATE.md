@@ -39,6 +39,8 @@ Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Cu
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
 
+`data/development-publications/development-early-learning-001.json` and `scripts/import-publications.mjs` prepare ten approved Early Learning records for a future explicit pilot import. The importer is dry-run by default; no publication row has been imported by this local preparation.
+
 ## Protected local artifacts
 
 `asset-import/`, `supabase/recovery/`, and `supabase/schema/` are protected/untracked local material. Do not stage or treat recovery JSON as migrations.
