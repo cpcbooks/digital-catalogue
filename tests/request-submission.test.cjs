@@ -84,3 +84,18 @@ test("rejects malformed Kit state before it reaches the trusted boundary", () =>
   const submission = submissionWithState([{ type: "custom-kit", level: "nursery", quantity: 1, books: [{ title: "No ID" }] }]);
   assert.throws(() => submission.buildPayload(), /catalogue ID/i);
 });
+
+test("rejects static fallback IDs while allowing canonical Supabase UUIDs", () => {
+  const details = { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure" };
+  const staticSubmission = submissionWithState([{ id: "el-abc-book", quantity: 1 }], details);
+  assert.throws(() => staticSubmission.buildBackendPayload(), /Supabase catalogue/i);
+  const supabaseSubmission = submissionWithState([{ ...clonePublications()[0], quantity: 1 }], details);
+  assert.match(supabaseSubmission.buildBackendPayload().items[0].publicationId, /^[0-9a-f-]{36}$/i);
+});
+
+test("uses top-level notes only in the hardened DTO", () => {
+  const submission = submissionWithState([{ ...clonePublications()[0], quantity: 1 }], { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure", notes: "Call after school." });
+  const payload = submission.buildBackendPayload();
+  assert.equal(payload.notes, "Call after school.");
+  assert.equal(Object.hasOwn(payload.customer, "notes"), false);
+});

@@ -8,10 +8,11 @@ Product scope is governed by [01-product-requirements.md](01-product-requirement
 
 ## 1. Database principles
 
-**Prepared / pending pilot deployment:** migration `20261005000000_harden_requirement_submission.sql` prepares canonical Requirement validation, configurable Kit rules, Standard Kit request-type support, and idempotency. It is repository-local after `0f5bc96` and is not current remote database state.
+**Prepared / pending pilot deployment:** migration `20261005000000_harden_requirement_submission.sql` prepares canonical Requirement validation, configurable Kit rules, Standard Kit request-type support, idempotency, explicit Kit-configuration RLS/grants, and restricted RPC execution. It is repository-local after `0f5bc96` and is not current remote database state. For controlled pilot deployment, hold Requirement submissions, apply the migration, deploy the matching Edge Function immediately, run one synthetic submission, then reopen the flow.
 
 - PostgreSQL is the current relational database and Supabase is the current managed backend.
 - Supabase/PostgreSQL is intended to become CPC's authoritative Digital Catalogue publication master; the current remote project is development/pilot and static data remains a development/reference/fallback source during cutover.
+- Requirement submission accepts only canonical Supabase publication UUIDs. Static fallback records remain browse-only and are not silently title-mapped into Requirement submissions.
 - A generated, stable publication UUID is the durable CPC catalogue identity. It is distinct from display text and external operational identifiers.
 - Catalogue data must be independent of UI layout. Normal publication, taxonomy, price, lifecycle, and asset changes are data operations, not frontend changes.
 - Use foreign keys and explicit constraints for durable business invariants; avoid encoding presentation-only assumptions as permanent constraints.
@@ -97,7 +98,7 @@ Add a small `early_learning_stage_config` table because Early Learning Kit rules
 
 ### 4.1 Eligibility
 
-Add `publications.custom_kit_eligible boolean not null default false` as an explicit publication capability. It must be evaluated with a selected configured Early Learning stage, not inferred only from a displayed stage label. At submission, the trusted server must canonicalise each UUID against the publication master, confirm it is active/catalogue-visible, eligible, and applicable to the selected Early Learning stage.
+Add nullable `publications.custom_kit_eligible boolean` as an explicit publication capability. `false` explicitly excludes a title; `null` preserves compatibility for existing records and remains eligible when its selected configured Early Learning stage permits it. It must be evaluated with a selected configured Early Learning stage, not inferred only from a displayed stage label. At submission, the trusted server canonicalises each UUID against the publication master, confirms it is active/catalogue-visible, eligible, and applicable to the selected Early Learning stage.
 
 This deliberately does not add a generic kit/BOM table. A publication may remain associated with one or more `class_stage` values; a configured early-stage record establishes which stage codes are eligible kit contexts.
 
@@ -157,7 +158,7 @@ Retain `requests`, `request_items`, and normalized `request_kit_components`. The
 
 Target request header retains UUID, unique human reference, created-at, simple status, necessary contact/institution information, notes, and server-derived item/quantity counts. Target statuses should be constrained to the product vocabulary **Received**, **Under Review**, **Contacted**, and **Closed** (with a deliberate cancellation state only if required). Existing `new/reviewing/accepted/rejected/cancelled` are legacy/current values requiring an explicit mapping before change; no order fulfilment status is introduced.
 
-Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a Kit line include stage code, optional kit name where applicable, line quantity, and a snapshot. The current remote schema supports book/custom-kit; the prepared pending migration adds `standard-kit` compatibility. Keep a strict book-vs-kit check and unique positions.
+Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a Kit line include stage code, optional Custom Kit name where applicable, line quantity, and a snapshot. The current remote schema supports book/custom-kit; the prepared pending migration adds `standard-kit` compatibility. A Standard Kit submission requires an enabled CPC definition whose ordered canonical IDs exactly match the submitted components; no definition is seeded. Keep a strict book-vs-kit check and unique positions.
 
 `request_kit_components` is worth preserving: it supports historical component-level understanding without becoming an ERP BOM. It should move from nullable legacy text `product_id` to an optional canonical `publication_id uuid` where resolvable, retain quantity-per-kit and total quantity, position, and a limited customer-facing snapshot. Its parent is a Kit request item (custom or Standard Kit once the prepared migration is deployed).
 

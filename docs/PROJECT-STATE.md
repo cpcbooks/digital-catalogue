@@ -4,7 +4,7 @@
 
 - Branch: `codex/refactor-foundation`
 - Latest relevant checkpoint: `0f5bc96 Harden requirement submission boundary`
-- Automated baseline: **56 passing Node tests**.
+- Automated baseline: **68 passing Node tests**.
 - This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
 
 ## Environment and data
@@ -27,7 +27,7 @@ Cambridge Standard Kit has an implemented CPC-controlled foundation and Selectio
 
 The working architecture is Browser → Edge Function → transactional RPC → request tables → CPC Requirement reference.
 
-Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Custom Kit validation, Standard Kit type compatibility, and idempotency. The migration and Edge Function changes are **not deployed/applied remotely**. Rate limiting is not activated because the private attempts-store schema, trusted IP source, and concurrency behavior remain unverified.
+Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Custom Kit validation, Standard Kit type compatibility, and idempotency. The prepared migration explicitly secures internal Kit configuration tables and the submission RPC; it and the matching Edge Function are **not deployed/applied remotely**. For a controlled pilot rollout, temporarily hold Requirement submissions, apply the migration, deploy the matching Edge Function immediately, run one synthetic submission, then reopen the flow. Requirement submission accepts canonical Supabase publication UUIDs only; static data remains browse-only development/reference/fallback data. Standard Kit submission requires an enabled CPC server definition. Rate limiting is not activated because the private attempts-store schema, trusted IP source, and concurrency behavior remain unverified.
 
 ## Immediate next steps
 
