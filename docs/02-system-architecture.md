@@ -22,6 +22,8 @@ The application has a Supabase pilot path selected with `?catalogueSource=supaba
 
 My Selection is persisted locally under `localStorage` key `cambridgeOrder`. Short-lived return/navigation context and the Supabase pilot cache use `sessionStorage`. This is current browser-state handling, not a customer account or server-side selection service.
 
+Cambridge Standard Kit definitions use a small browser-local CPC configuration contract (`stageCode`, optional display name, enabled state, and ordered canonical publication IDs). It resolves only against the selected normalized catalogue source; the current real definitions are intentionally unconfigured until CPC supplies approved compositions.
+
 ### 1.2 Verified catalogue backend
 
 Supabase is the selected managed backend platform. PostgreSQL is the relational database.
@@ -32,7 +34,7 @@ Recovered metadata verifies these public tables:
 - `publication_assets` — multiple assets per publication;
 - `product_mappings` — legacy/operational mapping bridge with optional `publication_id`;
 - `requests` — submitted requirement headers and customer information;
-- `request_items` — submitted book/custom-kit lines;
+- `request_items` — submitted book/custom-kit/standard-kit lines;
 - `request_kit_components` — normalized submitted kit-component records.
 
 All six tables have RLS enabled. Current public read policies allow `anon` and `authenticated` users to read only active publications and active assets associated with active publications. No public policies were recovered for request or operational-mapping tables.

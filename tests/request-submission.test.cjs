@@ -50,6 +50,15 @@ test("builds a custom-kit-shaped backend payload supported by the current reques
   assert.equal(payload.items[0].kitName, "My Starter Kit");
 });
 
+test("preserves a CPC-controlled Standard Kit and its constituent titles in request payloads", () => {
+  const books = clonePublications().slice(1, 3);
+  const submission = submissionWithState([{ id: "STANDARD-NURSERY", type: "standard-kit", title: "Cambridge Nursery Standard Kit", class: ["Nursery"], quantity: 1, books }]);
+  const payload = submission.buildPayload();
+  assert.equal(payload.selection.lines[0].lineType, "standard-kit");
+  assert.equal(payload.selection.lines[0].components.length, 2);
+  assert.equal(submission.buildBackendPayload().items[0].type, "standard-kit");
+});
+
 test("rejects a missing selection before constructing a request", () => {
   const submission = submissionWithState([]);
   assert.throws(() => submission.buildPayload(), /no selected items/i);
