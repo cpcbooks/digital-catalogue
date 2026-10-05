@@ -3,13 +3,13 @@
 ## Read this first
 
 - Branch: `codex/refactor-foundation`
-- Latest relevant checkpoint: `0f5bc96 Harden requirement submission boundary`
-- Automated baseline: **68 passing Node tests**.
+- Latest relevant checkpoint: `83a7f75 Add source-aware Standard Kit loader`
+- Automated baseline: **75 passing Node tests**.
 - This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
 
 ## Environment and data
 
-The existing Supabase project is the **DEVELOPMENT/PILOT** backend, not production. It has 33 active development publications. A separate staging project is not required now; every remote mutation, migration, import, deployment, or integration test still needs explicit approval.
+The existing Supabase project is the **DEVELOPMENT/PILOT** backend, not production. It has 43 active development publications. A separate staging project is not required now; every remote mutation, migration, import, deployment, or integration test still needs explicit approval.
 
 Pilot data is sufficient for continued development. Incomplete Early Learning, SKU, asset, College, and Competitive coverage is a data-coverage limitation, not a reason to stop. The final CPC item master will later replace/refine it before launch.
 
@@ -21,7 +21,7 @@ School Learning is implemented on that boundary; remaining work is data coverage
 
 Custom Kit supports Playgroup, Nursery, LKG, and UKG. Nursery/LKG/UKG currently require 8 distinct eligible titles; Playgroup completion is unconfigured. Builder → Review → Edit, optional names, removal, source context, and My Selection compatibility are implemented. `customKitEligible: false` excludes a title; absent remains compatible/eligible where stage membership allows.
 
-Cambridge Standard Kit has an implemented CPC-controlled foundation and Selection/Requirement compatibility. Real compositions are intentionally unconfigured until approved canonical publication UUIDs are available; the current customer state is truthfully unavailable.
+Cambridge Standard Kit has an implemented CPC-controlled foundation, Selection/Requirement compatibility, and source-aware loader (`83a7f75`). `20261005230000_prepare_development_standard_kit.sql` prepares—but does not deploy—narrow public reads of enabled configuration and a temporary Development LKG Standard Kit. Replace that development composition with CPC-approved canonical IDs during final item-master cutover.
 
 ## Requirement status
 
@@ -39,7 +39,7 @@ Commit `0f5bc96` prepares hardening locally: strict DTO, canonical snapshots, Cu
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
 
-`data/development-publications/development-early-learning-001.json` and `scripts/import-publications.mjs` prepare ten approved Early Learning records for a future explicit pilot import. The importer is dry-run by default; no publication row has been imported by this local preparation.
+`data/development-publications/development-early-learning-001.json` and `scripts/import-publications.mjs` provide the reviewed development-data mapping; its ten approved Early Learning records are now in the pilot. The importer remains dry-run by default for future reviewed imports.
 
 ## Protected local artifacts
 
