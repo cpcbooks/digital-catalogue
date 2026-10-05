@@ -47,6 +47,8 @@ function createBrowserSandbox(options = {}) {
     dispatchEvent(event) { const listener = listeners.get(event.type); if (listener) listener(event); },
     scrollTo() {}
   };
+  let uuidCounter = 0;
+  window.crypto = options.crypto || { randomUUID: () => `11111111-1111-4111-8111-${String(++uuidCounter).padStart(12, "0")}` };
   window.window = window;
   const context = vm.createContext({
     window,

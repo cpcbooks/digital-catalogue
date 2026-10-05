@@ -24,10 +24,10 @@ test("builds the current request payload from canonical catalogue information", 
     preferredContact: "call"
   });
   const payload = submission.buildPayload();
-  assert.equal(payload.selection.lineCount, 1);
-  assert.equal(payload.selection.totalCopiesOrSets, 2);
-  assert.equal(payload.selection.lines[0].displayName, "Class Five Science");
-  assert.equal(payload.selection.lines[0].quantity, 2);
+  assert.equal(payload.items.length, 1);
+  assert.equal(payload.items[0].type, "book");
+  assert.equal(payload.items[0].publicationId, book.id);
+  assert.equal(payload.items[0].quantity, 2);
   assert.equal(payload.customer.whatsapp, "0000000000");
 });
 
@@ -39,24 +39,32 @@ test("builds a custom-kit-shaped backend payload supported by the current reques
     title: "Synthetic LKG Kit",
     kitName: "My Starter Kit",
     class: ["LKG"],
+    level: "lkg",
     quantity: 1,
     books
   }]);
   const payload = submission.buildBackendPayload();
   assert.equal(payload.items[0].type, "custom-kit");
-  assert.equal(payload.items[0].componentCount, undefined);
-  assert.equal(payload.items[0].books.length, 2);
-  assert.equal(payload.items[0].class, "LKG");
+  assert.equal(payload.items[0].publicationIds.length, 2);
+  assert.equal(payload.items[0].level, "lkg");
   assert.equal(payload.items[0].kitName, "My Starter Kit");
 });
 
 test("preserves a CPC-controlled Standard Kit and its constituent titles in request payloads", () => {
   const books = clonePublications().slice(1, 3);
-  const submission = submissionWithState([{ id: "STANDARD-NURSERY", type: "standard-kit", title: "Cambridge Nursery Standard Kit", class: ["Nursery"], quantity: 1, books }]);
+  const submission = submissionWithState([{ id: "STANDARD-NURSERY", type: "standard-kit", title: "Cambridge Nursery Standard Kit", class: ["Nursery"], level: "nursery", quantity: 1, books }]);
   const payload = submission.buildPayload();
-  assert.equal(payload.selection.lines[0].lineType, "standard-kit");
-  assert.equal(payload.selection.lines[0].components.length, 2);
+  assert.equal(payload.items[0].type, "standard-kit");
+  assert.equal(payload.items[0].publicationIds.length, 2);
   assert.equal(submission.buildBackendPayload().items[0].type, "standard-kit");
+});
+
+test("keeps one idempotency key across retry payloads and clears it after success", () => {
+  const book = clonePublications()[0], submission = submissionWithState([{ ...book, quantity: 1 }]);
+  const first = submission.buildBackendPayload().idempotencyKey;
+  assert.equal(submission.buildBackendPayload().idempotencyKey, first);
+  submission.clearSubmittedDraft();
+  assert.notEqual(submission.attemptKey(), first);
 });
 
 test("rejects a missing selection before constructing a request", () => {
@@ -70,4 +78,9 @@ test("rejects invalid request quantities", () => {
   const submission = submissionWithState([{ ...book, quantity: 0 }]);
   assert.throws(() => submission.buildPayload(), /invalid request quantity/i);
   assert.throws(() => submission.buildBackendPayload(), /invalid request quantity/i);
+});
+
+test("rejects malformed Kit state before it reaches the trusted boundary", () => {
+  const submission = submissionWithState([{ type: "custom-kit", level: "nursery", quantity: 1, books: [{ title: "No ID" }] }]);
+  assert.throws(() => submission.buildPayload(), /catalogue ID/i);
 });
