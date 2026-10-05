@@ -6,6 +6,7 @@ const path = require("node:path");
 const read = file => fs.readFileSync(path.resolve(__dirname, "..", file), "utf8");
 const migration = read("supabase/migrations/20261005000000_harden_requirement_submission.sql");
 const hotfix = read("supabase/migrations/20261005170000_fix_requirement_rpc_json_location.sql");
+const runtimeHotfix = read("supabase/migrations/20261005180000_fix_requirement_rpc_id_ambiguity.sql");
 const edge = read("supabase/functions/submit-catalogue-request/index.ts");
 
 test("explicitly secures Kit configuration tables and submission RPC execution", () => {
@@ -41,8 +42,17 @@ test("keeps one notes field and validates the public customer DTO", () => {
 });
 
 test("subtracts location allow-listed keys from JSONB, not the location key text", () => {
-  for (const source of [migration, hotfix]) {
+  for (const source of [migration, hotfix, runtimeHotfix]) {
     assert.match(source, /\(\(customer->'location'\) - array\['city','district','state','pincode'\]\)/);
     assert.doesNotMatch(source, /customer->'location'\s*-\s*array/);
+  }
+});
+
+test("does not shadow request or publication IDs with a PL/pgSQL loop variable", () => {
+  for (const source of [migration, hotfix, runtimeHotfix]) {
+    assert.doesNotMatch(source, /\bid text;/);
+    assert.match(source, /select requests\.id,requests\.reference into request_id,reference/);
+    assert.match(source, /publications\.id=\(item->>'publicationId'\)::uuid/);
+    assert.match(source, /foreach publication_id_text in array ids loop/);
   }
 });

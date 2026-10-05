@@ -41,7 +41,7 @@ create or replace function public.submit_catalogue_request(payload jsonb) return
 declare
   customer jsonb:=payload->'customer'; item jsonb; publication public.publications%rowtype; rule public.early_learning_kit_rules%rowtype;
   request_id uuid; reference text; item_id uuid; position integer:=0; component_position integer; quantity integer; total integer:=0;
-  item_type text; level text; ids text[]; configured_ids text[]; id text; kit_books jsonb; standard_name text; line_title text;
+  item_type text; level text; ids text[]; configured_ids text[]; publication_id_text text; kit_books jsonb; standard_name text; line_title text;
 begin
   if payload is null or jsonb_typeof(payload)<>'object' or (payload - array['customer','notes','items','idempotencyKey'])<>'{}'::jsonb then raise exception 'Invalid request payload'; end if;
   if jsonb_typeof(customer)<>'object' or (customer - array['customerType','contactName','organisationName','mobile','whatsapp','email','preferredContact','location','existingCambridgeCustomer'])<>'{}'::jsonb then raise exception 'Invalid customer details'; end if;
@@ -56,7 +56,7 @@ begin
   if length(customer->'location'->>'district')>80 or length(customer->'location'->>'state')>80 or length(payload->>'notes')>500 then raise exception 'Invalid customer details'; end if;
   if payload->>'idempotencyKey' !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then raise exception 'Invalid submission key'; end if;
   perform pg_advisory_xact_lock(hashtextextended(payload->>'idempotencyKey',0));
-  select id,reference into request_id,reference from public.requests where idempotency_key=(payload->>'idempotencyKey')::uuid;
+  select requests.id,requests.reference into request_id,reference from public.requests where idempotency_key=(payload->>'idempotencyKey')::uuid;
   if request_id is not null then return jsonb_build_object('ok',true,'requestId',request_id,'reference',reference,'replayed',true); end if;
   if jsonb_typeof(payload->'items')<>'array' or jsonb_array_length(payload->'items') not between 1 and 1000 then raise exception 'Invalid request items'; end if;
   loop reference:='CPC-'||to_char(current_date,'YYYYMMDD')||'-'||upper(substr(replace(gen_random_uuid()::text,'-',''),1,6)); exit when not exists(select 1 from public.requests where requests.reference=reference); end loop;
@@ -66,7 +66,7 @@ begin
     position:=position+1; item_type:=item->>'type'; quantity:=(item->>'quantity')::integer; if quantity not between 1 and 10000 then raise exception 'Invalid quantity'; end if; total:=total+quantity;
     if item_type='book' then
       if (item - array['type','publicationId','quantity'])<>'{}'::jsonb then raise exception 'Invalid book item'; end if;
-      select * into publication from public.publications where id=(item->>'publicationId')::uuid and status='Active'; if publication.id is null then raise exception 'Unknown or inactive publication'; end if;
+      select * into publication from public.publications where publications.id=(item->>'publicationId')::uuid and status='Active'; if publication.id is null then raise exception 'Unknown or inactive publication'; end if;
       insert into public.request_items(request_id,position,item_type,product_id,sku,isbn,title,series,class_code,subject,medium,quantity,mrp,kit_books,snapshot,mapping_status) values(request_id,position,'book',publication.id::text,publication.sku,publication.isbn,publication.title,publication.series,array_to_string(publication.class_stage,', '),publication.subject,publication.medium,quantity,publication.mrp,null,jsonb_build_object('publicationId',publication.id,'title',publication.title,'sku',publication.sku,'isbn',publication.isbn,'series',publication.series,'classStage',publication.class_stage,'subject',publication.subject,'medium',publication.medium,'mrp',publication.mrp),'mapped');
     elsif item_type in ('custom-kit','standard-kit') then
       if (item - array['type','level','kitName','publicationIds','quantity'])<>'{}'::jsonb or jsonb_typeof(item->'publicationIds')<>'array' then raise exception 'Invalid kit item'; end if;
@@ -85,8 +85,8 @@ begin
         line_title:=coalesce(nullif(btrim(standard_name),''),'Cambridge '||initcap(level)||' Standard Kit');
       end if;
       kit_books:='[]'::jsonb; component_position:=0;
-      foreach id in array ids loop
-        select * into publication from public.publications where publications.id=id::uuid and status='Active';
+      foreach publication_id_text in array ids loop
+        select * into publication from public.publications where publications.id=publication_id_text::uuid and status='Active';
         if publication.id is null then raise exception 'Unknown or inactive publication'; end if;
         if item_type='custom-kit' and (publication.custom_kit_eligible is false or not exists(select 1 from unnest(publication.class_stage) s where lower(s)=level)) then raise exception 'Ineligible Custom Kit publication'; end if;
         component_position:=component_position+1;
@@ -94,7 +94,7 @@ begin
       end loop;
       insert into public.request_items(request_id,position,item_type,title,class_code,quantity,kit_books,snapshot,mapping_status) values(request_id,position,item_type,line_title,initcap(level),quantity,kit_books,jsonb_build_object('stage',level,'name',line_title,'books',kit_books),'mapped') returning id into item_id;
       component_position:=0;
-      for publication in select * from public.publications where id::text=any(ids) order by array_position(ids,id::text) loop
+      for publication in select * from public.publications where publications.id::text=any(ids) order by array_position(ids,publications.id::text) loop
         component_position:=component_position+1;
         insert into public.request_kit_components(request_item_id,position,product_id,title,quantity_per_kit,total_quantity,snapshot,mapping_status) values(item_id,component_position,publication.id::text,publication.title,1,quantity,jsonb_build_object('publicationId',publication.id,'title',publication.title,'sku',publication.sku,'isbn',publication.isbn,'mrp',publication.mrp),'mapped');
       end loop;

@@ -1,5 +1,5 @@
--- Forward hotfix for the already-applied requirement hardening migration.
--- Parenthesize the JSONB location extraction before subtracting its allow-listed keys.
+-- Forward hotfix for the deployed requirement RPC: avoid the PL/pgSQL id variable
+-- shadowing request/publication id columns.
 create or replace function public.submit_catalogue_request(payload jsonb) returns jsonb language plpgsql security definer set search_path to 'public','pg_temp' as $$
 declare
   customer jsonb:=payload->'customer'; item jsonb; publication public.publications%rowtype; rule public.early_learning_kit_rules%rowtype;
