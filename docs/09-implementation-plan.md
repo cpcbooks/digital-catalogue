@@ -16,7 +16,7 @@ This is a plan only. It does not approve implementation, migrations, package ins
 ## 2. Current implementation baseline
 
 - A static HTML/CSS/JavaScript public application is deployed through GitHub Pages; no committed GitHub Actions workflow is verified.
-- `js/catalogue-data.js` is the static/transitional catalogue master. Supabase pilot reads are available in Browse and Book Details through bootstrap/adapter modules, using publication UUIDs and `publication_assets`.
+- `js/catalogue-data.js` is the static/transitional catalogue master. The opt-in Supabase pilot uses the same normalized bootstrap/adapter contract across publication-driven public routes, using publication UUIDs and `publication_assets`.
 - Browser-local Selection, an inline Early Learning Custom Kit (currently Nursery/LKG/UKG and hard-coded minimum eight), and a requirement UI already exist.
 - Requirement submission uses the deployed `submit-catalogue-request` Edge Function and transactional `submit_catalogue_request(jsonb)` RPC.
 - Recovered backend evidence records publication, asset, mapping, request, request-item, and request-Kit-component structures; it does not include production rows or the private rate-limit metadata schema.

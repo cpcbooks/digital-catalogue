@@ -54,9 +54,22 @@
     return { source: "supabase", books, cached: false };
   }
 
+  // Keep an explicit pilot choice through local catalogue navigation. Static is
+  // deliberately the default, so it does not add noise to ordinary URLs.
+  function withSource(href) {
+    if (requestedSource !== "supabase" || !href) return href;
+    try {
+      const target = new URL(href, global.location.href);
+      if (target.origin !== new URL(global.location.href).origin) return href;
+      target.searchParams.set("catalogueSource", "supabase");
+      return target.pathname.split("/").pop() + target.search + target.hash;
+    } catch (_) { return href; }
+  }
+
   global.CambridgeCatalogueBootstrap = Object.freeze({
     requestedSource: requestedSource === "supabase" ? "supabase" : "static",
     ready,
+    withSource,
     clearCache: function () { try { sessionStorage.removeItem(CACHE_KEY); } catch (_) {} }
   });
 })(window);

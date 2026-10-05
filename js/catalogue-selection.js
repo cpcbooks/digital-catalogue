@@ -159,7 +159,10 @@
 
   function openSelection() {
     rememberChecklistReturn();
-    window.location.href = "order.html";
+    const orderUrl = global.CambridgeCatalogueBootstrap
+      ? global.CambridgeCatalogueBootstrap.withSource("order.html")
+      : "order.html";
+    window.location.href = orderUrl;
   }
 
   function ensureFloatingBar() {
@@ -259,7 +262,8 @@
   function detailsUrl(book) {
     const base = "book-details.html?id=" + encodeURIComponent(book.id || "");
     const level = window.SELECTION_EXTRA && window.SELECTION_EXTRA.level ? window.SELECTION_EXTRA.level : "";
-    return level ? base + "&level=" + encodeURIComponent(level) : base;
+    const href = level ? base + "&level=" + encodeURIComponent(level) : base;
+    return global.CambridgeCatalogueBootstrap ? global.CambridgeCatalogueBootstrap.withSource(href) : href;
   }
 
   function coverNode(book) {

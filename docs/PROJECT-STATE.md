@@ -100,7 +100,7 @@ When request submission is migrated, resolve new UUID-based catalogue selections
 
 ## Supabase frontend pilot adapter — WORKING
 
-`js/catalogue-supabase-adapter.js` reads Active publications/assets and converts them into the existing frontend contract. `catalogue-bootstrap.js` supports opt-in Supabase loading and session caching. Browse and Book Details preserve the Supabase source and originating browse context.
+`js/catalogue-supabase-adapter.js` reads Active publications/assets and converts them into the existing frontend contract. `catalogue-bootstrap.js` supports opt-in Supabase loading and session caching across publication-driven listing, detail, Early Learning and Custom Kit flows; source context is preserved through their local navigation.
 
 The public publishable Supabase key is used in browser configuration; service-role/secret credentials must never be committed.
 
