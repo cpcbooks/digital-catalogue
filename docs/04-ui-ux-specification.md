@@ -101,7 +101,7 @@ Use one coherent, reusable card system across listings. Prioritize, in order: co
 - Long title: clamp/truncate only when it preserves a clear route to full detail.
 - Badges: use sparingly for meaningful information, not promotion noise.
 - Desktop: cover-led discovery cards may be richer; mobile: compact horizontal cards are appropriate.
-- Actions: View Details is universal; View Sample and Add to Selection appear only when useful and must not overcrowd cards.
+- Actions: View Details is universal; Add to Selection appears only when useful and must not overcrowd cards. Available sample pages appear in the unified Book Details gallery (Front Cover → Back Cover → ordered Sample Pages).
 
 Hover, focus, and touch states should communicate interactivity without relying only on colour.
 
@@ -111,7 +111,7 @@ Hover, focus, and touch states should communicate interactivity without relying 
 flowchart TD
   D[Publication detail] --> A[Cover/assets and core publication information]
   A --> S{Sample available?}
-  S -->|Yes| V[View Sample]
+  S -->|Yes| V[Open Book Details gallery]
   S -->|No| E[Continue exploration]
   V --> D
   D --> SEL[Add to Selection]
@@ -125,7 +125,7 @@ Detail prioritizes cover/assets, title, series, stage/class, subject, medium/lan
 
 Action hierarchy when available:
 
-1. View Sample
+1. View Book Details gallery
 2. Add to Selection
 3. Share
 4. Add to Custom Kit for eligible Early Learning publications
@@ -254,7 +254,7 @@ Centralize repeated presentation values where practical. Do not introduce a fram
 
 | Experience | Priority |
 | --- | --- |
-| Homepage; Browse/Search; Publication Detail; Sample Viewer; My Selection; Early Learning Custom Kit Builder; Custom Kit Review; Send Requirement; Requirement Success; error/empty states | **CORE / LAUNCH** |
+| Homepage; Browse/Search; Publication Detail gallery; My Selection; Early Learning Custom Kit Builder; Custom Kit Review; Send Requirement; Requirement Success; error/empty states | **CORE / LAUNCH** |
 | CPC-branded Custom Kit PDF Summary | **CORE / LAUNCH**, unless implementation/security analysis identifies a material reason to defer |
 | Custom Kit Share | **Approved; launch sequencing TO BE CONFIRMED** |
 | Admin Console; Requirement Tracking; Aggregate Analytics Dashboard | **PLANNED** |

@@ -61,6 +61,13 @@ test("matches the current Browse filters without changing record order", () => {
   assert.deepEqual(matches.map(book => book.id), ["10000000-0000-4000-8000-000000000002"]);
 });
 
+test("filters Browse publications by Medium and combines it with other filters", () => {
+  const query = queryWithCatalogue();
+  const books = query.active();
+  assert.deepEqual(query.browseMatches(books, { medium: "Kannada" }, "", {}).map(book => book.title), ["LKG Kannada"]);
+  assert.deepEqual(query.browseMatches(books, { category: "early-learning", class: "LKG", medium: "Kannada", type: "Writing" }, "", {}).map(book => book.title), ["LKG Kannada"]);
+});
+
 test("matches current Browse search case-insensitively after trimming whitespace", () => {
   const query = queryWithCatalogue();
   const matches = query.browseMatches(query.active(), {}, "  class FIVE science ", { school: "School Learning" });
@@ -73,8 +80,14 @@ test("includes current medium search text and combines it with filters", () => {
   assert.deepEqual(matches.map(book => book.title), ["LKG Kannada"]);
 });
 
+test("finds SKU and ISBN in Browse search while preserving multi-word matching", () => {
+  const query = queryWithCatalogue();
+  assert.deepEqual(query.browseMatches(query.active(), {}, "syn-5-sci", {}).map(book => book.title), ["Class Five Science"]);
+  assert.deepEqual(query.browseMatches(query.active(), {}, "9780000000005 science", {}).map(book => book.title), ["Class Five Science"]);
+});
+
 test("returns no matches for a search term absent from current Browse fields", () => {
   const query = queryWithCatalogue();
-  const matches = query.browseMatches(query.active(), {}, "9780000000005", { school: "School Learning" });
+  const matches = query.browseMatches(query.active(), {}, "9780000000099", { school: "School Learning" });
   assert.deepEqual(Array.from(matches), []);
 });
