@@ -20,3 +20,8 @@ test("Custom Kit Builder routes its stage Back link through the shared source he
   assert.equal(source("?catalogueSource=supabase").withSource("early-learning-level.html?level=nursery"), "early-learning-level.html?level=nursery&catalogueSource=supabase");
   assert.equal(source().withSource("early-learning-level.html?level=nursery"), "early-learning-level.html?level=nursery");
 });
+
+test("Custom Kit Builder renders the shared presentation groups", () => {
+  const builder = fs.readFileSync(path.join(__dirname, "..", "kit-builder.html"), "utf8");
+  assert.match(builder, /KitConfig\.groupBooksForDisplay\(books,categories\)/);
+});

@@ -26,6 +26,19 @@
     return belongsToStage(book, stage) && book.customKitEligible !== false;
   }
 
+  function groupBooksForDisplay(books, categories) {
+    const available = Array.isArray(books) ? books : [];
+    const knownCategories = categories && typeof categories === "object" ? categories : {};
+    const groups = Object.keys(knownCategories).map(subject => ({
+      title: subject,
+      description: knownCategories[subject],
+      books: available.filter(book => book && book.subject === subject)
+    })).filter(group => group.books.length);
+    const otherBooks = available.filter(book => book && !Object.prototype.hasOwnProperty.call(knownCategories, book.subject));
+    if (otherBooks.length) groups.push({ title: "Other", description: "Additional Early Learning books.", books: otherBooks });
+    return groups;
+  }
+
   function createProvider(stageConfigs) {
     function getStageConfig(value) {
       const config = stageConfigs[stageCode(value)] || null;
@@ -39,6 +52,7 @@
     ...createProvider(STAGES),
     createProvider,
     belongsToStage,
-    isEligible
+    isEligible,
+    groupBooksForDisplay
   });
 })(window);

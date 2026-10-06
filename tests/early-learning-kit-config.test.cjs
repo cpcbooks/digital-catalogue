@@ -50,3 +50,21 @@ test("keeps existing stage titles eligible unless explicitly opted out", () => {
   assert.equal(provider.isEligible({ class: ["Nursery"], customKitEligible: false }, "Nursery"), false);
   assert.equal(provider.isEligible({ class: ["LKG"] }, "Nursery"), false);
 });
+
+test("groups every eligible Builder book once while preserving known subjects", () => {
+  const provider = config();
+  const categories = { English: "Readers", Mathematics: "Numbers" };
+  const candidates = [
+    { id: "english", class: ["LKG"], subject: "English" },
+    { id: "blank", class: ["LKG"], subject: "" },
+    { id: "unknown", class: ["LKG"], subject: "Art" },
+    { id: "excluded", class: ["LKG"], subject: "Mathematics", customKitEligible: false }
+  ].filter(book => provider.isEligible(book, "LKG"));
+  const groups = provider.groupBooksForDisplay(candidates, categories);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(groups.map(group => [group.title, group.books.map(book => book.id)]))), [
+    ["English", ["english"]],
+    ["Other", ["blank", "unknown"]]
+  ]);
+  assert.deepEqual(groups.flatMap(group => group.books.map(book => book.id)), ["english", "blank", "unknown"]);
+});
