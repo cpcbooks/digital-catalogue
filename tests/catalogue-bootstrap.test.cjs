@@ -42,6 +42,17 @@ test("an explicit Supabase source is retained through local catalogue URLs", () 
   assert.equal(source.withSource("https://elsewhere.example/books"), "https://elsewhere.example/books");
 });
 
+test("saved Selection return targets are local and normalized to the current source", () => {
+  const supabase = bootstrap("?catalogueSource=supabase");
+  const staticSource = bootstrap();
+
+  assert.equal(supabase.localReturnHref("browse.html"), "browse.html?catalogueSource=supabase");
+  assert.equal(staticSource.localReturnHref("browse.html?catalogueSource=supabase"), "browse.html");
+  assert.equal(supabase.localReturnHref("early-learning-books.html?level=nursery&catalogueSource=static#titles"), "early-learning-books.html?level=nursery&catalogueSource=supabase#titles");
+  assert.equal(supabase.localReturnHref("https://elsewhere.example/browse.html"), null);
+  assert.equal(supabase.localReturnHref("/other-app/browse.html"), null);
+});
+
 test("shared source links preserve an explicit source before catalogue loading", () => {
   assert.deepEqual(sourceLinkedHrefs("?catalogueSource=supabase", ["index.html", "index.html"]), ["index.html?catalogueSource=supabase", "index.html?catalogueSource=supabase"]);
   assert.deepEqual(sourceLinkedHrefs("", ["index.html", "index.html"]), ["index.html", "index.html"]);

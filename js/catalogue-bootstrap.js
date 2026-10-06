@@ -74,11 +74,24 @@
     } catch (_) { return href; }
   }
 
+  function localReturnHref(href) {
+    try {
+      const current = new URL(global.location.href);
+      const target = new URL(href, current);
+      const directory = current.pathname.slice(0, current.pathname.lastIndexOf("/") + 1);
+      const targetDirectory = target.pathname.slice(0, target.pathname.lastIndexOf("/") + 1);
+      if (target.origin !== current.origin || targetDirectory !== directory || !/\.html$/i.test(target.pathname)) return null;
+      target.searchParams.delete("catalogueSource");
+      return withSource(target.pathname.split("/").pop() + target.search + target.hash);
+    } catch (_) { return null; }
+  }
+
   global.CambridgeCatalogueBootstrap = Object.freeze({
     requestedSource: requestedSource === "supabase" ? "supabase" : "static",
     ready,
     standardKitDefinitions,
     withSource,
+    localReturnHref,
     clearCache: function () { try { sessionStorage.removeItem(CACHE_KEY); } catch (_) {} }
   });
 })(window);
