@@ -26,6 +26,24 @@ function continueBrowsing(search, saved, historyLength = 0) {
   return { href: sandbox.window.location.href, wentBack };
 }
 
+function emptySelectionHref(search, startsNonEmpty = false) {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test/order.html${search}`,
+    pathname: "/order.html",
+    search
+  } });
+  const orderItems = { innerHTML: "" }, orderSummary = { innerHTML: "" };
+  sandbox.context.document.getElementById = id => id === "orderItems" ? orderItems : id === "orderSummary" ? orderSummary : null;
+  sandbox.context.updateNavigation = () => {};
+  sandbox.context.order = startsNonEmpty ? [{ id: "book", quantity: 1 }] : [];
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  const renderOrder = read("order.html").match(/function renderOrder\(\)[\s\S]*?(?=function renderSummary)/)[0];
+  vm.runInContext(renderOrder, sandbox.context);
+  sandbox.context.order = [];
+  sandbox.context.renderOrder();
+  return orderItems.innerHTML.match(/href="([^"]+)"/)[1];
+}
+
 test("Requirement navigation retains an explicitly selected catalogue source", () => {
   const order = read("order.html");
   const request = read("request.html");
@@ -57,4 +75,15 @@ test("My Selection normalizes a saved fallback while retaining history-first ret
   assert.equal(continueBrowsing("", { url: "https://elsewhere.example/browse.html", createdAt: now }).href, "index.html");
   assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now }, 2).wentBack, true);
   assert.match(order, /target=saved&&source\?source\.localReturnHref\(saved\.url\):null/);
+});
+
+test("My Selection empty-state Browse link uses the current source on every render", () => {
+  const order = read("order.html");
+  assert.equal(emptySelectionHref("?catalogueSource=supabase"), "index.html?catalogueSource=supabase");
+  assert.equal(emptySelectionHref(""), "index.html");
+  assert.equal(emptySelectionHref("?catalogueSource=supabase", true), "index.html?catalogueSource=supabase");
+  assert.equal(emptySelectionHref("", true), "index.html");
+  assert.doesNotMatch(emptySelectionHref(""), /catalogueSource=/);
+  assert.match(order, /clearOrder.*?renderOrder\(\)/);
+  assert.match(order, /window\.addEventListener\("storage".*?renderOrder\(\)/);
 });
