@@ -14,22 +14,18 @@ function bootstrap(search = "") {
   return sandbox.window.CambridgeCatalogueBootstrap;
 }
 
-function sourceLinkedHref(search) {
+function sourceLinkedHrefs(search, hrefs = ["index.html"]) {
   const sandbox = createBrowserSandbox({ location: {
     href: `https://catalogue.example.test/browse.html${search}`,
     pathname: "/browse.html",
     search
   } });
-  const link = {
-    href: "index.html",
-    getAttribute() { return this.href; },
-    setAttribute(_, value) { this.href = value; }
-  };
+  const links = hrefs.map(href => ({ href, getAttribute() { return this.href; }, setAttribute(_, value) { this.href = value; } }));
   sandbox.window.document.readyState = "complete";
-  sandbox.window.document.querySelectorAll = selector => selector === "a[href]" ? [link] : [];
+  sandbox.window.document.querySelectorAll = selector => selector === "a[href]" ? links : [];
   loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
   loadBrowserScript(sandbox, "js/catalogue-source-links.js");
-  return link.href;
+  return links.map(link => link.href);
 }
 
 test("static remains the default source and keeps ordinary local URLs clean", async () => {
@@ -47,10 +43,12 @@ test("an explicit Supabase source is retained through local catalogue URLs", () 
 });
 
 test("shared source links preserve an explicit source before catalogue loading", () => {
-  assert.equal(sourceLinkedHref("?catalogueSource=supabase"), "index.html?catalogueSource=supabase");
-  assert.equal(sourceLinkedHref(), "index.html");
+  assert.deepEqual(sourceLinkedHrefs("?catalogueSource=supabase", ["index.html", "index.html"]), ["index.html?catalogueSource=supabase", "index.html?catalogueSource=supabase"]);
+  assert.deepEqual(sourceLinkedHrefs("", ["index.html", "index.html"]), ["index.html", "index.html"]);
   const browse = fs.readFileSync(path.join(__dirname, "..", "browse.html"), "utf8");
   assert.match(browse, /catalogue-bootstrap\.js[^>]*><\/script>\s*<script src="js\/catalogue-source-links\.js"><\/script>/);
+  const details = fs.readFileSync(path.join(__dirname, "..", "book-details.html"), "utf8");
+  assert.match(details, /catalogue-bootstrap\.js[^>]*><\/script><script src="js\/catalogue-source-links\.js"><\/script>/);
 });
 
 test("Standard Kit definitions use the selected shared source", async () => {
