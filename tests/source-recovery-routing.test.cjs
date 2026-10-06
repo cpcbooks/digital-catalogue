@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 const { createBrowserSandbox, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 
 const read = file => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
@@ -14,6 +15,20 @@ function source(page, search = "") {
   } });
   loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
   return sandbox.window.CambridgeCatalogueBootstrap;
+}
+
+function bookDetailsBack(search) {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test/book-details.html${search}`,
+    pathname: "/book-details.html",
+    search
+  } });
+  sandbox.window.CambridgeSelection = { CHANGE_EVENT: "selection" };
+  sandbox.window.CambridgeCatalogueQuery = { classValues() { return []; }, normalizeClass(value) { return value; } };
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  const script = read("js/book-details.js").replace(/  window\.addEventListener\(Selection\.CHANGE_EVENT,refresh\);[\s\S]*?\}\)\(\);\s*$/, "  window.__bookDetailsTest={safeReturnTo,sourceBack};\n})();\n");
+  vm.runInContext(script, sandbox.context);
+  return sandbox.window.__bookDetailsTest.sourceBack({ category: "other" });
 }
 
 test("Custom Kit Review recovery uses the selected source after bootstrap", () => {
@@ -86,4 +101,19 @@ test("Early Learning dynamic navigation applies the current source after the sha
     assert.equal(source("early-learning-level.html", "?level=nursery&catalogueSource=supabase").withSource(target), sourcedTarget);
     assert.equal(source("early-learning-level.html", "?level=nursery").withSource(target), target);
   }
+});
+
+test("Book Details returnTo keeps its allowlisted destination but normalizes the current source", () => {
+  const query = values => `?${new URLSearchParams(values)}`;
+
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "browse.html" })), "browse.html?catalogueSource=supabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "early-learning-books.html?level=nursery&q=phonics" })), "early-learning-books.html?level=nursery&q=phonics&catalogueSource=supabase");
+  assert.equal(bookDetailsBack(query({ id: "book", returnTo: "browse.html?catalogueSource=supabase" })), "browse.html");
+  assert.equal(bookDetailsBack(query({ id: "book", returnTo: "early-learning-books.html?level=nursery&catalogueSource=supabase" })), "early-learning-books.html?level=nursery");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "https://elsewhere.example/browse.html" })), "index.html?catalogueSource=supabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase" })), "index.html?catalogueSource=supabase");
+
+  const details = read("js/book-details.js");
+  assert.match(details, /CambridgeCatalogueBootstrap\.localReturnHref\(decoded\)/);
+  assert.match(read("js/catalogue-browse.js"), /returnTo:currentBrowseUrl\(\)/);
 });

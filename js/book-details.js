@@ -18,7 +18,7 @@
     if(!value)return"";
     try {
       const decoded=decodeURIComponent(value);
-      if(/^(?:browse|school-books|early-learning-books|exam-preparation|early-learning|school-learning|college-university|competitive-exams)\.html(?:\?|$)/.test(decoded))return decoded
+      if(/^(?:browse|school-books|early-learning-books|exam-preparation|early-learning|school-learning|college-university|competitive-exams)\.html(?:\?|$)/.test(decoded))return window.CambridgeCatalogueBootstrap.localReturnHref(decoded)||""
     }
     catch(_) {
 
