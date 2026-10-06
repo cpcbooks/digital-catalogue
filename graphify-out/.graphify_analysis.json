@@ -1,0 +1,618 @@
+{
+  "communities": {
+    "0": [
+      "ref_node_fs",
+      "ref_node_path",
+      "scripts_upload_publication_assets",
+      "scripts_upload_publication_assets_allowedtypes",
+      "scripts_upload_publication_assets_assertpublication",
+      "scripts_upload_publication_assets_ext",
+      "scripts_upload_publication_assets_headers",
+      "scripts_upload_publication_assets_jsonrequest",
+      "scripts_upload_publication_assets_manifest",
+      "scripts_upload_publication_assets_manifesttext",
+      "scripts_upload_publication_assets_mime",
+      "scripts_upload_publication_assets_storagename",
+      "scripts_upload_publication_assets_supabase_url",
+      "scripts_upload_publication_assets_upload",
+      "tests_requirement_hardening_migration_test",
+      "tests_requirement_hardening_migration_test_assert",
+      "tests_requirement_hardening_migration_test_edge",
+      "tests_requirement_hardening_migration_test_fs",
+      "tests_requirement_hardening_migration_test_hotfix",
+      "tests_requirement_hardening_migration_test_migration",
+      "tests_requirement_hardening_migration_test_path",
+      "tests_requirement_hardening_migration_test_read",
+      "tests_requirement_hardening_migration_test_shadowinghotfix",
+      "tests_requirement_hardening_migration_test_test",
+      "tests_requirement_source_routing_test",
+      "tests_requirement_source_routing_test_assert",
+      "tests_requirement_source_routing_test_fs",
+      "tests_requirement_source_routing_test_path",
+      "tests_requirement_source_routing_test_read",
+      "tests_requirement_source_routing_test_test",
+      "tests_standard_kit_public_read_migration_test",
+      "tests_standard_kit_public_read_migration_test_assert",
+      "tests_standard_kit_public_read_migration_test_frontendsources",
+      "tests_standard_kit_public_read_migration_test_fs",
+      "tests_standard_kit_public_read_migration_test_manifest",
+      "tests_standard_kit_public_read_migration_test_migration",
+      "tests_standard_kit_public_read_migration_test_path",
+      "tests_standard_kit_public_read_migration_test_root",
+      "tests_standard_kit_public_read_migration_test_selected",
+      "tests_standard_kit_public_read_migration_test_selectedstaticids",
+      "tests_standard_kit_public_read_migration_test_test"
+    ],
+    "1": [
+      "js_catalogue_selection",
+      "js_catalogue_selection_actionnode",
+      "js_catalogue_selection_add",
+      "js_catalogue_selection_covernode",
+      "js_catalogue_selection_currentrelativeurl",
+      "js_catalogue_selection_detailsurl",
+      "js_catalogue_selection_emitchange",
+      "js_catalogue_selection_ensurefloatingbar",
+      "js_catalogue_selection_ensurefloatingstyle",
+      "js_catalogue_selection_indexofbook",
+      "js_catalogue_selection_isbookdetailspage",
+      "js_catalogue_selection_isselectionpage",
+      "js_catalogue_selection_itemkey",
+      "js_catalogue_selection_navigationtype",
+      "js_catalogue_selection_openselection",
+      "js_catalogue_selection_readorder",
+      "js_catalogue_selection_rememberbookreturn",
+      "js_catalogue_selection_rememberchecklistreturn",
+      "js_catalogue_selection_remove",
+      "js_catalogue_selection_restorebookreturn",
+      "js_catalogue_selection_saveorder",
+      "js_catalogue_selection_schedulebookreturnrestore",
+      "js_catalogue_selection_selectedcount",
+      "js_catalogue_selection_selecteditem",
+      "js_catalogue_selection_selecteditems",
+      "js_catalogue_selection_selectedquantitytotal",
+      "js_catalogue_selection_setqty",
+      "js_catalogue_selection_updatebar",
+      "js_catalogue_selection_updatefloatingbar",
+      "js_catalogue_selection_validqty"
+    ],
+    "2": [
+      "scripts_import_publications",
+      "scripts_import_publications_book_types",
+      "scripts_import_publications_comparable",
+      "scripts_import_publications_early_stages",
+      "scripts_import_publications_equal",
+      "scripts_import_publications_execute",
+      "scripts_import_publications_issue",
+      "scripts_import_publications_lifecycles",
+      "scripts_import_publications_media",
+      "scripts_import_publications_optionaltext",
+      "scripts_import_publications_parseargs",
+      "scripts_import_publications_planimport",
+      "scripts_import_publications_print",
+      "scripts_import_publications_publicationpayload",
+      "scripts_import_publications_readmanifest",
+      "scripts_import_publications_remoterows",
+      "scripts_import_publications_sections",
+      "scripts_import_publications_static_type_to_book_type",
+      "scripts_import_publications_staticrecords",
+      "scripts_import_publications_text",
+      "scripts_import_publications_validatemanifest",
+      "scripts_import_publications_writerows"
+    ],
+    "3": [
+      "js_request_submission",
+      "js_request_submission_attemptkey",
+      "js_request_submission_backendclass",
+      "js_request_submission_bookline",
+      "js_request_submission_buildbackendpayload",
+      "js_request_submission_buildpayload",
+      "js_request_submission_catalogueproducts",
+      "js_request_submission_classarray",
+      "js_request_submission_clearsubmitteddraft",
+      "js_request_submission_customerpayload",
+      "js_request_submission_findmasterproduct",
+      "js_request_submission_kitline",
+      "js_request_submission_normalquantity",
+      "js_request_submission_publicationid",
+      "js_request_submission_readjson",
+      "js_request_submission_submit",
+      "js_request_submission_submitlive"
+    ],
+    "4": [
+      "js_catalogue_supabase_adapter",
+      "js_catalogue_supabase_adapter_activeassets",
+      "js_catalogue_supabase_adapter_categoryfor",
+      "js_catalogue_supabase_adapter_classarray",
+      "js_catalogue_supabase_adapter_comparewithstatic",
+      "js_catalogue_supabase_adapter_firstasset",
+      "js_catalogue_supabase_adapter_installpilot",
+      "js_catalogue_supabase_adapter_legacyimages",
+      "js_catalogue_supabase_adapter_legacytype",
+      "js_catalogue_supabase_adapter_load",
+      "js_catalogue_supabase_adapter_loadstandardkitdefinitions",
+      "js_catalogue_supabase_adapter_normalizestandardkitdefinitions",
+      "js_catalogue_supabase_adapter_primarycover",
+      "js_catalogue_supabase_adapter_request",
+      "js_catalogue_supabase_adapter_text",
+      "js_catalogue_supabase_adapter_tolegacybook"
+    ],
+    "5": [
+      "js_custom_kit_state",
+      "js_custom_kit_state_configuredminimum",
+      "js_custom_kit_state_create",
+      "js_custom_kit_state_create_add",
+      "js_custom_kit_state_create_canreview",
+      "js_custom_kit_state_create_contains",
+      "js_custom_kit_state_create_count",
+      "js_custom_kit_state_create_getname",
+      "js_custom_kit_state_create_iscomplete",
+      "js_custom_kit_state_create_remaining",
+      "js_custom_kit_state_create_remove",
+      "js_custom_kit_state_create_selectedids",
+      "js_custom_kit_state_create_selecteditems",
+      "js_custom_kit_state_create_setname",
+      "js_custom_kit_state_itemid"
+    ],
+    "6": [
+      "js_book_details",
+      "js_book_details_backlabel",
+      "js_book_details_block",
+      "js_book_details_classtag",
+      "js_book_details_detailearlyclass",
+      "js_book_details_gallery",
+      "js_book_details_imagelist",
+      "js_book_details_init",
+      "js_book_details_refresh",
+      "js_book_details_requestedearlyclass",
+      "js_book_details_safereturnto",
+      "js_book_details_setupswipe",
+      "js_book_details_sourceback",
+      "js_book_details_withsource"
+    ],
+    "7": [
+      "ref_jsr_supabase",
+      "ref_npm_supabase",
+      "supabase_functions_submit_catalogue_request_index",
+      "supabase_functions_submit_catalogue_request_index_contacts",
+      "supabase_functions_submit_catalogue_request_index_corsheaders",
+      "supabase_functions_submit_catalogue_request_index_customertypes",
+      "supabase_functions_submit_catalogue_request_index_existingcustomers",
+      "supabase_functions_submit_catalogue_request_index_json",
+      "supabase_functions_submit_catalogue_request_index_keys",
+      "supabase_functions_submit_catalogue_request_index_object",
+      "supabase_functions_submit_catalogue_request_index_optionaltext",
+      "supabase_functions_submit_catalogue_request_index_text",
+      "supabase_functions_submit_catalogue_request_index_uuid",
+      "supabase_functions_submit_catalogue_request_index_validpayload"
+    ],
+    "8": [
+      "tests_catalogue_query_test",
+      "tests_catalogue_query_test_assert",
+      "tests_catalogue_query_test_clonepublications",
+      "tests_catalogue_query_test_createbrowsersandbox_loadbrowserscript",
+      "tests_catalogue_query_test_querywithcatalogue",
+      "tests_catalogue_query_test_test",
+      "tests_fixtures_publications",
+      "tests_fixtures_publications_clonepublications",
+      "tests_fixtures_publications_publications",
+      "tests_request_submission_test",
+      "tests_request_submission_test_assert",
+      "tests_request_submission_test_clonepublications",
+      "tests_request_submission_test_createbrowsersandbox_createstorage_loadbrowserscript",
+      "tests_request_submission_test_test"
+    ],
+    "9": [
+      "tests_custom_kit_state_test",
+      "tests_custom_kit_state_test_assert",
+      "tests_custom_kit_state_test_createbrowsersandbox_loadbrowserscript",
+      "tests_custom_kit_state_test_eligiblekit",
+      "tests_custom_kit_state_test_kit",
+      "tests_custom_kit_state_test_test",
+      "tests_helpers_browser_script_sandbox_loadbrowserscript",
+      "tests_standard_kit_config_test",
+      "tests_standard_kit_config_test_assert",
+      "tests_standard_kit_config_test_books",
+      "tests_standard_kit_config_test_createbrowsersandbox_loadbrowserscript",
+      "tests_standard_kit_config_test_requireconfig",
+      "tests_standard_kit_config_test_standardkits",
+      "tests_standard_kit_config_test_test"
+    ],
+    "10": [
+      "js_catalogue_query",
+      "js_catalogue_query_active",
+      "js_catalogue_query_all",
+      "js_catalogue_query_browsematches",
+      "js_catalogue_query_browsevalues",
+      "js_catalogue_query_bycategory",
+      "js_catalogue_query_bycategoryandclass",
+      "js_catalogue_query_byid",
+      "js_catalogue_query_classorder",
+      "js_catalogue_query_classvalues",
+      "js_catalogue_query_matchesclass",
+      "js_catalogue_query_normalizeclass",
+      "js_catalogue_query_uniquevalues"
+    ],
+    "11": [
+      "ref_node_assert",
+      "ref_node_test",
+      "tests_catalogue_supabase_adapter_test",
+      "tests_catalogue_supabase_adapter_test_adapter",
+      "tests_catalogue_supabase_adapter_test_assert",
+      "tests_catalogue_supabase_adapter_test_createbrowsersandbox_loadbrowserscript",
+      "tests_catalogue_supabase_adapter_test_test",
+      "tests_standard_kit_loader_test",
+      "tests_standard_kit_loader_test_assert",
+      "tests_standard_kit_loader_test_fs",
+      "tests_standard_kit_loader_test_path",
+      "tests_standard_kit_loader_test_test"
+    ],
+    "12": [
+      "ref_node_url",
+      "tests_publication_importer_test",
+      "tests_publication_importer_test_assert",
+      "tests_publication_importer_test_fs",
+      "tests_publication_importer_test_importerpromise",
+      "tests_publication_importer_test_manifestpath",
+      "tests_publication_importer_test_path",
+      "tests_publication_importer_test_pathtofileurl",
+      "tests_publication_importer_test_prepared",
+      "tests_publication_importer_test_test"
+    ],
+    "13": [
+      "js_catalogue_browse",
+      "js_catalogue_browse_init",
+      "js_catalogue_browse_init_addoptions",
+      "js_catalogue_browse_init_clear",
+      "js_catalogue_browse_init_currentbrowseurl",
+      "js_catalogue_browse_init_hasactive",
+      "js_catalogue_browse_init_render",
+      "js_catalogue_browse_init_renderactive",
+      "js_catalogue_browse_init_syncurl"
+    ],
+    "14": [
+      "js_catalogue_navigation",
+      "js_catalogue_navigation_backtarget",
+      "js_catalogue_navigation_capturebooklink",
+      "js_catalogue_navigation_capturebooklinks",
+      "js_catalogue_navigation_pagekey",
+      "js_catalogue_navigation_read",
+      "js_catalogue_navigation_restore",
+      "js_catalogue_navigation_save",
+      "js_catalogue_navigation_storagekey"
+    ],
+    "15": [
+      "tests_catalogue_selection_test",
+      "tests_catalogue_selection_test_assert",
+      "tests_catalogue_selection_test_clonepublications",
+      "tests_catalogue_selection_test_createbrowsersandbox_createstorage_loadbrowserscript",
+      "tests_catalogue_selection_test_selectionwithstorage",
+      "tests_catalogue_selection_test_test",
+      "tests_helpers_browser_script_sandbox_createbrowsersandbox",
+      "tests_helpers_browser_script_sandbox_createstorage",
+      "tests_request_submission_test_submissionwithstate"
+    ],
+    "16": [
+      "supabase_migrations_20261005000000_harden_requirement_submission",
+      "supabase_migrations_20261005000000_harden_requirement_submission_public_early_learning_kit_rules",
+      "supabase_migrations_20261005000000_harden_requirement_submission_public_standard_kit_definitions",
+      "supabase_migrations_20261005000000_harden_requirement_submission_public_standard_kit_publications",
+      "supabase_migrations_20261005000000_harden_requirement_submission_public_submit_catalogue_request",
+      "supabase_migrations_20261005000000_harden_requirement_submission_requests_idempotency_key_unique",
+      "supabase_migrations_20261005000000_harden_requirement_submission_sql_public_publications",
+      "supabase_migrations_20261005000000_harden_requirement_submission_sql_public_requests"
+    ],
+    "17": [
+      "js_catalogue_validator",
+      "js_catalogue_validator_issue",
+      "js_catalogue_validator_normalizedclass",
+      "js_catalogue_validator_printreport",
+      "js_catalogue_validator_run",
+      "js_catalogue_validator_textorempty",
+      "js_catalogue_validator_validatecatalogue"
+    ],
+    "18": [
+      "js_early_learning_kit_config",
+      "js_early_learning_kit_config_belongstostage",
+      "js_early_learning_kit_config_createprovider",
+      "js_early_learning_kit_config_createprovider_getstageconfig",
+      "js_early_learning_kit_config_groupbooksfordisplay",
+      "js_early_learning_kit_config_iseligible",
+      "js_early_learning_kit_config_stagecode"
+    ],
+    "19": [
+      "tests_custom_kit_builder_routing_test",
+      "tests_custom_kit_builder_routing_test_assert",
+      "tests_custom_kit_builder_routing_test_createbrowsersandbox_loadbrowserscript",
+      "tests_custom_kit_builder_routing_test_fs",
+      "tests_custom_kit_builder_routing_test_path",
+      "tests_custom_kit_builder_routing_test_source",
+      "tests_custom_kit_builder_routing_test_test"
+    ],
+    "20": [
+      "js_catalogue_bootstrap",
+      "js_catalogue_bootstrap_readcache",
+      "js_catalogue_bootstrap_ready",
+      "js_catalogue_bootstrap_standardkitdefinitions",
+      "js_catalogue_bootstrap_withsource",
+      "js_catalogue_bootstrap_writecache"
+    ],
+    "21": [
+      "tests_catalogue_validator_test",
+      "tests_catalogue_validator_test_assert",
+      "tests_catalogue_validator_test_createbrowsersandbox_loadbrowserscript",
+      "tests_catalogue_validator_test_test",
+      "tests_catalogue_validator_test_validator",
+      "tests_catalogue_validator_test_validrecord"
+    ],
+    "22": [
+      "js_standard_kit_config",
+      "js_standard_kit_config_createprovider",
+      "js_standard_kit_config_createprovider_get",
+      "js_standard_kit_config_mrptotal",
+      "js_standard_kit_config_resolve"
+    ],
+    "23": [
+      "ref_node_vm",
+      "tests_helpers_browser_script_sandbox",
+      "tests_helpers_browser_script_sandbox_fs",
+      "tests_helpers_browser_script_sandbox_path",
+      "tests_helpers_browser_script_sandbox_vm"
+    ],
+    "24": [
+      "supabase_migrations_20261005170000_fix_requirement_rpc_json_location",
+      "supabase_migrations_20261005170000_fix_requirement_rpc_json_location_public_submit_catalogue_request",
+      "supabase_migrations_20261005170000_fix_requirement_rpc_json_location_sql_public_early_learning_kit_rules",
+      "supabase_migrations_20261005170000_fix_requirement_rpc_json_location_sql_public_publications",
+      "supabase_migrations_20261005170000_fix_requirement_rpc_json_location_sql_public_requests"
+    ],
+    "25": [
+      "supabase_migrations_20261005180000_fix_requirement_rpc_id_ambiguity",
+      "supabase_migrations_20261005180000_fix_requirement_rpc_id_ambiguity_public_submit_catalogue_request",
+      "supabase_migrations_20261005180000_fix_requirement_rpc_id_ambiguity_sql_public_early_learning_kit_rules",
+      "supabase_migrations_20261005180000_fix_requirement_rpc_id_ambiguity_sql_public_publications",
+      "supabase_migrations_20261005180000_fix_requirement_rpc_id_ambiguity_sql_public_requests"
+    ],
+    "26": [
+      "tests_catalogue_bootstrap_test",
+      "tests_catalogue_bootstrap_test_assert",
+      "tests_catalogue_bootstrap_test_bootstrap",
+      "tests_catalogue_bootstrap_test_createbrowsersandbox_loadbrowserscript",
+      "tests_catalogue_bootstrap_test_test"
+    ],
+    "27": [
+      "tests_catalogue_navigation_test",
+      "tests_catalogue_navigation_test_assert",
+      "tests_catalogue_navigation_test_createbrowsersandbox_loadbrowserscript",
+      "tests_catalogue_navigation_test_navigation",
+      "tests_catalogue_navigation_test_test"
+    ],
+    "28": [
+      "tests_early_learning_kit_config_test",
+      "tests_early_learning_kit_config_test_assert",
+      "tests_early_learning_kit_config_test_config",
+      "tests_early_learning_kit_config_test_createbrowsersandbox_loadbrowserscript",
+      "tests_early_learning_kit_config_test_test"
+    ],
+    "29": [
+      "js_catalogue_data",
+      "js_catalogue_data_add",
+      "js_catalogue_data_addhss"
+    ],
+    "30": [
+      "js_standard_kit",
+      "js_standard_kit_empty",
+      "js_standard_kit_href"
+    ],
+    "31": [
+      "supabase_functions_submit_catalogue_request_deno",
+      "supabase_functions_submit_catalogue_request_deno_imports",
+      "supabase_functions_submit_catalogue_request_deno_imports_supabase_supabase_js"
+    ],
+    "32": [
+      "js_catalogue_source_links",
+      "js_catalogue_source_links_apply"
+    ],
+    "33": [
+      "supabase_migrations_20261005220000_fix_requirement_rpc_variable_shadowing",
+      "supabase_migrations_20261005220000_fix_requirement_rpc_variable_shadowing_public_submit_catalogue_request"
+    ],
+    "34": [
+      "js_catalogue_pilot_config"
+    ],
+    "35": [
+      "public_request_items"
+    ],
+    "36": [
+      "supabase_migrations_20261005230000_prepare_development_standard_kit"
+    ],
+    "37": [
+      "supabase_schema_remote_public"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05975609756097561,
+    "1": 0.17471264367816092,
+    "2": 0.14285714285714285,
+    "3": 0.22058823529411764,
+    "4": 0.325,
+    "5": 0.2,
+    "6": 0.34065934065934067,
+    "7": 0.2087912087912088,
+    "8": 0.17582417582417584,
+    "9": 0.18681318681318682,
+    "10": 0.28205128205128205,
+    "11": 0.18181818181818182,
+    "12": 0.2,
+    "13": 0.3888888888888889,
+    "14": 0.4166666666666667,
+    "15": 0.3333333333333333,
+    "16": 0.2857142857142857,
+    "17": 0.5238095238095238,
+    "18": 0.42857142857142855,
+    "19": 0.2857142857142857,
+    "20": 0.4666666666666667,
+    "21": 0.3333333333333333,
+    "22": 0.5,
+    "23": 0.4,
+    "24": 0.4,
+    "25": 0.4,
+    "26": 0.4,
+    "27": 0.4,
+    "28": 0.4,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 0.6666666666666666,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0
+  },
+  "gods": [
+    {
+      "id": "tests_helpers_browser_script_sandbox_createbrowsersandbox",
+      "label": "createBrowserSandbox()",
+      "degree": 26
+    },
+    {
+      "id": "tests_helpers_browser_script_sandbox_loadbrowserscript",
+      "label": "loadBrowserScript()",
+      "degree": 25
+    },
+    {
+      "id": "js_custom_kit_state_create",
+      "label": "create()",
+      "degree": 13
+    },
+    {
+      "id": "js_book_details_init",
+      "label": "init()",
+      "degree": 11
+    },
+    {
+      "id": "js_catalogue_supabase_adapter_text",
+      "label": "text()",
+      "degree": 10
+    },
+    {
+      "id": "js_catalogue_selection_actionnode",
+      "label": "actionNode()",
+      "degree": 9
+    },
+    {
+      "id": "js_catalogue_selection_setqty",
+      "label": "setQty()",
+      "degree": 9
+    },
+    {
+      "id": "js_catalogue_selection_updatefloatingbar",
+      "label": "updateFloatingBar()",
+      "degree": 9
+    },
+    {
+      "id": "js_catalogue_browse_init",
+      "label": "init()",
+      "degree": 8
+    },
+    {
+      "id": "js_catalogue_supabase_adapter_tolegacybook",
+      "label": "toLegacyBook()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "classArray()",
+      "target": "text()",
+      "source_files": [
+        "js/request-submission.js",
+        "js/catalogue-supabase-adapter.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "indirect_call",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "adapter()",
+      "target": "createBrowserSandbox()",
+      "source_files": [
+        "tests/catalogue-supabase-adapter.test.cjs",
+        "tests/helpers/browser-script-sandbox.cjs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "adapter()",
+      "target": "loadBrowserScript()",
+      "source_files": [
+        "tests/catalogue-supabase-adapter.test.cjs",
+        "tests/helpers/browser-script-sandbox.cjs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "selectionWithStorage()",
+      "target": "loadBrowserScript()",
+      "source_files": [
+        "tests/catalogue-selection.test.cjs",
+        "tests/helpers/browser-script-sandbox.cjs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "bootstrap()",
+      "target": "createBrowserSandbox()",
+      "source_files": [
+        "tests/catalogue-bootstrap.test.cjs",
+        "tests/helpers/browser-script-sandbox.cjs"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `createBrowserSandbox()` connect `Community 15` to `Community 8`, `Community 9`, `Community 11`, `Community 19`, `Community 21`, `Community 23`, `Community 26`, `Community 27`, `Community 28`?",
+      "why": "High betweenness centrality (0.013) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 12 inferred relationships involving `create()` (e.g. with `custom-kit-state.js` and `add()`) actually correct?",
+      "why": "`create()` has 12 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `allowedTypes`, `EXT`, `manifest` to the rest of the system?",
+      "why": "94 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.05975609756097561 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `loadBrowserScript()` connect `Community 9` to `Community 8`, `Community 11`, `Community 15`, `Community 19`, `Community 21`, `Community 23`, `Community 26`, `Community 27`, `Community 28`?",
+      "why": "High betweenness centrality (0.013) - this node is a cross-community bridge."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `text()` connect `Community 4` to `Community 3`?",
+      "why": "High betweenness centrality (0.004) - this node is a cross-community bridge."
+    }
+  ]
+}
