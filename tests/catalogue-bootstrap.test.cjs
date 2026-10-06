@@ -1,6 +1,8 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createBrowserSandbox, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
+const fs = require("node:fs");
+const path = require("node:path");
 
 function bootstrap(search = "") {
   const sandbox = createBrowserSandbox({ location: {
@@ -10,6 +12,24 @@ function bootstrap(search = "") {
   } });
   loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
   return sandbox.window.CambridgeCatalogueBootstrap;
+}
+
+function sourceLinkedHref(search) {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test/browse.html${search}`,
+    pathname: "/browse.html",
+    search
+  } });
+  const link = {
+    href: "index.html",
+    getAttribute() { return this.href; },
+    setAttribute(_, value) { this.href = value; }
+  };
+  sandbox.window.document.readyState = "complete";
+  sandbox.window.document.querySelectorAll = selector => selector === "a[href]" ? [link] : [];
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-source-links.js");
+  return link.href;
 }
 
 test("static remains the default source and keeps ordinary local URLs clean", async () => {
@@ -24,6 +44,13 @@ test("an explicit Supabase source is retained through local catalogue URLs", () 
   assert.equal(source.requestedSource, "supabase");
   assert.equal(source.withSource("early-learning-books.html?level=lkg"), "early-learning-books.html?level=lkg&catalogueSource=supabase");
   assert.equal(source.withSource("https://elsewhere.example/books"), "https://elsewhere.example/books");
+});
+
+test("shared source links preserve an explicit source before catalogue loading", () => {
+  assert.equal(sourceLinkedHref("?catalogueSource=supabase"), "index.html?catalogueSource=supabase");
+  assert.equal(sourceLinkedHref(), "index.html");
+  const browse = fs.readFileSync(path.join(__dirname, "..", "browse.html"), "utf8");
+  assert.match(browse, /catalogue-bootstrap\.js[^>]*><\/script>\s*<script src="js\/catalogue-source-links\.js"><\/script>/);
 });
 
 test("Standard Kit definitions use the selected shared source", async () => {
