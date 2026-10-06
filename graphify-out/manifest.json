@@ -394,5 +394,287 @@
     "seen": 1791260934.489661,
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "AGENTS.md": {
+    "mtime": 1791260767.533995,
+    "seen": 1791261428.8266773,
+    "ast_hash": "ccaf3abf7584bf798059635ceee97e50",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1789874799.318661,
+    "seen": 1791261428.8266788,
+    "ast_hash": "3a0583f7dad9d7e335b00a3072f8fb73",
+    "semantic_hash": ""
+  },
+  "book-details.html": {
+    "mtime": 1790787254.3794625,
+    "seen": 1791261428.8266795,
+    "ast_hash": "ee81232897a5dbd7f45461c1ecc04aac",
+    "semantic_hash": ""
+  },
+  "browse.html": {
+    "mtime": 1791197820.7156298,
+    "seen": 1791261428.8266804,
+    "ast_hash": "ddf3c2636ac6846ec66a9b96b30f2d48",
+    "semantic_hash": ""
+  },
+  "college-books.html": {
+    "mtime": 1791200119.3998833,
+    "seen": 1791261428.8266811,
+    "ast_hash": "7814db4d6332fa2149efe91b517bc498",
+    "semantic_hash": ""
+  },
+  "college-university.html": {
+    "mtime": 1791199969.9667988,
+    "seen": 1791261428.8266816,
+    "ast_hash": "2135a9178cd172c779eb53f09e856c3c",
+    "semantic_hash": ""
+  },
+  "competitive-exam-books.html": {
+    "mtime": 1791200119.4034367,
+    "seen": 1791261428.8266823,
+    "ast_hash": "fd06442cf23684d3258b0e5d23e4f36c",
+    "semantic_hash": ""
+  },
+  "competitive-exams.html": {
+    "mtime": 1791199969.9667988,
+    "seen": 1791261428.8266833,
+    "ast_hash": "a44441ac41474c009697584b9354ebb7",
+    "semantic_hash": ""
+  },
+  "docs/01-product-requirements.md": {
+    "mtime": 1791203872.6241434,
+    "seen": 1791261428.8266842,
+    "ast_hash": "0f1f8b0cd39535637540490fd06aa286",
+    "semantic_hash": ""
+  },
+  "docs/02-system-architecture.md": {
+    "mtime": 1791203999.886728,
+    "seen": 1791261428.826685,
+    "ast_hash": "0f1922859af79e731fe6c8efcc450c95",
+    "semantic_hash": ""
+  },
+  "docs/03-user-flows.md": {
+    "mtime": 1791204021.6206334,
+    "seen": 1791261428.8266857,
+    "ast_hash": "0fe25b69aff4d5854ef6263de06f92db",
+    "semantic_hash": ""
+  },
+  "docs/04-ui-ux-specification.md": {
+    "mtime": 1791203712.8127728,
+    "seen": 1791261428.8266864,
+    "ast_hash": "df2f602aa3a3492781f7be987efcd9c9",
+    "semantic_hash": ""
+  },
+  "docs/05-database-schema.md": {
+    "mtime": 1791216127.1196952,
+    "seen": 1791261428.8266873,
+    "ast_hash": "a0d09fcd676bff1e42dc246ad1ac4e62",
+    "semantic_hash": ""
+  },
+  "docs/06-technical-design.md": {
+    "mtime": 1791203974.5570664,
+    "seen": 1791261428.826688,
+    "ast_hash": "66e0e704534afd99774ec7bd87136b2a",
+    "semantic_hash": ""
+  },
+  "docs/07-security-privacy.md": {
+    "mtime": 1791203873.5449128,
+    "seen": 1791261428.8266888,
+    "ast_hash": "1bf53ff5f26bbee602182412bfb0c20f",
+    "semantic_hash": ""
+  },
+  "docs/08-testing-launch-readiness.md": {
+    "mtime": 1791203874.3713458,
+    "seen": 1791261428.8266892,
+    "ast_hash": "fe371c1ce7bd9d9f603ab2bf9a4b3908",
+    "semantic_hash": ""
+  },
+  "docs/09-implementation-plan.md": {
+    "mtime": 1791203786.6994157,
+    "seen": 1791261428.8266902,
+    "ast_hash": "71f79a41bbb37df0cbfc128e875c26b1",
+    "semantic_hash": ""
+  },
+  "docs/AI-DEVELOPMENT-RULES.md": {
+    "mtime": 1789874799.318661,
+    "seen": 1791261428.826691,
+    "ast_hash": "5bd94c8b63d29c1fc383ba12e1bd719a",
+    "semantic_hash": ""
+  },
+  "docs/ARCHITECTURE.md": {
+    "mtime": 1791203715.875205,
+    "seen": 1791261428.8266916,
+    "ast_hash": "ba36e4c7a4eb793ac6ad51d16648fbcb",
+    "semantic_hash": ""
+  },
+  "docs/CHANGELOG.md": {
+    "mtime": 1789908165.4791906,
+    "seen": 1791261428.8266923,
+    "ast_hash": "79fa20d06222a65eed8e726b8ff700bd",
+    "semantic_hash": ""
+  },
+  "docs/DATA-MODEL.md": {
+    "mtime": 1789908165.4791906,
+    "seen": 1791261428.8266938,
+    "ast_hash": "61b19dd734b4c6acd7f2a1c09246b163",
+    "semantic_hash": ""
+  },
+  "docs/DECISIONS.md": {
+    "mtime": 1789908165.4791906,
+    "seen": 1791261428.8266947,
+    "ast_hash": "eaa8f7bb91898f3f02921966ae0b7647",
+    "semantic_hash": ""
+  },
+  "docs/PROJECT-STATE.md": {
+    "mtime": 1791259852.3479407,
+    "seen": 1791261428.8266954,
+    "ast_hash": "d2b827a153dd6b54b82fc630cb14941a",
+    "semantic_hash": ""
+  },
+  "docs/ROADMAP.md": {
+    "mtime": 1789875050.7249918,
+    "seen": 1791261428.8266962,
+    "ast_hash": "6df7da4acf3a67cfa69488498f72122b",
+    "semantic_hash": ""
+  },
+  "docs/SUPABASE-CATALOGUE-ARCHITECTURE.md": {
+    "mtime": 1789908165.4791906,
+    "seen": 1791261428.8266966,
+    "ast_hash": "1958bffdd683ad0a97e277a807affc94",
+    "semantic_hash": ""
+  },
+  "docs/catalogue-data-model.md": {
+    "mtime": 1789874799.3291476,
+    "seen": 1791261428.8266976,
+    "ast_hash": "676e83cc978994ba53dbcb0b32d8b604",
+    "semantic_hash": ""
+  },
+  "docs/request-backend-architecture.md": {
+    "mtime": 1791203717.1198573,
+    "seen": 1791261428.8266983,
+    "ast_hash": "921bd9558a11b7674ac893279f32e2e9",
+    "semantic_hash": ""
+  },
+  "early-learning-books.html": {
+    "mtime": 1791200351.5452173,
+    "seen": 1791261428.826699,
+    "ast_hash": "8265fe8577db5a876b9d4116eb8ec22f",
+    "semantic_hash": ""
+  },
+  "early-learning-level.html": {
+    "mtime": 1791200818.1475976,
+    "seen": 1791261428.8266997,
+    "ast_hash": "f55c884fad590032bb04314fc4e0001a",
+    "semantic_hash": ""
+  },
+  "early-learning.html": {
+    "mtime": 1791199969.9584105,
+    "seen": 1791261428.8267004,
+    "ast_hash": "f95e6bc670d663af1027484cb510d2fe",
+    "semantic_hash": ""
+  },
+  "exam-preparation.html": {
+    "mtime": 1791200351.5508814,
+    "seen": 1791261428.8267016,
+    "ast_hash": "e54a8a52576edc66f59ea45e6196b5ef",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1791199969.9443333,
+    "seen": 1791261428.8267024,
+    "ast_hash": "831a89b47e257d30de5d114dbb64eb41",
+    "semantic_hash": ""
+  },
+  "kit-builder.html": {
+    "mtime": 1791258962.4709072,
+    "seen": 1791261428.826703,
+    "ast_hash": "c1413986d03801bddd6ff6a1691ed470",
+    "semantic_hash": ""
+  },
+  "kit-review.html": {
+    "mtime": 1791259802.86723,
+    "seen": 1791261428.8267035,
+    "ast_hash": "74cb5e81b7e7998976beee688b858587",
+    "semantic_hash": ""
+  },
+  "order.html": {
+    "mtime": 1791259802.8662455,
+    "seen": 1791261428.8267045,
+    "ast_hash": "7f7fb4e21f345449f31dcec0a888439f",
+    "semantic_hash": ""
+  },
+  "request-details.html": {
+    "mtime": 1790783437.321465,
+    "seen": 1791261428.826705,
+    "ast_hash": "7390c616e652592deddbf9e914efd764",
+    "semantic_hash": ""
+  },
+  "request.html": {
+    "mtime": 1791255588.6661613,
+    "seen": 1791261428.8267057,
+    "ast_hash": "33028eb32f305437db4bdbd868866c1c",
+    "semantic_hash": ""
+  },
+  "review-request.html": {
+    "mtime": 1791259802.86723,
+    "seen": 1791261428.8267064,
+    "ast_hash": "1f310c3f00718aef6e1946aa95124633",
+    "semantic_hash": ""
+  },
+  "school-books.html": {
+    "mtime": 1791200351.5500107,
+    "seen": 1791261428.8267071,
+    "ast_hash": "ebd8f9f6226a5866cac1763c15334322",
+    "semantic_hash": ""
+  },
+  "school-education.html": {
+    "mtime": 1791199969.9631789,
+    "seen": 1791261428.826708,
+    "ast_hash": "500b1cff5c8ca4a98ba5f7552ef7c73a",
+    "semantic_hash": ""
+  },
+  "school-learning.html": {
+    "mtime": 1791199969.9646916,
+    "seen": 1791261428.8267086,
+    "ast_hash": "86677bb241ae01d753ef6e52f1f5026c",
+    "semantic_hash": ""
+  },
+  "standard-kit.html": {
+    "mtime": 1791221761.6533225,
+    "seen": 1791261428.8267093,
+    "ast_hash": "54888e0a7ea41c02f534dc525be271ba",
+    "semantic_hash": ""
+  },
+  "supabase/recovery/RECOVERY-NOTES.md": {
+    "mtime": 1790695820.794395,
+    "seen": 1791261428.82671,
+    "ast_hash": "43567fe0aa4a4cd2f562d6b05933240c",
+    "semantic_hash": ""
+  },
+  "asset-import/10th-lba-science-back.png": {
+    "mtime": 1789905658.8656132,
+    "seen": 1791261428.8267107,
+    "ast_hash": "d14fd361cd317d949936796bc5e0b40b",
+    "semantic_hash": ""
+  },
+  "asset-import/10th-lba-science-front.png": {
+    "mtime": 1789905635.6721869,
+    "seen": 1791261428.8267117,
+    "ast_hash": "cf652ecd30be08b0a2826f68233fcfe1",
+    "semantic_hash": ""
+  },
+  "asset-import/draw-colour-3-back.png": {
+    "mtime": 1789905856.1810343,
+    "seen": 1791261428.8267124,
+    "ast_hash": "bc1cd5f350890526da51e1c3477ed505",
+    "semantic_hash": ""
+  },
+  "asset-import/draw-colour-3-front.png": {
+    "mtime": 1789905833.6989434,
+    "seen": 1791261428.826713,
+    "ast_hash": "78088fac5f82d1ed68edc21440212cdc",
+    "semantic_hash": ""
   }
 }

@@ -1,2 +1,6 @@
 # Graphify local cache
 graphify-out/cache/
+
+# Graphify generated label cache
+graphify-out/.graphify_labels.json
+graphify-out/.graphify_labels.json.sig
