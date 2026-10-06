@@ -45,6 +45,8 @@ test("keeps existing stage titles eligible unless explicitly opted out", () => {
   const provider = config();
   assert.equal(provider.belongsToStage({ class: ["NUR"] }, "Nursery"), true);
   assert.equal(provider.isEligible({ class: ["Nursery"] }, "Nursery"), true);
+  assert.equal(provider.isEligible({ class: ["Nursery"], customKitEligible: null }, "Nursery"), true);
+  assert.equal(provider.isEligible({ class: ["Nursery"], customKitEligible: true }, "Nursery"), true);
   assert.equal(provider.isEligible({ class: ["Nursery"], customKitEligible: false }, "Nursery"), false);
   assert.equal(provider.isEligible({ class: ["LKG"] }, "Nursery"), false);
 });

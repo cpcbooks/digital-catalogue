@@ -54,7 +54,7 @@ This file is intentionally opt-in while the pilot is validated.
       author:text(row.author), coAuthor:text(row.co_author), pages:row.pages===null||row.pages===undefined?null:Number(row.pages),
       lengthCm:row.length_cm===null||row.length_cm===undefined?null:Number(row.length_cm), breadthCm:row.breadth_cm===null||row.breadth_cm===undefined?null:Number(row.breadth_cm),
       thicknessCm:row.thickness_cm===null||row.thickness_cm===undefined?null:Number(row.thickness_cm), weightKg:row.weight_kg===null||row.weight_kg===undefined?null:Number(row.weight_kg),
-      active:row.status==="Active", catalogueSection:text(row.catalogue_section), source:"supabase"
+      active:row.status==="Active", customKitEligible:row.custom_kit_eligible, catalogueSection:text(row.catalogue_section), source:"supabase"
     };
   }
   async function request(path, options) {

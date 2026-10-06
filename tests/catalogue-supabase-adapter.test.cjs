@@ -24,6 +24,7 @@ test("normalizes a Supabase publication row to the existing browser contract", (
     book_type: "Writing Book",
     class_stage: [" Nursery ", "Nursery"],
     status: "Active",
+    custom_kit_eligible: false,
     mrp: "135.50",
     pages: "32",
     author: null
@@ -34,6 +35,14 @@ test("normalizes a Supabase publication row to the existing browser contract", (
   assert.equal(book.mrp, 135.5);
   assert.equal(book.pages, 32);
   assert.equal(book.active, true);
+  assert.equal(book.customKitEligible, false);
+});
+
+test("preserves explicit and compatibility Custom Kit eligibility values", () => {
+  const catalogue = adapter();
+  assert.equal(catalogue.toLegacyBook({ custom_kit_eligible: true }, []).customKitEligible, true);
+  assert.equal(catalogue.toLegacyBook({ custom_kit_eligible: null }, []).customKitEligible, null);
+  assert.equal(catalogue.toLegacyBook({}, []).customKitEligible, undefined);
 });
 
 test("uses an active primary cover and orders active sample-page assets", () => {
