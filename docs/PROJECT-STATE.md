@@ -21,7 +21,7 @@ School Learning is implemented on that boundary; remaining work is data coverage
 
 Custom Kit supports Playgroup, Nursery, LKG, and UKG. Nursery/LKG/UKG currently require 8 distinct eligible titles; Playgroup completion is unconfigured. Builder → Review → Edit, optional names, removal, source context, and My Selection compatibility are implemented. `customKitEligible: false` excludes a title; absent remains compatible/eligible where stage membership allows.
 
-Cambridge Standard Kit has an implemented CPC-controlled foundation, Selection/Requirement compatibility, and source-aware loader (`83a7f75`). `20261005230000_prepare_development_standard_kit.sql` prepares—but does not deploy—narrow public reads of enabled configuration and a temporary Development LKG Standard Kit. Replace that development composition with CPC-approved canonical IDs during final item-master cutover.
+Cambridge Standard Kit has an implemented CPC-controlled foundation, Selection/Requirement compatibility, and source-aware loader (`83a7f75`). `20261005230000_prepare_development_standard_kit.sql` is deployed and verified on the DEVELOPMENT/PILOT backend: anon can read the enabled Development LKG Standard Kit and its eight ordered mappings, while configuration writes remain denied. Replace this temporary development composition with CPC-approved canonical IDs during final item-master cutover.
 
 ## Requirement status
 
@@ -31,11 +31,10 @@ Requirement hardening is deployed and verified on the DEVELOPMENT/PILOT backend,
 
 ## Immediate next steps
 
-1. Controlled deployment and remote verification of `supabase/migrations/20261005230000_prepare_development_standard_kit.sql`.
-2. Browser verification using the already-configured Chrome DevTools MCP for Standard Kit and pending Custom Kit flows.
-3. Verify/implement the private rate-limit design.
-4. Run the remaining pilot manual mobile/accessibility/error regression.
-5. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
+1. Browser verification using the already-configured Chrome DevTools MCP for Standard Kit and pending Custom Kit flows.
+2. Verify/implement the private rate-limit design.
+3. Run the remaining pilot manual mobile/accessibility/error regression.
+4. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
 
