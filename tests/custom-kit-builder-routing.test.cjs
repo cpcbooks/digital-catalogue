@@ -25,3 +25,11 @@ test("Custom Kit Builder renders the shared presentation groups", () => {
   const builder = fs.readFileSync(path.join(__dirname, "..", "kit-builder.html"), "utf8");
   assert.match(builder, /KitConfig\.groupBooksForDisplay\(books,categories\)/);
 });
+
+test("Custom Kit Builder uses native checkbox selectors", () => {
+  const builder = fs.readFileSync(path.join(__dirname, "..", "kit-builder.html"), "utf8");
+  assert.match(builder, /const card=document\.createElement\("label"\),input=document\.createElement\("input"\)/);
+  assert.match(builder, /input\.type="checkbox";input\.checked=kitState\.contains\(book\)/);
+  assert.match(builder, /input\.addEventListener\("change",\(\)=>toggleBook\(book,card,input\)\)/);
+  assert.match(builder, /\.book-card:has\(\.book-selector:focus-visible\)/);
+});
