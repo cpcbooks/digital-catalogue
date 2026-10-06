@@ -3,19 +3,19 @@
 ## Read this first
 
 - Branch: `codex/refactor-foundation`
-- Latest relevant checkpoint: `27c9933 Render uncategorized Custom Kit titles`
-- Automated baseline: **81 passing Node tests**.
+- Verified application checkpoint: `ada6bcc Preserve source in Selection empty state`
+- Automated baseline: **93/93 passing Node tests**.
 - This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
 
 ## Environment and data
 
 The existing Supabase project is the **DEVELOPMENT/PILOT** backend, not production. It has 43 active development publications. A separate staging project is not required now; every remote mutation, migration, import, deployment, or integration test still needs explicit approval.
 
-Pilot data is sufficient for continued development. Incomplete Early Learning, SKU, asset, College, and Competitive coverage is a data-coverage limitation, not a reason to stop. The final CPC item master will later replace/refine it before launch.
+Pilot data is sufficient for the implemented development/pilot scope. Incomplete Early Learning, SKU, asset, College, and Competitive coverage is a data-coverage limitation, not a reason to stop. The final CPC item master will later replace/refine it before launch.
 
 ## Implemented application state
 
-Publication-driven routes share one normalized catalogue-source boundary. Supabase is intended to become authoritative; static data remains development/reference/fallback until final cutover. Source context persists through listing/detail, Early Learning, and Kit journeys.
+Publication-driven routes share one normalized catalogue-source boundary. Supabase is intended to become authoritative; static data remains development/reference/fallback until final cutover. Source context persists through listing/detail, Early Learning, Kits, Selection, and Requirement journeys.
 
 School Learning is implemented on that boundary; remaining work is data coverage, verification, and polish. Browse includes keyword/SKU/ISBN search, category/class/series/subject/type/medium filters, valid MRP, reset/chips/no-results recovery, responsive controls, and natural image proportions. Book Details has one gallery: front cover, back cover, then ordered sample pages—no separate sample viewer/action.
 
@@ -29,14 +29,37 @@ The working architecture is Browser → Edge Function → transactional RPC → 
 
 Requirement hardening is deployed and verified on the DEVELOPMENT/PILOT backend, including the subsequent JSON/location and variable-shadowing RPC fixes. A synthetic normal-book Requirement and idempotency replay succeeded without duplicate insertion; unknown UUID and malformed payloads were safely rejected, direct anon RPC execution was denied, and negative checks created no partial writes. The verified baseline is 4 requests / 21 items / 35 components. Controlled synthetic Development LKG Standard Kit and Nursery Custom Kit submissions were verified end-to-end, with idempotency replays creating no additional rows and an invalid below-minimum Custom Kit creating no partial writes. Requirement submission accepts canonical Supabase publication UUIDs only; static data remains browse-only development/reference/fallback data. Standard Kit submission requires an enabled CPC server definition. Rate limiting is intentionally deferred for DEVELOPMENT/PILOT; trusted client-IP provenance remains a production-release issue.
 
-## Immediate next steps
+## Verified gates
 
-1. Standard Kit and Custom Kit browser verification passed: Nursery's full Custom Kit flow, LKG/UKG/Playgroup coverage, source propagation through Selection/Requirement, and representative 375 × 667 mobile flows are verified. Mobile Kit controls now meet the 44px touch-target guideline.
-2. Verify/implement the private rate-limit design.
-3. Run the remaining pilot manual accessibility/error regression.
-4. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
+### Source continuity
+
+**SOURCE-CONTINUITY GATE: PASSED.** Current user-facing routes, runtime-created navigation, stored navigation, dynamic/post-helper links, and error/recovery paths were audited. Selection saved returns and post-interaction empty-state navigation, Book Details `returnTo`, School dynamic navigation, and Early Learning dynamic navigation are normalized to the current source. No known Supabase → static silent switch or stale static → Supabase switch remains; static/default URLs remain parameter-free. Do not reopen this as a standalone audit unless a new regression provides evidence.
+
+### Final development/pilot regression
+
+**FINAL DEVELOPMENT/PILOT REGRESSION: PASSED.** Repository/static/automated verification covered Home/navigation, Browse, Book Details, My Selection, Standard Kit, Custom Kit, School Learning, truthful College/Competitive limited states, Requirement UI, static/Supabase behavior, accessibility implementation, error/validation presentation, and security/data boundaries. No BLOCKER or IMPORTANT finding remained; 93/93 tests passed.
+
+Browser/mobile E2E verification in that final regression was **environment-blocked**: Chrome DevTools localhost access returned `ERR_BLOCKED_BY_CLIENT`. This is not an application defect. Do not describe the final regression as browser-verified; earlier successful browser verification remains historical evidence where recorded.
+
+## Current readiness
+
+**DEVELOPMENT/PILOT READY — EXCLUDING FINAL ITEM MASTER/ASSETS.** The implemented pilot scope has no known BLOCKER or IMPORTANT defect from the final regression, and development/pilot testing may proceed. This is **not production ready**. Current catalogue data is development/sample data where applicable.
+
+## Deferred production/final-data gates
+
+- Final Item Master and publication assets.
+- Final production Standard Kit compositions.
+- Final Custom Kit eligibility/minimum rules where the final Item Master requires changes.
+- Production-grade Requirement rate limiting and trusted client-IP provenance, or a suitable production-safe alternative.
+- Production cutover, final content cleanup, and data reconciliation.
+
+When the final Item Master arrives: reconcile it against development records; preserve canonical UUIDs for genuine matches where appropriate; update metadata; create UUIDs only for genuinely new publications; explicitly retire development-only records; reconcile assets; and configure final Custom Kit rules and Standard Kit compositions.
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
+
+## Operational notes
+
+Graphify integration exists and the commit hook may refresh tracked root outputs. CLI availability has been inconsistent; do not reinstall or reconfigure it for routine work. Dated Graphify snapshots are non-canonical/untracked unless separately approved.
 
 `data/development-publications/development-early-learning-001.json` and `scripts/import-publications.mjs` provide the reviewed development-data mapping; its ten approved Early Learning records are now in the pilot. The importer remains dry-run by default for future reviewed imports.
 
