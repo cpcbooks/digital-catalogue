@@ -3,8 +3,8 @@
 ## Read this first
 
 - Branch: `codex/refactor-foundation`
-- Latest relevant checkpoint: `83a7f75 Add source-aware Standard Kit loader`
-- Automated baseline: **75 passing Node tests**.
+- Latest relevant checkpoint: `27c9933 Render uncategorized Custom Kit titles`
+- Automated baseline: **81 passing Node tests**.
 - This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
 
 ## Environment and data
@@ -31,9 +31,9 @@ Requirement hardening is deployed and verified on the DEVELOPMENT/PILOT backend,
 
 ## Immediate next steps
 
-1. Browser verification using the already-configured Chrome DevTools MCP for Standard Kit and pending Custom Kit flows.
+1. Standard Kit and Custom Kit browser verification passed: Nursery's full Custom Kit flow, LKG/UKG/Playgroup coverage, source propagation through Selection/Requirement, and representative 375 × 667 mobile flows are verified. Mobile Kit controls now meet the 44px touch-target guideline.
 2. Verify/implement the private rate-limit design.
-3. Run the remaining pilot manual mobile/accessibility/error regression.
+3. Run the remaining pilot manual accessibility/error regression.
 4. Later clean/import final data/assets, configure final Kit rules/compositions, finalize production, and perform release/security/data verification.
 
 Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related titles, analytics, full Admin UI, sophisticated browser E2E, and ERP integration.
