@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Requirement Details | Cambridge Digital Catalogue</title>
-<meta http-equiv="refresh" content="0; url=request.html">
-<script>window.location.replace("request.html");</script>
+<script src="js/catalogue-bootstrap.js"></script>
 </head>
 <body>
-<p>Opening Requirement Details… <a href="request.html">Continue</a></p>
+<p>Opening Requirement Details… <a id="continue" href="request.html">Continue</a></p>
+<script>
+const target = window.CambridgeCatalogueBootstrap.withSource("request.html");
+document.getElementById("continue").href = target;
+window.location.replace(target);
+</script>
 </body>
 </html>
