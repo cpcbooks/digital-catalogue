@@ -70,3 +70,20 @@ test("School dynamic navigation applies the current source after the shared-link
     assert.equal(source("school-learning.html", "?class=1").withSource(target), target);
   }
 });
+
+test("Early Learning dynamic navigation applies the current source after the shared-link pass", () => {
+  const level = read("early-learning-level.html");
+  const targets = [
+    [/a\.href=Bootstrap\.withSource\("\?level="\+key\)/, "?level=lkg", "early-learning-level.html?level=lkg&catalogueSource=supabase"],
+    [/standardUrl=Bootstrap\.withSource\("standard-kit\.html\?level="\+encodeURIComponent\(level\)\)/, "standard-kit.html?level=nursery", "standard-kit.html?level=nursery&catalogueSource=supabase"],
+    [/customUrl=Bootstrap\.withSource\("kit-builder\.html\?level="\+encodeURIComponent\(level\)\)/, "kit-builder.html?level=nursery", "kit-builder.html?level=nursery&catalogueSource=supabase"],
+    [/individualUrl=Bootstrap\.withSource\("early-learning-books\.html\?level="\+encodeURIComponent\(level\)\)/, "early-learning-books.html?level=nursery", "early-learning-books.html?level=nursery&catalogueSource=supabase"]
+  ];
+
+  for (const [assignment, target, sourcedTarget] of targets) {
+    assert.ok(level.indexOf("catalogue-source-links.js") < level.search(assignment));
+    assert.match(level, assignment);
+    assert.equal(source("early-learning-level.html", "?level=nursery&catalogueSource=supabase").withSource(target), sourcedTarget);
+    assert.equal(source("early-learning-level.html", "?level=nursery").withSource(target), target);
+  }
+});
