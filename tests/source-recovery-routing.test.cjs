@@ -52,3 +52,21 @@ test("listing Back links retain source after asynchronous bootstrap", () => {
     assert.equal(source(page, `?${query}`).withSource(target), target);
   }
 });
+
+test("School dynamic navigation applies the current source after the shared-link pass", () => {
+  const education = read("school-education.html");
+  const school = read("school-learning.html");
+  const targets = [
+    [education, /a\.href=Bootstrap\.withSource\("school-learning\.html\?class="\+c\)/, "school-learning.html?class=1", "school-learning.html?class=1&catalogueSource=supabase"],
+    [school, /a\.href=Bootstrap\.withSource\("\?class="\+i\)/, "?class=2", "school-learning.html?class=2&catalogueSource=supabase"],
+    [school, /href:Bootstrap\.withSource\("school-books\.html\?class="\+c\)/, "school-books.html?class=1", "school-books.html?class=1&catalogueSource=supabase"],
+    [school, /href:Bootstrap\.withSource\("exam-preparation\.html\?class="\+c\)/, "exam-preparation.html?class=1", "exam-preparation.html?class=1&catalogueSource=supabase"]
+  ];
+
+  for (const [page, assignment, target, sourcedTarget] of targets) {
+    assert.ok(page.indexOf("catalogue-source-links.js") < page.search(assignment));
+    assert.match(page, assignment);
+    assert.equal(source("school-learning.html", "?class=1&catalogueSource=supabase").withSource(target), sourcedTarget);
+    assert.equal(source("school-learning.html", "?class=1").withSource(target), target);
+  }
+});
