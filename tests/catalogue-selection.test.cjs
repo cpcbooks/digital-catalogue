@@ -9,6 +9,31 @@ function selectionWithStorage(storageData = {}) {
   return { selection: sandbox.window.CambridgeSelection, storage: sandbox.localStorage };
 }
 
+function interactiveSelection(search = "?catalogueSource=supabase") {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test/book-details.html${search}`,
+    pathname: "/book-details.html",
+    search
+  } });
+  const elements = [];
+  sandbox.window.document.createElement = tag => {
+    const node = {
+      tag,
+      children: [],
+      classList: { add() {}, remove() {} },
+      appendChild(child) { this.children.push(child); },
+      append(...children) { this.children.push(...children); },
+      setAttribute() {},
+      addEventListener() {}
+    };
+    elements.push(node);
+    return node;
+  };
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  return { selection: sandbox.window.CambridgeSelection, elements };
+}
+
 test("returns an empty selection when storage is absent", () => {
   const { selection } = selectionWithStorage();
   assert.deepEqual(Array.from(selection.readOrder()), []);
@@ -45,4 +70,18 @@ test("caps excessive quantities and rejects non-numeric quantities", () => {
   assert.equal(selection.setQty(book, 10001), true);
   assert.equal(selection.selectedItem(book).quantity, selection.MAX_QUANTITY);
   assert.equal(selection.setQty(book, "not-a-number"), false);
+});
+
+test("builds browser selection controls without a Node global and preserves source", () => {
+  const { selection, elements } = interactiveSelection();
+  const book = clonePublications()[1];
+  assert.equal(selection.detailsUrl(book), `book-details.html?id=${encodeURIComponent(book.id)}&catalogueSource=supabase`);
+  assert.doesNotThrow(() => selection.actionNode(book));
+  const addButton = elements.find(element => element.className === "add-book");
+  assert.ok(addButton);
+  assert.equal(selection.add(book), true);
+  assert.equal(selection.selectedItem(book).quantity, 1);
+  assert.doesNotThrow(() => selection.actionNode(book));
+  assert.equal(selection.remove(book), true);
+  assert.equal(selection.selectedItem(book), null);
 });

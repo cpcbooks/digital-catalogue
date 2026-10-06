@@ -159,8 +159,8 @@
 
   function openSelection() {
     rememberChecklistReturn();
-    const orderUrl = global.CambridgeCatalogueBootstrap
-      ? global.CambridgeCatalogueBootstrap.withSource("order.html")
+    const orderUrl = window.CambridgeCatalogueBootstrap
+      ? window.CambridgeCatalogueBootstrap.withSource("order.html")
       : "order.html";
     window.location.href = orderUrl;
   }
@@ -263,7 +263,7 @@
     const base = "book-details.html?id=" + encodeURIComponent(book.id || "");
     const level = window.SELECTION_EXTRA && window.SELECTION_EXTRA.level ? window.SELECTION_EXTRA.level : "";
     const href = level ? base + "&level=" + encodeURIComponent(level) : base;
-    return global.CambridgeCatalogueBootstrap ? global.CambridgeCatalogueBootstrap.withSource(href) : href;
+    return window.CambridgeCatalogueBootstrap ? window.CambridgeCatalogueBootstrap.withSource(href) : href;
   }
 
   function coverNode(book) {
