@@ -34,6 +34,35 @@ function interactiveSelection(search = "?catalogueSource=supabase") {
   return { selection: sandbox.window.CambridgeSelection, elements };
 }
 
+function rememberedChecklistReturn(pathname, search = "") {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test${pathname}${search}`,
+    pathname,
+    search
+  } });
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.CambridgeSelection.rememberChecklistReturn();
+  return JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn"));
+}
+
+function kitSelectionReturn(pathname, search = "", complete = false) {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test${pathname}${search}`,
+    pathname,
+    search
+  } });
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.document.dispatchEvent({
+    type: "click",
+    target: {
+      closest(selector) { return selector === ".complete-button, #content .kit-actions button" ? this : null; },
+      classList: { contains(name) { return complete && name === "complete-button"; } }
+    }
+  });
+  return JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn"));
+}
+
 test("returns an empty selection when storage is absent", () => {
   const { selection } = selectionWithStorage();
   assert.deepEqual(Array.from(selection.readOrder()), []);
@@ -84,4 +113,59 @@ test("builds browser selection controls without a Node global and preserves sour
   assert.doesNotThrow(() => selection.actionNode(book));
   assert.equal(selection.remove(book), true);
   assert.equal(selection.selectedItem(book), null);
+});
+
+test("records Kit and publication Selection returns with their current context", () => {
+  assert.deepEqual(
+    rememberedChecklistReturn("/standard-kit.html", "?level=lkg&catalogueSource=supabase").url,
+    "/standard-kit.html?level=lkg&catalogueSource=supabase"
+  );
+  assert.deepEqual(
+    rememberedChecklistReturn("/standard-kit.html", "?level=lkg").url,
+    "/standard-kit.html?level=lkg"
+  );
+  assert.deepEqual(
+    rememberedChecklistReturn("/kit-review.html", "?level=lkg&catalogueSource=supabase").url,
+    "/kit-review.html?level=lkg&catalogueSource=supabase"
+  );
+  assert.deepEqual(
+    rememberedChecklistReturn("/browse.html", "?q=phonics").url,
+    "/browse.html?q=phonics"
+  );
+  assert.deepEqual(
+    rememberedChecklistReturn("/standard-kit", "?level=lkg&catalogueSource=supabase").url,
+    "/standard-kit?level=lkg&catalogueSource=supabase"
+  );
+  assert.deepEqual(
+    rememberedChecklistReturn("/kit-review", "?level=lkg&catalogueSource=supabase").url,
+    "/kit-review?level=lkg&catalogueSource=supabase"
+  );
+  assert.equal(
+    rememberedChecklistReturn("/early-learning-books", "?level=lkg&catalogueSource=supabase").url,
+    "/early-learning-books?level=lkg&catalogueSource=supabase"
+  );
+  assert.equal(
+    rememberedChecklistReturn("/school-books", "?class=5&catalogueSource=supabase").url,
+    "/school-books?class=5&catalogueSource=supabase"
+  );
+  assert.equal(
+    rememberedChecklistReturn("/exam-preparation", "?class=10&catalogueSource=supabase").url,
+    "/exam-preparation?class=10&catalogueSource=supabase"
+  );
+});
+
+test("captures Standard and Custom Kit Selection actions before their page redirects", () => {
+  const supabaseStandard = kitSelectionReturn("/standard-kit", "?level=lkg&catalogueSource=supabase");
+  assert.equal(supabaseStandard.url, "early-learning-level.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
+  assert.equal(supabaseStandard.useHistory, false);
+  assert.notEqual(supabaseStandard.url, "/standard-kit?level=lkg&catalogueSource=supabase");
+  const staticStandard = kitSelectionReturn("/standard-kit", "?level=lkg");
+  assert.equal(staticStandard.url, "early-learning-level.html?level=lkg");
+  assert.equal(staticStandard.useHistory, false);
+  const supabaseCustom = kitSelectionReturn("/kit-review", "?level=lkg&catalogueSource=supabase", true);
+  assert.equal(supabaseCustom.url, "early-learning-level.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
+  assert.equal(supabaseCustom.useHistory, false);
+  const staticCustom = kitSelectionReturn("/kit-review", "?level=lkg", true);
+  assert.equal(staticCustom.url, "early-learning-level.html?level=lkg");
+  assert.equal(staticCustom.useHistory, false);
 });

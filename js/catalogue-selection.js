@@ -125,17 +125,30 @@
   }
 
   /* Final Checklist: remember where the floating pane was opened from. */
-  function rememberChecklistReturn() {
+  function rememberChecklistReturn(url = currentRelativeUrl(), useHistory = true) {
     if (isSelectionPage()) return;
     try {
       sessionStorage.setItem(CHECKLIST_RETURN_KEY, JSON.stringify({
-        url: currentRelativeUrl(),
+        url,
         y: Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)),
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        useHistory
       }));
     } catch (error) {
       console.warn("Cambridge Catalogue: could not remember checklist return context.", error);
     }
+  }
+
+  function rememberKitSelectionReturn(event) {
+    const target = event.target && event.target.closest && event.target.closest(".complete-button, #content .kit-actions button");
+    if (!target) return;
+    const level = new URLSearchParams(window.location.search).get("level");
+    if (level) {
+      const href = "early-learning-level.html?level=" + encodeURIComponent(level);
+      rememberChecklistReturn(window.CambridgeCatalogueBootstrap ? window.CambridgeCatalogueBootstrap.withSource(href) : href, false);
+      return;
+    }
+    rememberChecklistReturn();
   }
 
   function ensureFloatingStyle() {
@@ -357,6 +370,7 @@
     try { saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null"); } catch (error) {}
     if (saved && history.length > 1) { event.preventDefault(); history.back(); }
   });
+  document.addEventListener("click", rememberKitSelectionReturn, true);
 
   window.addEventListener("storage", event => { if (event.key === ORDER_KEY) emitChange(); });
   window.addEventListener(CHANGE_EVENT, updateBar);

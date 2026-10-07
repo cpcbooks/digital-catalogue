@@ -25,12 +25,20 @@ function createBrowserSandbox(options = {}) {
     hash: ""
   }, options.location);
   const listeners = new Map();
+  const documentListeners = new Map();
   const document = {
     readyState: "loading",
     documentElement: { style: {} },
     head: { appendChild() {} },
     body: { classList: { add() {}, remove() {} }, appendChild() {} },
-    addEventListener() {},
+    addEventListener(name, listener) {
+      const handlers = documentListeners.get(name) || [];
+      handlers.push(listener);
+      documentListeners.set(name, handlers);
+    },
+    dispatchEvent(event) {
+      (documentListeners.get(event.type) || []).forEach(listener => listener(event));
+    },
     getElementById() { return null; },
     createElement() { return { style: {}, appendChild() {}, append() {}, setAttribute() {}, addEventListener() {} }; },
     querySelector() { return null; },

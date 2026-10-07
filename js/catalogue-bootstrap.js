@@ -5,6 +5,12 @@
   "use strict";
 
   const ROUTE_HASH = "#cpc-route=";
+  const LOCAL_CATALOGUE_PAGES = new Set([
+    "index", "browse", "book-details", "early-learning", "early-learning-level",
+    "early-learning-books", "standard-kit", "kit-builder", "kit-review", "school-education",
+    "school-learning", "school-books", "exam-preparation", "college-university", "college-books",
+    "competitive-exams", "competitive-exam-books", "order", "request", "request-details", "review-request"
+  ]);
 
   function restoreRouteContext() {
     const hash = String(global.location.hash || "");
@@ -101,7 +107,9 @@
       const target = new URL(href, current);
       const directory = current.pathname.slice(0, current.pathname.lastIndexOf("/") + 1);
       const targetDirectory = target.pathname.slice(0, target.pathname.lastIndexOf("/") + 1);
-      if (target.origin !== current.origin || targetDirectory !== directory || !/\.html$/i.test(target.pathname)) return null;
+      const filename = target.pathname.split("/").pop() || "index";
+      const page = filename.replace(/\.html$/i, "");
+      if (target.origin !== current.origin || targetDirectory !== directory || !LOCAL_CATALOGUE_PAGES.has(page)) return null;
       target.searchParams.delete("catalogueSource");
       return withSource(target.pathname.split("/").pop() + target.search + target.hash);
     } catch (_) { return null; }

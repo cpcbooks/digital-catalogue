@@ -87,8 +87,17 @@ test("saved Selection return targets are local and normalized to the current sou
   assert.equal(supabase.localReturnHref("browse.html"), "browse.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(staticSource.localReturnHref("browse.html?catalogueSource=supabase"), "browse.html");
   assert.equal(supabase.localReturnHref("early-learning-books.html?level=nursery&catalogueSource=static#titles"), "early-learning-books.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase");
+  assert.equal(supabase.localReturnHref("/standard-kit?level=lkg&catalogueSource=supabase"), "standard-kit#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
+  assert.equal(staticSource.localReturnHref("/standard-kit?level=lkg"), "standard-kit?level=lkg");
+  assert.equal(supabase.localReturnHref("/standard-kit.html?level=lkg&catalogueSource=supabase"), "standard-kit.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
+  assert.equal(supabase.localReturnHref("/kit-review?level=lkg&catalogueSource=supabase"), "kit-review#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
+  assert.equal(supabase.localReturnHref("/browse?subject=English"), "browse#cpc-route=subject%3DEnglish%26catalogueSource%3Dsupabase");
   assert.equal(supabase.localReturnHref("https://elsewhere.example/browse.html"), null);
+  assert.equal(supabase.localReturnHref("//elsewhere.example/browse.html"), null);
+  assert.equal(supabase.localReturnHref("javascript:alert(1)"), null);
+  assert.equal(supabase.localReturnHref("data:text/html,unsafe"), null);
   assert.equal(supabase.localReturnHref("/other-app/browse.html"), null);
+  assert.equal(supabase.localReturnHref("/not-a-catalogue-page"), null);
 });
 
 test("shared source links preserve an explicit source before catalogue loading", () => {
