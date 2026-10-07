@@ -4,6 +4,20 @@
 (function (global) {
   "use strict";
 
+  const ROUTE_HASH = "#cpc-route=";
+
+  function restoreRouteContext() {
+    const hash = String(global.location.hash || "");
+    if (!hash.startsWith(ROUTE_HASH)) return;
+    try {
+      const query = decodeURIComponent(hash.slice(ROUTE_HASH.length));
+      if (!/^[^#]*$/.test(query)) return;
+      const path = global.location.pathname.split("/").pop() || "index.html";
+      global.history.replaceState(null, "", path + (query ? "?" + query : ""));
+    } catch (_) { /* A malformed route fragment is not navigation context. */ }
+  }
+
+  restoreRouteContext();
   const params = new URLSearchParams(global.location.search);
   const requestedSource = params.get("catalogueSource");
   const config = global.CPC_CATALOGUE_CONFIG || {};
@@ -69,8 +83,15 @@
     try {
       const target = new URL(href, global.location.href);
       if (target.origin !== new URL(global.location.href).origin) return href;
+      if (target.hash.startsWith(ROUTE_HASH)) {
+        const context = new URLSearchParams(decodeURIComponent(target.hash.slice(ROUTE_HASH.length)));
+        context.forEach((value, key) => target.searchParams.set(key, value));
+        target.hash = "";
+      }
       target.searchParams.set("catalogueSource", "supabase");
-      return target.pathname.split("/").pop() + target.search + target.hash;
+      const query = target.searchParams.toString();
+      if (!query) return target.pathname.split("/").pop() + target.hash;
+      return target.pathname.split("/").pop() + ROUTE_HASH + encodeURIComponent(query);
     } catch (_) { return href; }
   }
 

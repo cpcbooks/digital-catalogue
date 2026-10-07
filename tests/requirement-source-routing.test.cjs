@@ -68,10 +68,10 @@ test("Requirement routing still leaves the default static source unparameterized
 test("My Selection normalizes a saved fallback while retaining history-first return", () => {
   const order = read("order.html");
   const now = Date.now();
-  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now }).href, "browse.html?catalogueSource=supabase");
+  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now }).href, "browse.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(continueBrowsing("", { url: "browse.html?catalogueSource=supabase", createdAt: now }).href, "browse.html");
-  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "early-learning-books.html?level=nursery", createdAt: now }).href, "early-learning-books.html?level=nursery&catalogueSource=supabase");
-  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now - 31 * 60 * 1000 }).href, "index.html?catalogueSource=supabase");
+  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "early-learning-books.html?level=nursery", createdAt: now }).href, "early-learning-books.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase");
+  assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now - 31 * 60 * 1000 }).href, "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(continueBrowsing("", { url: "https://elsewhere.example/browse.html", createdAt: now }).href, "index.html");
   assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now }, 2).wentBack, true);
   assert.match(order, /target=saved&&source\?source\.localReturnHref\(saved\.url\):null/);
@@ -79,9 +79,9 @@ test("My Selection normalizes a saved fallback while retaining history-first ret
 
 test("My Selection empty-state Browse link uses the current source on every render", () => {
   const order = read("order.html");
-  assert.equal(emptySelectionHref("?catalogueSource=supabase"), "index.html?catalogueSource=supabase");
+  assert.equal(emptySelectionHref("?catalogueSource=supabase"), "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(emptySelectionHref(""), "index.html");
-  assert.equal(emptySelectionHref("?catalogueSource=supabase", true), "index.html?catalogueSource=supabase");
+  assert.equal(emptySelectionHref("?catalogueSource=supabase", true), "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(emptySelectionHref("", true), "index.html");
   assert.doesNotMatch(emptySelectionHref(""), /catalogueSource=/);
   assert.match(order, /clearOrder.*?renderOrder\(\)/);

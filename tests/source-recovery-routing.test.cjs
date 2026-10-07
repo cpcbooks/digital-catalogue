@@ -37,7 +37,7 @@ test("Custom Kit Review recovery uses the selected source after bootstrap", () =
   assert.match(review, /href="'\+earlyLearningUrl\+'">Browse Early Learning/);
   assert.match(review, /editUrl=Bootstrap\.withSource\("kit-builder\.html\?level="\+encodeURIComponent\(level\)\)/);
 
-  assert.equal(source("kit-review.html", "?level=nursery&catalogueSource=supabase").withSource("early-learning.html"), "early-learning.html?catalogueSource=supabase");
+  assert.equal(source("kit-review.html", "?level=nursery&catalogueSource=supabase").withSource("early-learning.html"), "early-learning.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(source("kit-review.html", "?level=nursery").withSource("early-learning.html"), "early-learning.html");
 });
 
@@ -47,7 +47,7 @@ test("Requirement Details compatibility redirect preserves only an explicit sour
   assert.match(details, /CambridgeCatalogueBootstrap\.withSource\("request\.html"\)/);
   assert.doesNotMatch(details, /http-equiv="refresh"/);
 
-  assert.equal(source("request-details.html", "?catalogueSource=supabase").withSource("request.html"), "request.html?catalogueSource=supabase");
+  assert.equal(source("request-details.html", "?catalogueSource=supabase").withSource("request.html"), "request.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(source("request-details.html").withSource("request.html"), "request.html");
 });
 
@@ -63,7 +63,7 @@ test("listing Back links retain source after asynchronous bootstrap", () => {
     assert.ok(html.indexOf("await Bootstrap.ready()") < html.search(assignment));
     assert.match(html, assignment);
     const target = assignment.source.includes("early-learning") ? `early-learning-level.html?${query}` : `school-learning.html?${query}`;
-    assert.equal(source(page, `?${query}&catalogueSource=supabase`).withSource(target), `${target}&catalogueSource=supabase`);
+    assert.equal(source(page, `?${query}&catalogueSource=supabase`).withSource(target), `${target.split("?")[0]}#cpc-route=${encodeURIComponent(`${query}&catalogueSource=supabase`)}`);
     assert.equal(source(page, `?${query}`).withSource(target), target);
   }
 });
@@ -72,10 +72,10 @@ test("School dynamic navigation applies the current source after the shared-link
   const education = read("school-education.html");
   const school = read("school-learning.html");
   const targets = [
-    [education, /a\.href=Bootstrap\.withSource\("school-learning\.html\?class="\+c\)/, "school-learning.html?class=1", "school-learning.html?class=1&catalogueSource=supabase"],
-    [school, /a\.href=Bootstrap\.withSource\("\?class="\+i\)/, "?class=2", "school-learning.html?class=2&catalogueSource=supabase"],
-    [school, /href:Bootstrap\.withSource\("school-books\.html\?class="\+c\)/, "school-books.html?class=1", "school-books.html?class=1&catalogueSource=supabase"],
-    [school, /href:Bootstrap\.withSource\("exam-preparation\.html\?class="\+c\)/, "exam-preparation.html?class=1", "exam-preparation.html?class=1&catalogueSource=supabase"]
+    [education, /a\.href=Bootstrap\.withSource\("school-learning\.html\?class="\+c\)/, "school-learning.html?class=1", "school-learning.html#cpc-route=class%3D1%26catalogueSource%3Dsupabase"],
+    [school, /a\.href=Bootstrap\.withSource\("\?class="\+i\)/, "?class=2", "school-learning.html#cpc-route=class%3D2%26catalogueSource%3Dsupabase"],
+    [school, /href:Bootstrap\.withSource\("school-books\.html\?class="\+c\)/, "school-books.html?class=1", "school-books.html#cpc-route=class%3D1%26catalogueSource%3Dsupabase"],
+    [school, /href:Bootstrap\.withSource\("exam-preparation\.html\?class="\+c\)/, "exam-preparation.html?class=1", "exam-preparation.html#cpc-route=class%3D1%26catalogueSource%3Dsupabase"]
   ];
 
   for (const [page, assignment, target, sourcedTarget] of targets) {
@@ -89,10 +89,10 @@ test("School dynamic navigation applies the current source after the shared-link
 test("Early Learning dynamic navigation applies the current source after the shared-link pass", () => {
   const level = read("early-learning-level.html");
   const targets = [
-    [/a\.href=Bootstrap\.withSource\("\?level="\+key\)/, "?level=lkg", "early-learning-level.html?level=lkg&catalogueSource=supabase"],
-    [/standardUrl=Bootstrap\.withSource\("standard-kit\.html\?level="\+encodeURIComponent\(level\)\)/, "standard-kit.html?level=nursery", "standard-kit.html?level=nursery&catalogueSource=supabase"],
-    [/customUrl=Bootstrap\.withSource\("kit-builder\.html\?level="\+encodeURIComponent\(level\)\)/, "kit-builder.html?level=nursery", "kit-builder.html?level=nursery&catalogueSource=supabase"],
-    [/individualUrl=Bootstrap\.withSource\("early-learning-books\.html\?level="\+encodeURIComponent\(level\)\)/, "early-learning-books.html?level=nursery", "early-learning-books.html?level=nursery&catalogueSource=supabase"]
+    [/a\.href=Bootstrap\.withSource\("\?level="\+key\)/, "?level=lkg", "early-learning-level.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase"],
+    [/standardUrl=Bootstrap\.withSource\("standard-kit\.html\?level="\+encodeURIComponent\(level\)\)/, "standard-kit.html?level=nursery", "standard-kit.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
+    [/customUrl=Bootstrap\.withSource\("kit-builder\.html\?level="\+encodeURIComponent\(level\)\)/, "kit-builder.html?level=nursery", "kit-builder.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
+    [/individualUrl=Bootstrap\.withSource\("early-learning-books\.html\?level="\+encodeURIComponent\(level\)\)/, "early-learning-books.html?level=nursery", "early-learning-books.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"]
   ];
 
   for (const [assignment, target, sourcedTarget] of targets) {
@@ -106,12 +106,12 @@ test("Early Learning dynamic navigation applies the current source after the sha
 test("Book Details returnTo keeps its allowlisted destination but normalizes the current source", () => {
   const query = values => `?${new URLSearchParams(values)}`;
 
-  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "browse.html" })), "browse.html?catalogueSource=supabase");
-  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "early-learning-books.html?level=nursery&q=phonics" })), "early-learning-books.html?level=nursery&q=phonics&catalogueSource=supabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "browse.html" })), "browse.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "early-learning-books.html?level=nursery&q=phonics" })), "early-learning-books.html#cpc-route=level%3Dnursery%26q%3Dphonics%26catalogueSource%3Dsupabase");
   assert.equal(bookDetailsBack(query({ id: "book", returnTo: "browse.html?catalogueSource=supabase" })), "browse.html");
   assert.equal(bookDetailsBack(query({ id: "book", returnTo: "early-learning-books.html?level=nursery&catalogueSource=supabase" })), "early-learning-books.html?level=nursery");
-  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "https://elsewhere.example/browse.html" })), "index.html?catalogueSource=supabase");
-  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase" })), "index.html?catalogueSource=supabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "https://elsewhere.example/browse.html" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
 
   const details = read("js/book-details.js");
   assert.match(details, /CambridgeCatalogueBootstrap\.localReturnHref\(decoded\)/);

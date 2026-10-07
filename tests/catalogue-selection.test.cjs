@@ -75,7 +75,7 @@ test("caps excessive quantities and rejects non-numeric quantities", () => {
 test("builds browser selection controls without a Node global and preserves source", () => {
   const { selection, elements } = interactiveSelection();
   const book = clonePublications()[1];
-  assert.equal(selection.detailsUrl(book), `book-details.html?id=${encodeURIComponent(book.id)}&catalogueSource=supabase`);
+  assert.equal(selection.detailsUrl(book), `book-details.html#cpc-route=id%3D${encodeURIComponent(book.id)}%26catalogueSource%3Dsupabase`);
   assert.doesNotThrow(() => selection.actionNode(book));
   const addButton = elements.find(element => element.className === "add-book");
   assert.ok(addButton);

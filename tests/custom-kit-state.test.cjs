@@ -40,21 +40,21 @@ test("accepts eligible titles and rejects explicitly ineligible titles", () => {
   assert.deepEqual(Array.from(state.selectedIds()), ["eligible"]);
 });
 
-test("keeps an incomplete kit as working state and reports remaining selections", () => {
+test("keeps an incomplete kit as working state but prevents review", () => {
   const state = kit(8);
   state.add({ id: "one" });
   state.add({ id: "two" });
   assert.equal(state.count(), 2);
   assert.equal(state.remaining(), 6);
   assert.equal(state.isComplete(), false);
-  assert.equal(state.canReview(), true);
+  assert.equal(state.canReview(), false);
 });
 
-test("does not require a configured minimum to review a working kit", () => {
+test("keeps an unconfigured Kit non-reviewable", () => {
   const state = kit(null, false);
   assert.equal(state.canReview(), false);
   state.add({ id: "playgroup-book" });
-  assert.equal(state.canReview(), true);
+  assert.equal(state.canReview(), false);
   assert.equal(state.isComplete(), false);
 });
 
@@ -64,6 +64,7 @@ test("completes at and above the supplied minimum", () => {
   assert.equal(state.isComplete(), false);
   state.add({ id: "two" });
   assert.equal(state.isComplete(), true);
+  assert.equal(state.canReview(), true);
   state.add({ id: "three" });
   assert.equal(state.remaining(), 0);
   assert.equal(state.isComplete(), true);

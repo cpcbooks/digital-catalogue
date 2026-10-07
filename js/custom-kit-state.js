@@ -41,7 +41,7 @@
     function selectedIds() { return [...selected.keys()]; }
     function selectedItems() { return [...selected.values()]; }
     function remaining() { return minimum === null ? null : Math.max(minimum - count(), 0); }
-    function canReview() { return count() > 0; }
+    function canReview() { return isComplete(); }
     function isComplete() { return completionEnabled && count() >= minimum; }
     function setName(value) { name = String(value || "").replace(/\s+/g, " ").trim().slice(0, 80); return name; }
     function getName() { return name; }

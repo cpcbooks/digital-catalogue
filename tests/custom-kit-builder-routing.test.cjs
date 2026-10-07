@@ -17,7 +17,7 @@ function source(search = "") {
 test("Custom Kit Builder routes its stage Back link through the shared source helper", () => {
   const builder = fs.readFileSync(path.join(__dirname, "..", "kit-builder.html"), "utf8");
   assert.match(builder, /levelUrl=Bootstrap\.withSource\("early-learning-level\.html\?level="\+encodeURIComponent\(level\)\)/);
-  assert.equal(source("?catalogueSource=supabase").withSource("early-learning-level.html?level=nursery"), "early-learning-level.html?level=nursery&catalogueSource=supabase");
+  assert.equal(source("?catalogueSource=supabase").withSource("early-learning-level.html?level=nursery"), "early-learning-level.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase");
   assert.equal(source().withSource("early-learning-level.html?level=nursery"), "early-learning-level.html?level=nursery");
 });
 

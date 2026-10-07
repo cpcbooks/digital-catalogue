@@ -8,10 +8,8 @@
   })[v]||"";
   const pilot=()=>window.CambridgeCatalogueBootstrap&&window.CambridgeCatalogueBootstrap.requestedSource==="supabase";
   function withSource(url) {
-    if(!pilot())return url;
-    const parts=url.split("?"),p=new URLSearchParams(parts[1]||"");
-    p.set("catalogueSource","supabase");
-    return parts[0]+"?"+p.toString()
+    const bootstrap=window.CambridgeCatalogueBootstrap;
+    return bootstrap?bootstrap.withSource(url):url
   }
   function safeReturnTo() {
     const value=new URLSearchParams(location.search).get("returnTo");

@@ -36,6 +36,17 @@ function createBrowserSandbox(options = {}) {
     querySelector() { return null; },
     querySelectorAll() { return []; }
   };
+  const history = {
+    length: 0,
+    back() {},
+    replaceState(_, __, value) {
+      const next = new URL(String(value), location.href);
+      location.href = next.href;
+      location.pathname = next.pathname;
+      location.search = next.search;
+      location.hash = next.hash;
+    }
+  };
   const window = {
     localStorage,
     sessionStorage,
@@ -43,6 +54,7 @@ function createBrowserSandbox(options = {}) {
     document,
     scrollY: 0,
     pageYOffset: 0,
+    history,
     addEventListener(name, listener) { listeners.set(name, listener); },
     dispatchEvent(event) { const listener = listeners.get(event.type); if (listener) listener(event); },
     scrollTo() {}
@@ -63,7 +75,7 @@ function createBrowserSandbox(options = {}) {
     alert: options.alert || (() => {}),
     CustomEvent: class CustomEvent { constructor(type, init = {}) { this.type = type; Object.assign(this, init); } },
     performance: { getEntriesByType() { return []; } },
-    history: { length: 0, back() {} },
+    history,
     requestAnimationFrame(callback) { return callback(); },
     Date,
     Promise,
