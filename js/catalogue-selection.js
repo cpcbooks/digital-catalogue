@@ -10,6 +10,7 @@
   const BODY_ACTIVE_CLASS = "cambridge-floating-selection-active";
   const BOOK_RETURN_KEY = "cambridgeBookReturn";
   const CHECKLIST_RETURN_KEY = "cambridgeChecklistReturn";
+  let detailsVisitAddedBookId = "";
 
   function validQty(value) {
     const n = Number(value);
@@ -66,11 +67,11 @@
   }
 
   function isSelectionPage() {
-    return /(?:^|\/)order\.html$/i.test((window.location && window.location.pathname) || "");
+    return /(?:^|\/)order(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
   }
 
   function isBookDetailsPage() {
-    return /(?:^|\/)book-details\.html$/i.test((window.location && window.location.pathname) || "");
+    return /(?:^|\/)book-details(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
   }
 
   function currentRelativeUrl() {
@@ -78,11 +79,12 @@
   }
 
   /* Book Details: one-time return state. This is intentionally separate from checklist navigation. */
-  function rememberBookReturn() {
+  function rememberBookReturn(bookId = "") {
     if (isBookDetailsPage()) return;
     try {
       sessionStorage.setItem(BOOK_RETURN_KEY, JSON.stringify({
         url: currentRelativeUrl(),
+        bookId: String(bookId || ""),
         y: Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)),
         createdAt: Date.now()
       }));
@@ -108,7 +110,7 @@
     if (!Number.isFinite(saved.createdAt) || Date.now() - saved.createdAt > 30 * 60 * 1000) {
       sessionStorage.removeItem(BOOK_RETURN_KEY); return false;
     }
-    if (navigationType() !== "back_forward") return false;
+    if (navigationType() !== "back_forward" && saved.directReturn !== true) return false;
     sessionStorage.removeItem(BOOK_RETURN_KEY);
     const y = Number(saved.y);
     if (!Number.isFinite(y) || y < 0) return false;
@@ -124,16 +126,47 @@
     if (!isBookDetailsPage()) requestAnimationFrame(() => restoreBookReturn());
   }
 
+  function localReturn(url) {
+    const bootstrap = window.CambridgeCatalogueBootstrap;
+    return bootstrap && url ? bootstrap.localReturnHref(url) : "";
+  }
+
+  function currentBookReturn() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null");
+      const id = new URLSearchParams(window.location.search).get("id") || "";
+      return saved && saved.bookId && saved.bookId === id && Number.isFinite(saved.createdAt) && Date.now() - saved.createdAt <= 30 * 60 * 1000 ? saved : null;
+    } catch (_) { return null; }
+  }
+
+  function bookDetailsSelectionReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const explicit = localReturn(params.get("returnTo"));
+    if (explicit) return explicit;
+
+    const saved = currentBookReturn();
+    if (saved) {
+      const origin = localReturn(saved.url);
+      if (origin) return origin;
+    }
+
+    const back = document.getElementById("back");
+    const href = back && ((typeof back.getAttribute === "function" && back.getAttribute("href")) || back.href);
+    return localReturn(href) || localReturn("index.html");
+  }
+
   /* Final Checklist: remember where the floating pane was opened from. */
-  function rememberChecklistReturn(url = currentRelativeUrl(), useHistory = true) {
+  function rememberChecklistReturn(url = currentRelativeUrl(), useHistory = true, bookId = "") {
     if (isSelectionPage()) return;
     try {
-      sessionStorage.setItem(CHECKLIST_RETURN_KEY, JSON.stringify({
+      const saved = {
         url,
         y: Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)),
         createdAt: Date.now(),
         useHistory
-      }));
+      };
+      if (bookId) saved.bookId = String(bookId);
+      sessionStorage.setItem(CHECKLIST_RETURN_KEY, JSON.stringify(saved));
     } catch (error) {
       console.warn("Cambridge Catalogue: could not remember checklist return context.", error);
     }
@@ -171,7 +204,17 @@
   }
 
   function openSelection() {
-    rememberChecklistReturn();
+    if (isBookDetailsPage()) {
+      const id = new URLSearchParams(window.location.search).get("id") || "";
+      if (id && detailsVisitAddedBookId === id) {
+        const origin = bookDetailsSelectionReturn();
+        const saved = currentBookReturn();
+        const bookId = saved && localReturn(saved.url) === origin ? saved.bookId : "";
+        rememberChecklistReturn(origin, false, bookId);
+      } else {
+        rememberChecklistReturn(currentRelativeUrl(), false);
+      }
+    } else rememberChecklistReturn();
     const orderUrl = window.CambridgeCatalogueBootstrap
       ? window.CambridgeCatalogueBootstrap.withSource("order.html")
       : "order.html";
@@ -231,6 +274,8 @@
     const legacyBar = document.getElementById("selectionBar");
     if (legacyBar) legacyBar.hidden = true;
     updateFloatingBar();
+    const listing = document.getElementById("list") || document.getElementById("browseResults");
+    if (listing && listing.children && listing.children.length) restoreBookReturn();
   }
 
   function add(book, extra = {}) {
@@ -243,7 +288,10 @@
       subject: book.subject || "", type: book.type || "", medium: book.medium || "",
       mrp: Number.isFinite(book.mrp) ? book.mrp : null, cover: book.cover || "", quantity: 1
     });
-    return saveOrder(items);
+    const saved = saveOrder(items);
+    const id = new URLSearchParams(window.location.search).get("id") || "";
+    if (saved && isBookDetailsPage() && id && String(book.id || "") === id) detailsVisitAddedBookId = id;
+    return saved;
   }
 
   function remove(book) {
@@ -273,9 +321,11 @@
   function emitChange() { window.dispatchEvent(new CustomEvent(CHANGE_EVENT)); }
 
   function detailsUrl(book) {
-    const base = "book-details.html?id=" + encodeURIComponent(book.id || "");
+    const params = new URLSearchParams({ id: book.id || "" });
     const level = window.SELECTION_EXTRA && window.SELECTION_EXTRA.level ? window.SELECTION_EXTRA.level : "";
-    const href = level ? base + "&level=" + encodeURIComponent(level) : base;
+    if (level) params.set("level", level);
+    if (!isBookDetailsPage()) params.set("returnTo", currentRelativeUrl());
+    const href = "book-details.html?" + params.toString();
     return window.CambridgeCatalogueBootstrap ? window.CambridgeCatalogueBootstrap.withSource(href) : href;
   }
 
@@ -299,7 +349,7 @@
     view.className = "view-book";
     view.href = detailsUrl(book);
     view.textContent = "View Book →";
-    view.addEventListener("click", rememberBookReturn);
+    view.addEventListener("click", () => rememberBookReturn(book.id));
     actions.appendChild(view);
 
     const selected = selectedItem(book);
@@ -366,15 +416,13 @@
     if (!isBookDetailsPage()) return;
     const link = event.target.closest && event.target.closest("#back");
     if (!link) return;
-    let saved = null;
-    try { saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null"); } catch (error) {}
-    if (saved && history.length > 1) { event.preventDefault(); history.back(); }
+    if (currentBookReturn() && history.length > 1) { event.preventDefault(); history.back(); }
   });
   document.addEventListener("click", rememberKitSelectionReturn, true);
 
   window.addEventListener("storage", event => { if (event.key === ORDER_KEY) emitChange(); });
   window.addEventListener(CHANGE_EVENT, updateBar);
-  document.addEventListener("DOMContentLoaded", () => { updateBar(); scheduleBookReturnRestore(); });
+  document.addEventListener("DOMContentLoaded", updateBar);
   window.addEventListener("pageshow", event => { if (event.persisted) scheduleBookReturnRestore(); });
 
   window.CambridgeSelection = Object.freeze({

@@ -7,9 +7,9 @@ const { createBrowserSandbox, createStorage, loadBrowserScript } = require("./he
 
 const read = file => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
 
-function continueBrowsing(search, saved, historyLength = 0) {
+function continueBrowsing(search, saved, historyLength = 0, bookReturn = null) {
   const sandbox = createBrowserSandbox({
-    sessionStorage: createStorage({ cambridgeChecklistReturn: JSON.stringify(saved) }),
+    sessionStorage: createStorage({ cambridgeChecklistReturn: JSON.stringify(saved), ...(bookReturn ? { cambridgeBookReturn: JSON.stringify(bookReturn) } : {}) }),
     location: {
       href: `https://catalogue.example.test/order.html${search}`,
       pathname: "/order.html",
@@ -18,12 +18,13 @@ function continueBrowsing(search, saved, historyLength = 0) {
   });
   let wentBack = false;
   sandbox.context.CHECKLIST_RETURN_KEY = "cambridgeChecklistReturn";
+  sandbox.context.BOOK_RETURN_KEY = "cambridgeBookReturn";
   sandbox.context.history = { length: historyLength, back() { wentBack = true; } };
   loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
   const functions = read("order.html").match(/function readReturn\(\)[\s\S]*?(?=function wireContinueLinks)/)[0];
   vm.runInContext(functions, sandbox.context);
   sandbox.context.continueBrowsing();
-  return { href: sandbox.window.location.href, wentBack };
+  return { href: sandbox.window.location.href, wentBack, sessionStorage: sandbox.sessionStorage };
 }
 
 function emptySelectionHref(search, startsNonEmpty = false) {
@@ -75,6 +76,16 @@ test("My Selection normalizes a saved fallback while retaining history-first ret
   assert.equal(continueBrowsing("", { url: "https://elsewhere.example/browse.html", createdAt: now }).href, "index.html");
   assert.equal(continueBrowsing("?catalogueSource=supabase", { url: "browse.html", createdAt: now }, 2).wentBack, true);
   assert.match(order, /target=saved&&source\?source\.localReturnHref\(saved\.url\):null/);
+});
+
+test("My Selection arms only a matching current Details book return for direct restoration", () => {
+  const now = Date.now();
+  const matched = continueBrowsing("", { url: "browse.html?q=LBA", createdAt: now, useHistory: false, bookId: "book" }, 0, { url: "/browse.html?q=LBA", bookId: "book", y: 280, createdAt: now });
+  assert.equal(JSON.parse(matched.sessionStorage.getItem("cambridgeBookReturn")).directReturn, true);
+  const mismatched = continueBrowsing("", { url: "browse.html?q=LBA", createdAt: now, useHistory: false, bookId: "book" }, 0, { url: "/browse.html?q=LBA", bookId: "other", y: 280, createdAt: now });
+  assert.equal(JSON.parse(mismatched.sessionStorage.getItem("cambridgeBookReturn")).directReturn, undefined);
+  const kit = continueBrowsing("", { url: "early-learning-level.html?level=lkg", createdAt: now, useHistory: false }, 0, { url: "/early-learning-level.html?level=lkg", bookId: "book", y: 280, createdAt: now });
+  assert.equal(JSON.parse(kit.sessionStorage.getItem("cambridgeBookReturn")).directReturn, undefined);
 });
 
 test("Kit Selection returns preserve stage and source for both Continue Browsing controls", () => {

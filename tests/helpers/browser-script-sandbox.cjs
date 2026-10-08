@@ -65,7 +65,7 @@ function createBrowserSandbox(options = {}) {
     history,
     addEventListener(name, listener) { listeners.set(name, listener); },
     dispatchEvent(event) { const listener = listeners.get(event.type); if (listener) listener(event); },
-    scrollTo() {}
+    scrollTo: options.scrollTo || (() => {})
   };
   let uuidCounter = 0;
   window.crypto = options.crypto || { randomUUID: () => `11111111-1111-4111-8111-${String(++uuidCounter).padStart(12, "0")}` };
@@ -82,7 +82,7 @@ function createBrowserSandbox(options = {}) {
     fetch: options.fetch || (async () => { throw new Error("Unexpected fetch in unit test."); }),
     alert: options.alert || (() => {}),
     CustomEvent: class CustomEvent { constructor(type, init = {}) { this.type = type; Object.assign(this, init); } },
-    performance: { getEntriesByType() { return []; } },
+    performance: options.performance || { getEntriesByType() { return []; } },
     history,
     requestAnimationFrame(callback) { return callback(); },
     Date,

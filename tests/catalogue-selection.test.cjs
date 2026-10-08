@@ -34,6 +34,27 @@ function interactiveSelection(search = "?catalogueSource=supabase") {
   return { selection: sandbox.window.CambridgeSelection, elements };
 }
 
+function detailsSelectionReturn(search, savedBookReturn, backHref = "index.html", addCurrent = false, preselected = false) {
+  const book = { id: "book", title: "Book", quantity: 1 };
+  const sandbox = createBrowserSandbox({
+    sessionStorage: createStorage(savedBookReturn ? { cambridgeBookReturn: JSON.stringify(savedBookReturn) } : {}),
+    localStorage: createStorage(preselected ? { cambridgeOrder: JSON.stringify([book]) } : {}),
+    location: {
+      href: `https://catalogue.example.test/book-details${search}`,
+      pathname: "/book-details",
+      search
+    }
+  });
+  sandbox.window.document.getElementById = id => id === "back" ? { getAttribute() { return backHref; } } : null;
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  const script = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "catalogue-selection.js"), "utf8")
+    .replace("  window.CambridgeSelection = Object.freeze({", "  window.__selectionTest={openSelection,bookDetailsSelectionReturn};\n  window.CambridgeSelection = Object.freeze({");
+  require("node:vm").runInContext(script, sandbox.context);
+  if (addCurrent) sandbox.window.CambridgeSelection.add(book);
+  sandbox.window.__selectionTest.openSelection();
+  return JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn"));
+}
+
 function rememberedChecklistReturn(pathname, search = "") {
   const sandbox = createBrowserSandbox({ location: {
     href: `https://catalogue.example.test${pathname}${search}`,
@@ -113,6 +134,124 @@ test("builds browser selection controls without a Node global and preserves sour
   assert.doesNotThrow(() => selection.actionNode(book));
   assert.equal(selection.remove(book), true);
   assert.equal(selection.selectedItem(book), null);
+});
+
+test("generic listing Details links retain their listing origin", () => {
+  const sandbox = createBrowserSandbox({ location: {
+    href: "https://catalogue.example.test/early-learning-books?level=lkg&catalogueSource=supabase",
+    pathname: "/early-learning-books",
+    search: "?level=lkg&catalogueSource=supabase"
+  } });
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  const book = clonePublications()[1];
+  assert.equal(
+    sandbox.window.CambridgeSelection.detailsUrl(book),
+    `book-details.html#cpc-route=id%3D${encodeURIComponent(book.id)}%26returnTo%3D%252Fearly-learning-books%253Flevel%253Dlkg%2526catalogueSource%253Dsupabase%26catalogueSource%3Dsupabase`
+  );
+});
+
+test("Book Details returns to itself until the current publication is added", () => {
+  const now = Date.now();
+  const explicit = detailsSelectionReturn(
+    "?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase",
+    { url: "/early-learning-books?level=lkg", bookId: "book", createdAt: now }
+  );
+  assert.equal(explicit.url, "/book-details?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase");
+  assert.equal(explicit.useHistory, false);
+
+  const preselected = detailsSelectionReturn(
+    "?id=book&catalogueSource=supabase",
+    { url: "/early-learning-books?level=lkg&catalogueSource=supabase", bookId: "book", createdAt: now }
+    , "index.html", false, true
+  );
+  assert.equal(preselected.url, "/book-details?id=book&catalogueSource=supabase");
+  assert.equal(preselected.bookId, undefined);
+
+  const direct = detailsSelectionReturn("?id=book&catalogueSource=supabase", null, "school-books?class=5");
+  assert.equal(direct.url, "/book-details?id=book&catalogueSource=supabase");
+});
+
+test("a current Details add returns to its matching listing origin", () => {
+  const saved = detailsSelectionReturn(
+    "?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase",
+    { url: "/browse?q=LBA&catalogueSource=supabase", bookId: "book", createdAt: Date.now() },
+    "index.html", true
+  );
+  assert.equal(saved.url, "browse#cpc-route=q%3DLBA%26catalogueSource%3Dsupabase");
+  assert.equal(saved.bookId, "book");
+});
+
+test("a stale Book Details origin cannot override the current add journey", () => {
+  const saved = detailsSelectionReturn(
+    "?id=book&catalogueSource=supabase",
+    { url: "/early-learning-books?level=lkg&catalogueSource=supabase", bookId: "other", createdAt: Date.now() },
+    "school-books?class=5", true
+  );
+  assert.equal(saved.url, "school-books#cpc-route=class%3D5%26catalogueSource%3Dsupabase");
+  assert.equal(saved.bookId, undefined);
+});
+
+test("Book-return scroll waits for listing content to render", () => {
+  const saved = { url: "/early-learning-books?level=lkg", bookId: "book", y: 420, createdAt: Date.now() };
+  const calls = [];
+  const sandbox = createBrowserSandbox({
+    sessionStorage: createStorage({ cambridgeBookReturn: JSON.stringify(saved) }),
+    location: { href: "https://catalogue.example.test/early-learning-books?level=lkg", pathname: "/early-learning-books", search: "?level=lkg" },
+    performance: { getEntriesByType() { return [{ type: "back_forward" }]; } },
+    scrollTo(_, y) { calls.push(y); }
+  });
+  const listing = { children: [] };
+  sandbox.window.document.getElementById = id => id === "list" ? listing : null;
+  sandbox.window.document.createElement = () => ({ dataset: {}, style: {}, classList: { add() {}, remove() {} }, appendChild() {}, append() {}, querySelector() { return null; }, setAttribute() {}, addEventListener() {} });
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, []);
+  assert.ok(sandbox.sessionStorage.getItem("cambridgeBookReturn"));
+  listing.children.push({});
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, [420]);
+  assert.equal(sandbox.sessionStorage.getItem("cambridgeBookReturn"), null);
+});
+
+test("Browse book returns restore after browse results render", () => {
+  const saved = { url: "/browse?q=LBA&catalogueSource=supabase", bookId: "book", y: 420, createdAt: Date.now() };
+  const calls = [];
+  const sandbox = createBrowserSandbox({
+    sessionStorage: createStorage({ cambridgeBookReturn: JSON.stringify(saved) }),
+    location: { href: "https://catalogue.example.test/browse?q=LBA&catalogueSource=supabase", pathname: "/browse", search: "?q=LBA&catalogueSource=supabase" },
+    performance: { getEntriesByType() { return [{ type: "back_forward" }]; } },
+    scrollTo(_, y) { calls.push(y); }
+  });
+  const results = { children: [] };
+  sandbox.window.document.getElementById = id => id === "browseResults" ? results : null;
+  sandbox.window.document.createElement = () => ({ dataset: {}, style: {}, classList: { add() {}, remove() {} }, appendChild() {}, append() {}, querySelector() { return null; }, setAttribute() {}, addEventListener() {} });
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.CambridgeSelection.rememberBookReturn("book");
+  assert.equal(JSON.parse(sandbox.sessionStorage.getItem("cambridgeBookReturn")).bookId, "book");
+  sandbox.sessionStorage.setItem("cambridgeBookReturn", JSON.stringify(saved));
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, []);
+  results.children.push({});
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, [420]);
+});
+
+test("direct Selection return restores an explicitly armed book origin once", () => {
+  const saved = { url: "/browse?q=LBA", bookId: "book", y: 320, createdAt: Date.now(), directReturn: true };
+  const calls = [];
+  const sandbox = createBrowserSandbox({
+    sessionStorage: createStorage({ cambridgeBookReturn: JSON.stringify(saved) }),
+    location: { href: "https://catalogue.example.test/browse?q=LBA", pathname: "/browse", search: "?q=LBA" },
+    scrollTo(_, y) { calls.push(y); }
+  });
+  const listing = { children: [{}] };
+  sandbox.window.document.getElementById = id => id === "browseResults" ? listing : null;
+  sandbox.window.document.createElement = () => ({ dataset: {}, style: {}, classList: { add() {}, remove() {} }, appendChild() {}, append() {}, querySelector() { return null; }, setAttribute() {}, addEventListener() {} });
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, [320]);
+  assert.equal(sandbox.sessionStorage.getItem("cambridgeBookReturn"), null);
 });
 
 test("records Kit and publication Selection returns with their current context", () => {

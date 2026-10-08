@@ -107,13 +107,17 @@ test("Book Details returnTo keeps its allowlisted destination but normalizes the
   const query = values => `?${new URLSearchParams(values)}`;
 
   assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "browse.html" })), "browse.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "browse?q=LBA&subject=Science" })), "browse#cpc-route=q%3DLBA%26subject%3DScience%26catalogueSource%3Dsupabase");
   assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "early-learning-books.html?level=nursery&q=phonics" })), "early-learning-books.html#cpc-route=level%3Dnursery%26q%3Dphonics%26catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "early-learning-books?level=nursery" })), "early-learning-books#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase");
   assert.equal(bookDetailsBack(query({ id: "book", returnTo: "browse.html?catalogueSource=supabase" })), "browse.html");
   assert.equal(bookDetailsBack(query({ id: "book", returnTo: "early-learning-books.html?level=nursery&catalogueSource=supabase" })), "early-learning-books.html?level=nursery");
   assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "https://elsewhere.example/browse.html" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "//elsewhere.example/browse" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase", returnTo: "javascript:alert(1)" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(bookDetailsBack(query({ id: "book", catalogueSource: "supabase" })), "index.html#cpc-route=catalogueSource%3Dsupabase");
 
   const details = read("js/book-details.js");
-  assert.match(details, /CambridgeCatalogueBootstrap\.localReturnHref\(decoded\)/);
+  assert.match(details, /bootstrap\.localReturnHref\(value\)/);
   assert.match(read("js/catalogue-browse.js"), /returnTo:currentBrowseUrl\(\)/);
 });
