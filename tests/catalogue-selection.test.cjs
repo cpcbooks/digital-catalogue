@@ -56,6 +56,33 @@ function detailsSelectionReturn(search, savedBookReturn, backHref = "index.html"
   return JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn"));
 }
 
+function listingSelectionAfterAdd() {
+  const sandbox = createBrowserSandbox({ location: {
+    href: "https://catalogue.example.test/college-books?stage=2nd-puc&catalogueSource=supabase",
+    pathname: "/college-books",
+    search: "?stage=2nd-puc&catalogueSource=supabase"
+  } });
+  const elements = [];
+  sandbox.window.addEventListener = () => {};
+  sandbox.window.document.createElement = tag => {
+    const node = { tag, children: [], classList: { add() {}, remove() {} }, appendChild(child) { this.children.push(child); }, append(...children) { this.children.push(...children); }, setAttribute() {}, addEventListener() {} };
+    elements.push(node);
+    return node;
+  };
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  const script = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "catalogue-selection.js"), "utf8")
+    .replace("  window.CambridgeSelection = Object.freeze({", "  window.__selectionTest={openSelection};\n  window.CambridgeSelection = Object.freeze({");
+  require("node:vm").runInContext(script, sandbox.context);
+  const book = clonePublications()[1];
+  sandbox.window.CambridgeSelection.actionNode(book);
+  elements.find(element => element.className === "add-book").onclick();
+  sandbox.window.__selectionTest.openSelection();
+  return {
+    checklist: JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn")),
+    bookReturn: JSON.parse(sandbox.sessionStorage.getItem("cambridgeBookReturn"))
+  };
+}
+
 function rememberedChecklistReturn(pathname, search = "") {
   const sandbox = createBrowserSandbox({ location: {
     href: `https://catalogue.example.test${pathname}${search}`,
@@ -183,6 +210,14 @@ test("a current Details add returns to its matching listing origin", () => {
   assert.equal(saved.bookId, "book");
 });
 
+test("a listing Add to Selection arms its matching origin for direct scroll restoration", () => {
+  const saved = listingSelectionAfterAdd();
+  assert.equal(saved.checklist.useHistory, false);
+  assert.equal(saved.checklist.bookId, "10000000-0000-4000-8000-000000000002");
+  assert.equal(saved.checklist.url, "college-books#cpc-route=stage%3D2nd-puc%26catalogueSource%3Dsupabase");
+  assert.equal(saved.bookReturn.bookId, saved.checklist.bookId);
+});
+
 test("successful current Details quantity changes return to the matching listing", () => {
   const origin = { url: "/browse?q=LBA&catalogueSource=supabase", bookId: "book", createdAt: Date.now() };
   const increment = detailsSelectionReturn("?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase", origin, "index.html", false, true, (selection, book) => selection.setQty(book, 2));
@@ -283,6 +318,26 @@ test("direct Selection return restores an explicitly armed book origin once", ()
   loadBrowserScript(sandbox, "js/catalogue-selection.js");
   sandbox.window.CambridgeSelection.updateBar();
   assert.deepEqual(calls, [320]);
+  assert.equal(sandbox.sessionStorage.getItem("cambridgeBookReturn"), null);
+});
+
+test("College and Competitive restore an armed return after their results render", () => {
+  const saved = { url: "/college-books?stage=2nd-puc", bookId: "book", y: 280, createdAt: Date.now(), directReturn: true };
+  const calls = [];
+  const sandbox = createBrowserSandbox({
+    sessionStorage: createStorage({ cambridgeBookReturn: JSON.stringify(saved) }),
+    location: { href: "https://catalogue.example.test/college-books?stage=2nd-puc", pathname: "/college-books", search: "?stage=2nd-puc" },
+    scrollTo(_, y) { calls.push(y); }
+  });
+  const results = { children: [] };
+  sandbox.window.document.getElementById = id => id === "results" ? results : null;
+  sandbox.window.document.createElement = () => ({ dataset: {}, style: {}, classList: { add() {}, remove() {} }, appendChild() {}, append() {}, querySelector() { return null; }, setAttribute() {}, addEventListener() {} });
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, []);
+  results.children.push({});
+  sandbox.window.CambridgeSelection.updateBar();
+  assert.deepEqual(calls, [280]);
   assert.equal(sandbox.sessionStorage.getItem("cambridgeBookReturn"), null);
 });
 

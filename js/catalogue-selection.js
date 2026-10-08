@@ -140,12 +140,17 @@
     return bootstrap && url ? bootstrap.localReturnHref(url) : "";
   }
 
-  function currentBookReturn() {
+  function freshBookReturn() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(BOOK_RETURN_KEY) || "null");
-      const id = new URLSearchParams(window.location.search).get("id") || "";
-      return saved && saved.bookId && saved.bookId === id && Number.isFinite(saved.createdAt) && Date.now() - saved.createdAt <= 30 * 60 * 1000 ? saved : null;
+      return saved && saved.bookId && Number.isFinite(saved.createdAt) && Date.now() - saved.createdAt <= 30 * 60 * 1000 ? saved : null;
     } catch (_) { return null; }
+  }
+
+  function currentBookReturn() {
+    const saved = freshBookReturn();
+    const id = new URLSearchParams(window.location.search).get("id") || "";
+    return saved && saved.bookId === id ? saved : null;
   }
 
   function bookDetailsSelectionReturn() {
@@ -223,7 +228,12 @@
       } else {
         rememberChecklistReturn(currentRelativeUrl(), false);
       }
-    } else rememberChecklistReturn();
+    } else {
+      const saved = freshBookReturn();
+      const origin = saved && localReturn(saved.url);
+      if (saved && origin && origin === localReturn(currentRelativeUrl())) rememberChecklistReturn(origin, false, saved.bookId);
+      else rememberChecklistReturn();
+    }
     const orderUrl = window.CambridgeCatalogueBootstrap
       ? window.CambridgeCatalogueBootstrap.withSource("order.html")
       : "order.html";
@@ -283,7 +293,7 @@
     const legacyBar = document.getElementById("selectionBar");
     if (legacyBar) legacyBar.hidden = true;
     updateFloatingBar();
-    const listing = document.getElementById("list") || document.getElementById("browseResults");
+    const listing = document.getElementById("list") || document.getElementById("browseResults") || document.getElementById("results");
     if (listing && listing.children && listing.children.length) restoreBookReturn();
   }
 
@@ -371,7 +381,7 @@
       addButton.type = "button";
       addButton.className = "add-book";
       addButton.textContent = "+ Add to Selection";
-      addButton.onclick = () => { if (add(book, window.SELECTION_EXTRA || {})) emitChange(); };
+      addButton.onclick = () => { if (add(book, window.SELECTION_EXTRA || {})) { if (!isBookDetailsPage()) rememberBookReturn(book.id); emitChange(); } };
       actions.appendChild(addButton);
       return actions;
     }
