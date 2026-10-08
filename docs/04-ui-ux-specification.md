@@ -160,7 +160,7 @@ Eligible stages are **Playgroup, Nursery, LKG, and UKG**. Only CPC-configured el
 
 The current baseline minimum is **8 eligible titles**, but it is configurable by stage and may later differ or be absent. UI language may say “Select at least 8 titles to complete your Custom Kit,” but the number/value must conceptually come from the applicable business rule.
 
-An incomplete kit—for example, 2 of 8 selected—never loses work. The visitor may continue building, inspect/review selected titles, remove titles, change quantities where applicable, leave, and return if persistence supports it. Review must not be disabled because a kit is incomplete.
+An incomplete kit—for example, 2 of 8 selected—never loses work. The visitor may continue building, remove titles, leave, and return if persistence supports it. The working Kit remains editable, but Review and completed-kit actions remain unavailable until the configured minimum is satisfied.
 
 Only completed-kit actions may require the configured minimum: Complete Kit, PDF summary, Share Kit, and Send as Custom Kit Requirement. Use helpful progress language such as “Add 6 more titles to complete your LKG Custom Kit.” A visitor who needs one or two individual books uses My Selection.
 
@@ -190,6 +190,46 @@ Custom Kit PDF summaries, Custom Kit sharing, and publication Share/Copy Link ar
 ## 14. Direct links
 
 Publication URLs should continue to support direct/QR entry, useful context, and graceful invalid/unavailable recovery. Source and return context must survive relevant catalogue journeys.
+
+## Interaction Behaviour Contract — Accepted Baseline
+
+This contract records accepted implementation behaviour. It supplements the product and flow documents; it does not create new scope or replace their catalogue-first principles.
+
+### Source continuity
+
+- Preserve the selected static/Supabase source through relevant catalogue navigation.
+- Static/default navigation remains parameter-free: do not add `catalogueSource=static`.
+- Direct links retain safe fallback behaviour when no valid prior context exists.
+
+### Home search
+
+Submitting Home search retains the query and selected catalogue source when it opens Browse.
+
+### Book Details and browsing context
+
+- Opening Book Details from a listing preserves the originating listing URL/context, including applicable filters, query, source, and approximate scroll position.
+- Back returns to that listing context after its results render.
+- After the current publication is edited during the current Details visit, Details → My Selection → Continue Browsing returns to the originating listing context.
+- Without a relevant current-visit edit, Details → My Selection → Continue Browsing retains the existing Details-page return behaviour.
+- A direct Details visit without a saved listing context uses a safe category/listing fallback after a successful edit.
+- Navigation context must be current-book-specific and must not leak between unrelated publications.
+
+### Early Learning Kits
+
+- Standard Kit → My Selection → Continue Browsing returns to the relevant Early Learning stage.
+- Completed Custom Kit → My Selection → Continue Browsing returns to the relevant Early Learning stage.
+- Custom Kit Review → Return to Edit preserves the draft, stage, and selected catalogue source.
+- Custom Kit remains a structured Early Learning feature and is distinct from catalogue-wide My Selection.
+
+### Performance baseline
+
+- Standard Kit starts independent catalogue and Kit-definition loading concurrently; error states remain handled.
+- Owner acceptance observed approximately 2–3 seconds for an initial Standard Kit load and nearly instant subsequent loads. Custom Kit loading is currently acceptable.
+- These observations are not formal mobile benchmarks, and network-request concurrency was not independently measured in browser DevTools.
+
+### Regression expectations
+
+Relevant regression coverage should protect source continuity, return navigation, scroll restoration, direct-link fallback, Kit draft preservation, and static fallback. Automated test results and owner browser acceptance are separate forms of evidence and must be reported separately.
 
 ## 15. Send Requirement
 

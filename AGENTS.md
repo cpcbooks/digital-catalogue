@@ -29,6 +29,7 @@
 
 - Prefer small changes, existing architecture, and synthetic fixtures.
 - Run `node --test` after relevant application changes and `git diff --check` before commit.
+- Before changing user-facing navigation, listing cards, Book Details, My Selection, Standard Kit, or Custom Kit, consult `docs/04-ui-ux-specification.md`, including the Interaction Behaviour Contract. Preserve accepted behaviour unless a change is explicitly approved.
 - Do not install packages unless justified and approved.
 - Do not touch `asset-import/`, `supabase/recovery/*.json`, or `supabase/schema/` unless explicitly requested.
 - Never use `git add .` or `git add -A` when unrelated untracked files exist.

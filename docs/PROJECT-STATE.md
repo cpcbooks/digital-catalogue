@@ -3,9 +3,11 @@
 ## Read this first
 
 - Branch: `codex/refactor-foundation`
-- Verified application checkpoint: `ada6bcc Preserve source in Selection empty state`
-- Automated baseline: **93/93 passing Node tests**.
+- Latest accepted checkpoint: `246753c perf: parallelize standard kit initialization`.
+- Checkpoint history: `b49f7ca` Batch 2A catalogue navigation/scroll; `2dcf7dc` Batch 2B Details quantity-edit return; `246753c` Batch 3B Standard Kit initialization concurrency.
+- Latest reported Codex verification: **116/116 passing Node tests**; Standard Kit focused tests: **23/23 passing**.
 - This is a public Digital Catalogue; My Selection and Send Requirement are not cart, checkout, payment, or order flows.
+- Owner browser acceptance covers the current navigation/Kit behaviours. Owner observed an approximately 2–3 second first Standard Kit load and nearly instant later loads; Custom Kit loading is currently acceptable. These are not formal mobile benchmarks, and network-request concurrency was not independently measured in DevTools.
 
 ## Environment and data
 
@@ -23,6 +25,8 @@ Custom Kit supports Playgroup, Nursery, LKG, and UKG. Nursery/LKG/UKG currently 
 
 Cambridge Standard Kit has an implemented CPC-controlled foundation, Selection/Requirement compatibility, and source-aware loader (`83a7f75`). `20261005230000_prepare_development_standard_kit.sql` is deployed and verified on the DEVELOPMENT/PILOT backend: anon can read the enabled Development LKG Standard Kit and its eight ordered mappings, while configuration writes remain denied. Replace this temporary development composition with CPC-approved canonical IDs during final item-master cutover.
 
+Standard Kit initialization now starts the independent Supabase catalogue and Kit-definition loads together (`246753c`), while retaining current error states and source behaviour. This checkpoint does not add configuration caching or alter Custom Kit.
+
 ## Requirement status
 
 The working architecture is Browser → Edge Function → transactional RPC → request tables → CPC Requirement reference.
@@ -37,13 +41,17 @@ Requirement hardening is deployed and verified on the DEVELOPMENT/PILOT backend,
 
 ### Final development/pilot regression
 
-**FINAL DEVELOPMENT/PILOT REGRESSION: PASSED.** Repository/static/automated verification covered Home/navigation, Browse, Book Details, My Selection, Standard Kit, Custom Kit, School Learning, truthful College/Competitive limited states, Requirement UI, static/Supabase behavior, accessibility implementation, error/validation presentation, and security/data boundaries. No BLOCKER or IMPORTANT finding remained; 93/93 tests passed.
+**HISTORICAL FINAL DEVELOPMENT/PILOT REGRESSION: PASSED.** Repository/static/automated verification covered Home/navigation, Browse, Book Details, My Selection, Standard Kit, Custom Kit, School Learning, truthful College/Competitive limited states, Requirement UI, static/Supabase behavior, accessibility implementation, error/validation presentation, and security/data boundaries. No BLOCKER or IMPORTANT finding remained; the historical checkpoint recorded 93/93 tests passing.
 
-Browser/mobile E2E verification in that final regression was **environment-blocked**: Chrome DevTools localhost access returned `ERR_BLOCKED_BY_CLIENT`. This is not an application defect. Do not describe the final regression as browser-verified; earlier successful browser verification remains historical evidence where recorded.
+Browser/mobile E2E verification in that historical final regression was **environment-blocked**: Chrome DevTools localhost access returned `ERR_BLOCKED_BY_CLIENT`. This is not an application defect. Do not describe that final regression as browser-verified; subsequent owner browser acceptance is separately recorded above.
+
+### Current verification evidence
+
+The latest automated evidence is Codex's reported verification at `246753c`: 116/116 full Node tests and 23/23 Standard Kit focused tests. This is automated repository evidence, not independent browser acceptance. Owner browser acceptance separately confirmed source-aware Kit/navigation journeys, Book Details/listing return behaviour, and the Standard Kit performance observation recorded above.
 
 ## Current readiness
 
-**DEVELOPMENT/PILOT READY — EXCLUDING FINAL ITEM MASTER/ASSETS.** The implemented pilot scope has no known BLOCKER or IMPORTANT defect from the final regression, and development/pilot testing may proceed. This is **not production ready**. Current catalogue data is development/sample data where applicable.
+**DEVELOPMENT/PILOT READY — EXCLUDING FINAL ITEM MASTER/ASSETS.** The implemented pilot scope has no known accepted BLOCKER or IMPORTANT defect from the recorded regression and owner acceptance checkpoints, and development/pilot testing may proceed. This is **not production ready**. Current catalogue data is development/sample data where applicable. Main and GitHub Pages were not deployed from checkpoints `b49f7ca`, `2dcf7dc`, or `246753c`.
 
 ## Deferred production/final-data gates
 
@@ -59,7 +67,7 @@ Deferred/post-launch: publication sharing, Custom Kit PDF/sharing, related title
 
 ## Operational notes
 
-Graphify integration exists and the commit hook may refresh tracked root outputs. CLI availability has been inconsistent; do not reinstall or reconfigure it for routine work. Dated Graphify snapshots are non-canonical/untracked unless separately approved.
+Graphify integration exists and the commit hook may refresh tracked root outputs. CLI availability has been inconsistent; the known failure is `uv trampoline failed to canonicalize script path`. Do not reinstall or reconfigure it for routine work. Dated Graphify snapshots are non-canonical/untracked unless separately approved.
 
 `data/development-publications/development-early-learning-001.json` and `scripts/import-publications.mjs` provide the reviewed development-data mapping; its ten approved Early Learning records are now in the pilot. The importer remains dry-run by default for future reviewed imports.
 

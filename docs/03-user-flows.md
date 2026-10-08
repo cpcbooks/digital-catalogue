@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — User Flows
 
-> Current-state update: Custom Kit Builder → Review → Edit is implemented for Playgroup/Nursery/LKG/UKG; Cambridge Standard Kit has a fixed CPC-controlled foundation but no real compositions yet. Sharing and PDF outputs are deferred.
+> Current-state update: Custom Kit Builder → Review → Edit is implemented for Playgroup/Nursery/LKG/UKG. Cambridge Standard Kit is implemented; DEVELOPMENT/PILOT Supabase currently has an enabled temporary LKG composition with eight configured titles. Final CPC-approved compositions remain pending final Item Master reconciliation. Sharing and PDF outputs are deferred.
 
 ## Purpose and flow principles
 
@@ -121,7 +121,7 @@ flowchart TD
 
 A normal temporary Kit requires no account. Durable cross-browser-session Kit persistence, Kit sharing, and Kit downloads/PDF are deferred/post-launch.
 
-Cambridge Standard Kit is a separate CPC-controlled, fixed-composition flow. Its review/Selection foundation is implemented, but every real stage remains truthfully unavailable until CPC approves canonical publication-ID compositions.
+Cambridge Standard Kit is a separate CPC-controlled, fixed-composition flow. DEVELOPMENT/PILOT Supabase currently provides an enabled temporary LKG Kit with eight configured titles; it is not a final CPC-approved composition or a production-readiness claim. Final Standard Kit compositions remain pending final Item Master reconciliation.
 
 ## 6. Requirement tracking — PLANNED
 
