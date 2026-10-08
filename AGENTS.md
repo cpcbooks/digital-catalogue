@@ -37,6 +37,16 @@
 - Read only task-relevant files. Keep reports concise.
 - If a task requires a major architectural change, stop and report before proceeding.
 
+## UI Implementation and Regression Preservation
+
+- Before implementing user-facing changes, inspect the existing component/rendering pattern, its shared APIs, events, and state mechanisms, plus comparable accepted pages. Reuse those implementations; do not create duplicate Selection, filtering, routing, or state-management systems.
+- Reconcile approved specifications with current code before changing behaviour. Distinguish documented requirements from observed implementation, report ambiguity or contradiction, never silently reinterpret an accepted interaction, and stop for material conflicts.
+- Keep a proportional preservation matrix: changed behaviour; accepted behaviours to retain; source-of-truth document; implementation/API to reuse; and required regression test or browser check.
+- Reuse shared state and change events so affected UI updates immediately. Preserve Selection quantity, identity, and persistence contracts across Browse, Details, My Selection, and other affected surfaces; preserve URL state, source, `returnTo`, and scroll context.
+- Verify relevant desktop and mobile layouts. Do not substitute a responsive pattern without approval; check action order, visibility, click targets, focus states, and overflow. Unit tests alone do not establish visual acceptance.
+- Run relevant automated regressions and browser checks when available. Separate tested, inspected, and unverified behaviour; report deviations; never claim owner acceptance from Codex testing or mark work complete while acceptance blockers remain.
+- Keep UI changes narrow, preserve protected/untracked artifacts, and do not commit, push, or deploy without authorization when owner acceptance is required.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
