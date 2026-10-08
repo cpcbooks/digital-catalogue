@@ -205,6 +205,13 @@ This contract records accepted implementation behaviour. It supplements the prod
 
 Submitting Home search retains the query and selected catalogue source when it opens Browse.
 
+### Browse discovery and shared Selection actions
+
+- Browse has four URL-backed discovery tabs: **All Books**, **By Series**, **By Subject**, and **By Book Type**. Desktop presents them in one horizontal row; compact/mobile layouts present an equal-width two-column by two-row grid with visible selected and keyboard-focus states.
+- A deliberate switch to a different discovery tab starts fresh exploration: it clears query, category, class/stage, Series, Subject, Book Type, and Medium while preserving catalogue source and My Selection. Clicking the active tab is a no-op. Back/Forward, direct/bookmarked URL hydration, Details return, and My Selection → Continue Browsing restore the exact URL-backed context instead.
+- Changing a Series, Subject, or Book Type within the active tab retains compatible query and refinements. Medium is cleared only when a newly chosen discovery context makes it inapplicable; Clear Filters retains the active tab and catalogue source.
+- Normal publication listings use the shared Selection actions: **View Book** appears before **Add to Selection**. Successful add, quantity increase, quantity decrease, or removal immediately refreshes the listing action state so Browse, Details, and My Selection show the same persisted quantity. Existing identity, duplicate-prevention, quantity-limit, and persistence rules apply unchanged.
+
 ### Book Details and browsing context
 
 - Opening Book Details from a listing preserves the originating listing URL/context, including applicable filters, query, source, and approximate scroll position.

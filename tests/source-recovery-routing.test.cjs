@@ -119,5 +119,6 @@ test("Book Details returnTo keeps its allowlisted destination but normalizes the
 
   const details = read("js/book-details.js");
   assert.match(details, /bootstrap\.localReturnHref\(value\)/);
-  assert.match(read("js/catalogue-browse.js"), /returnTo:currentBrowseUrl\(\)/);
+  assert.match(read("js/catalogue-browse.js"), /selection\.actionNode\(book\)/);
+  assert.match(read("js/catalogue-selection.js"), /if \(!isBookDetailsPage\(\)\) params\.set\("returnTo", currentRelativeUrl\(\)\)/);
 });

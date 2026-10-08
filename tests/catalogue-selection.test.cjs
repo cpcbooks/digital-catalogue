@@ -154,7 +154,8 @@ test("builds browser selection controls without a Node global and preserves sour
   const { selection, elements } = interactiveSelection();
   const book = clonePublications()[1];
   assert.equal(selection.detailsUrl(book), `book-details.html#cpc-route=id%3D${encodeURIComponent(book.id)}%26catalogueSource%3Dsupabase`);
-  assert.doesNotThrow(() => selection.actionNode(book));
+  const actions = selection.actionNode(book);
+  assert.deepEqual(actions.children.map(element => element.className), ["view-book", "add-book"]);
   const addButton = elements.find(element => element.className === "add-book");
   assert.ok(addButton);
   assert.equal(selection.add(book), true);
