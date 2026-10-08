@@ -10,7 +10,7 @@
   const BODY_ACTIVE_CLASS = "cambridge-floating-selection-active";
   const BOOK_RETURN_KEY = "cambridgeBookReturn";
   const CHECKLIST_RETURN_KEY = "cambridgeChecklistReturn";
-  let detailsVisitAddedBookId = "";
+  let detailsVisitEditedBookId = "";
 
   function validQty(value) {
     const n = Number(value);
@@ -76,6 +76,15 @@
 
   function currentRelativeUrl() {
     return window.location.pathname + window.location.search + window.location.hash;
+  }
+
+  function detailsBookId() {
+    return new URLSearchParams(window.location.search).get("id") || "";
+  }
+
+  function rememberDetailsEdit(book, changed) {
+    const id = detailsBookId();
+    if (changed && isBookDetailsPage() && id && String(book.id || "") === id) detailsVisitEditedBookId = id;
   }
 
   /* Book Details: one-time return state. This is intentionally separate from checklist navigation. */
@@ -205,8 +214,8 @@
 
   function openSelection() {
     if (isBookDetailsPage()) {
-      const id = new URLSearchParams(window.location.search).get("id") || "";
-      if (id && detailsVisitAddedBookId === id) {
+      const id = detailsBookId();
+      if (id && detailsVisitEditedBookId === id) {
         const origin = bookDetailsSelectionReturn();
         const saved = currentBookReturn();
         const bookId = saved && localReturn(saved.url) === origin ? saved.bookId : "";
@@ -289,8 +298,7 @@
       mrp: Number.isFinite(book.mrp) ? book.mrp : null, cover: book.cover || "", quantity: 1
     });
     const saved = saveOrder(items);
-    const id = new URLSearchParams(window.location.search).get("id") || "";
-    if (saved && isBookDetailsPage() && id && String(book.id || "") === id) detailsVisitAddedBookId = id;
+    rememberDetailsEdit(book, saved);
     return saved;
   }
 
@@ -299,7 +307,9 @@
     const index = indexOfBook(book, items);
     if (index < 0) return true;
     items.splice(index, 1);
-    return saveOrder(items);
+    const saved = saveOrder(items);
+    rememberDetailsEdit(book, saved);
+    return saved;
   }
 
   function setQty(book, value) {
@@ -314,8 +324,11 @@
       if (!add(book, window.SELECTION_EXTRA || {})) return false;
       return setQty(book, quantity);
     }
+    if (Number(items[index].quantity) === quantity) return true;
     items[index].quantity = quantity;
-    return saveOrder(items);
+    const saved = saveOrder(items);
+    rememberDetailsEdit(book, saved);
+    return saved;
   }
 
   function emitChange() { window.dispatchEvent(new CustomEvent(CHANGE_EVENT)); }

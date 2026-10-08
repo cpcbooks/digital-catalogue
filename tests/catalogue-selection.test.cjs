@@ -34,8 +34,8 @@ function interactiveSelection(search = "?catalogueSource=supabase") {
   return { selection: sandbox.window.CambridgeSelection, elements };
 }
 
-function detailsSelectionReturn(search, savedBookReturn, backHref = "index.html", addCurrent = false, preselected = false) {
-  const book = { id: "book", title: "Book", quantity: 1 };
+function detailsSelectionReturn(search, savedBookReturn, backHref = "index.html", addCurrent = false, preselected = false, edit = null) {
+  const book = { id: "book", title: "Book", quantity: typeof preselected === "number" ? preselected : 1 };
   const sandbox = createBrowserSandbox({
     sessionStorage: createStorage(savedBookReturn ? { cambridgeBookReturn: JSON.stringify(savedBookReturn) } : {}),
     localStorage: createStorage(preselected ? { cambridgeOrder: JSON.stringify([book]) } : {}),
@@ -51,6 +51,7 @@ function detailsSelectionReturn(search, savedBookReturn, backHref = "index.html"
     .replace("  window.CambridgeSelection = Object.freeze({", "  window.__selectionTest={openSelection,bookDetailsSelectionReturn};\n  window.CambridgeSelection = Object.freeze({");
   require("node:vm").runInContext(script, sandbox.context);
   if (addCurrent) sandbox.window.CambridgeSelection.add(book);
+  if (edit) edit(sandbox.window.CambridgeSelection, book);
   sandbox.window.__selectionTest.openSelection();
   return JSON.parse(sandbox.sessionStorage.getItem("cambridgeChecklistReturn"));
 }
@@ -180,6 +181,37 @@ test("a current Details add returns to its matching listing origin", () => {
   );
   assert.equal(saved.url, "browse#cpc-route=q%3DLBA%26catalogueSource%3Dsupabase");
   assert.equal(saved.bookId, "book");
+});
+
+test("successful current Details quantity changes return to the matching listing", () => {
+  const origin = { url: "/browse?q=LBA&catalogueSource=supabase", bookId: "book", createdAt: Date.now() };
+  const increment = detailsSelectionReturn("?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase", origin, "index.html", false, true, (selection, book) => selection.setQty(book, 2));
+  assert.equal(increment.url, "browse#cpc-route=q%3DLBA%26catalogueSource%3Dsupabase");
+  assert.equal(increment.bookId, "book");
+
+  const decrement = detailsSelectionReturn("?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase", origin, "index.html", false, 2, (selection, book) => selection.setQty(book, 1));
+  assert.equal(decrement.url, "browse#cpc-route=q%3DLBA%26catalogueSource%3Dsupabase");
+
+  const removal = detailsSelectionReturn("?id=book&returnTo=browse%3Fq%3DLBA%26catalogueSource%3Dsupabase&catalogueSource=supabase", origin, "index.html", false, true, (selection, book) => selection.remove(book));
+  assert.equal(removal.url, "browse#cpc-route=q%3DLBA%26catalogueSource%3Dsupabase");
+});
+
+test("no-op or failed current Details quantity changes stay on Details", () => {
+  const origin = { url: "/browse?q=LBA&catalogueSource=supabase", bookId: "book", createdAt: Date.now() };
+  const noOp = detailsSelectionReturn("?id=book&catalogueSource=supabase", origin, "index.html", false, true, (selection, book) => selection.setQty(book, 1));
+  assert.equal(noOp.url, "/book-details?id=book&catalogueSource=supabase");
+
+  const failed = detailsSelectionReturn("?id=book&catalogueSource=supabase", origin, "index.html", false, true, (selection, book) => selection.setQty(book, "not-a-number"));
+  assert.equal(failed.url, "/book-details?id=book&catalogueSource=supabase");
+
+  const unrelated = detailsSelectionReturn("?id=book&catalogueSource=supabase", origin, "index.html", false, true, selection => selection.add({ id: "other", title: "Other" }));
+  assert.equal(unrelated.url, "/book-details?id=book&catalogueSource=supabase");
+});
+
+test("a direct Details edit uses the safe category fallback", () => {
+  const saved = detailsSelectionReturn("?id=book&catalogueSource=supabase", null, "school-books?class=5", true);
+  assert.equal(saved.url, "school-books#cpc-route=class%3D5%26catalogueSource%3Dsupabase");
+  assert.equal(saved.bookId, undefined);
 });
 
 test("a stale Book Details origin cannot override the current add journey", () => {
