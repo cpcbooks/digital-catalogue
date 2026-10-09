@@ -8,7 +8,9 @@ const { clonePublications } = require("./fixtures/publications.cjs");
 const pages = [
   ["early-learning-books.html", ["q", "subject"], "level=lkg"],
   ["school-books.html", ["q", "subject"], "class=6"],
-  ["exam-preparation.html", ["q", "family", "subject"], "class=10"]
+  ["exam-preparation.html", ["q", "family", "subject"], "class=10"],
+  ["college-books.html", ["q", "subject"], "stage=2nd-puc"],
+  ["competitive-exam-books.html", ["q", "subject"], "exam=vao"]
 ];
 
 function source(page) {
@@ -25,7 +27,7 @@ test("stage and class listings hydrate filters from, and replace only, their URL
     }
     assert.match(html, /history\.replaceState\(null,"",location\.pathname/);
     assert.match(html, /window\.addEventListener\("popstate",\(\)=>\{restoreFilters\(\);render\(false\)\}\)/);
-    assert.match(html, new RegExp(`URLSearchParams\\(location\\.search\\)\\.get\\("${context.split("=")[0]}"\\)`));
+    assert.match(html, new RegExp(`(?:URLSearchParams\\(location\\.search\\)|params)\\.get\\("${context.split("=")[0]}"\\)`));
   }
 });
 
@@ -33,7 +35,9 @@ test("listing filter URLs remain source-aware Book Details return origins", () =
   const cases = [
     "/early-learning-books?level=lkg&q=phonics&subject=English&catalogueSource=supabase",
     "/school-books?class=6&q=grammar&subject=English&catalogueSource=supabase",
-    "/exam-preparation?class=10&q=LBA&family=LBA&subject=Science&catalogueSource=supabase"
+    "/exam-preparation?class=10&q=LBA&family=LBA&subject=Science&catalogueSource=supabase",
+    "/college-books?stage=2nd-puc&q=hindi&subject=Hindi&catalogueSource=supabase",
+    "/competitive-exam-books?exam=vao&q=guide&subject=General+Knowledge&catalogueSource=supabase"
   ];
   for (const relative of cases) {
     const url = new URL(`https://catalogue.example.test${relative}`);
