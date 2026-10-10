@@ -65,6 +65,25 @@
     if(!values.length)return"";
     return values.length===1?"Class "+values[0]:"Classes "+values.join(", ")
   }
+  function detailBreadcrumbs(book) {
+    const home={label:"Home",href:"index.html"},classes=Query.classValues(book);
+    if(book.category==="early-learning") {
+      const c=detailEarlyClass(book),key=earlyKey(c);
+      return [home].concat(key?[{label:"Early Learning",href:"early-learning.html"},{label:c,href:"early-learning-level.html?level="+encodeURIComponent(key)}]:[{label:"Early Learning",href:"early-learning.html"}])
+    }
+    if(book.category==="school") {
+      const c=classes[0]||"";
+      return [home].concat(c?[{label:"School Learning",href:"school-education.html"},{label:"Class "+c,href:"school-learning.html?class="+encodeURIComponent(c)}]:[{label:"School Learning",href:"school-education.html"}])
+    }
+    if(book.category==="exam") {
+      const c=classes[0]||"",base=[home,{label:"School Learning",href:"school-education.html"}];
+      if(c)base.push({label:"Class "+c,href:"school-learning.html?class="+encodeURIComponent(c)},{label:"Exam Preparation",href:"exam-preparation.html?class="+encodeURIComponent(c)});
+      return base
+    }
+    if(book.category==="college-university")return [home,{label:"College & University",href:"college-university.html"}];
+    if(book.category==="competitive-exams")return [home,{label:"Competitive Exams",href:"competitive-exams.html"}];
+    return [home]
+  }
   function imageList(book) {
     const a=[],push=(src,label)=> {
       if(src&&!a.some(x=>x.src===src))a.push( {
@@ -83,16 +102,19 @@
     const frame=document.getElementById("frame"),count=document.getElementById("galleryCount"),label=document.getElementById("galleryLabel"),help=document.getElementById("galleryHelp"),prev=document.getElementById("prev"),next=document.getElementById("next");
     frame.innerHTML="";
     if(!images.length) {
+      frame.classList.add("gallery-frame--placeholder");
       frame.textContent="BOOK COVER";
       label.textContent="Cover image coming soon";
       help.textContent=""
     }
     else {
+      frame.classList.remove("gallery-frame--placeholder");
       const item=images[imageIndex],img=document.createElement("img");
       img.src=item.src;
       img.alt=(current.title||"Book")+" — "+item.label;
       img.onerror=()=> {
         frame.innerHTML="";
+        frame.classList.add("gallery-frame--placeholder");
         frame.textContent="IMAGE UNAVAILABLE"
       };
       frame.appendChild(img);
@@ -158,6 +180,7 @@
       detail.innerHTML='<div class="message">This book could not be found in the current catalogue.</div>';
       return
     }
+    if(Selection.setBreadcrumbs)Selection.setBreadcrumbs(detailBreadcrumbs(current));
     document.title=(current.title||"Book")+" | Cambridge Digital Catalogue";
     back.href=sourceBack(current);
     back.textContent=backLabel(current);

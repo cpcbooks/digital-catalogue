@@ -43,6 +43,38 @@ function headerSelection(storageData = {}, search = "") {
   return { selection: sandbox.window.CambridgeSelection, header, nodes };
 }
 
+function breadcrumbSelection(pathname, search = "") {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test${pathname}${search}`,
+    pathname,
+    search
+  } });
+  const nodes = [];
+  const node = () => {
+    const value = {
+      children: [], classList: { add() {}, remove() {} }, attributes: {}, dataset: {}, style: {}, parentNode: null,
+      appendChild(child) { this.children.push(child); child.parentNode = this; },
+      append(...children) { children.forEach(child => this.appendChild(child)); },
+      insertBefore(child, before) { const index = this.children.indexOf(before); this.children.splice(index < 0 ? this.children.length : index, 0, child); child.parentNode = this; },
+      replaceChildren() { this.children = []; },
+      remove() { if (!this.parentNode) return; const index = this.parentNode.children.indexOf(this); if (index >= 0) this.parentNode.children.splice(index, 1); this.parentNode = null; },
+      setAttribute(name, attribute) { this.attributes[name] = attribute; },
+      addEventListener() {},
+      querySelector() { return null; }
+    };
+    nodes.push(value);
+    return value;
+  };
+  const parent = node(), legacy = node(); legacy.className = "context-nav"; parent.appendChild(legacy);
+  sandbox.window.document.querySelector = selector => selector === ".context-nav" ? legacy : null;
+  sandbox.window.document.getElementById = id => nodes.find(item => item.id === id) || null;
+  sandbox.window.document.createElement = node;
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.document.dispatchEvent({ type: "DOMContentLoaded" });
+  return nodes.find(item => item.id === "catalogueBreadcrumbs");
+}
+
 function interactiveSelection(search = "?catalogueSource=supabase") {
   const sandbox = createBrowserSandbox({ location: {
     href: `https://catalogue.example.test/book-details.html${search}`,
@@ -175,6 +207,52 @@ test("renders one source-aware Header My Selection link without a count badge", 
   const { header: staticHeader } = headerSelection();
   const staticLink = staticHeader.children.find(node => node.className === "catalogue-header-selection");
   assert.equal(staticLink.href, "order.html");
+});
+
+test("renders source-aware ancestor-only hierarchy breadcrumbs", () => {
+  const crumbs = breadcrumbSelection("/early-learning-level.html", "?level=lkg&catalogueSource=supabase");
+  assert.ok(crumbs);
+  assert.equal(crumbs.attributes["aria-label"], "Catalogue hierarchy");
+  assert.equal(crumbs.children[0].textContent, "Home");
+  assert.equal(crumbs.children[0].href, "index.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(crumbs.children[2].textContent, "Early Learning");
+  assert.equal(crumbs.children[2].href, "early-learning.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(crumbs.children.length, 3);
+  assert.equal(crumbs.children.some(node => node.attributes["aria-current"] === "page"), false);
+});
+
+test("keeps My Selection and Requirement workflows free of hierarchy breadcrumbs", () => {
+  assert.equal(breadcrumbSelection("/order.html"), undefined);
+  assert.equal(breadcrumbSelection("/request.html"), undefined);
+});
+
+test("My Selection keeps Home above its contextual return without hierarchy breadcrumbs", () => {
+  const order = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "order.html"), "utf8");
+  assert.match(order, /<div class="order-nav" id="orderNav"><a href="index\.html" class="home-link">Home<\/a><a href="#" class="back-link" data-continue-browsing>← Continue Browsing<\/a><\/div>/);
+  assert.match(order, /\.order-nav\{display:grid;justify-items:start;gap:5px/);
+  assert.match(order, /nav\.style\.display=order\.length\?"grid":"none"/);
+  assert.doesNotMatch(order, /\.order-nav\{[^}]*justify-content:space-between/);
+});
+
+test("Book Details keeps publication titles out of breadcrumbs and uses a portrait-only fallback frame", () => {
+  const details = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "book-details.js"), "utf8");
+  const page = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "book-details.html"), "utf8");
+  assert.doesNotMatch(details, /\{label:title\}/);
+  assert.match(details, /\{label:c,href:"early-learning-level\.html\?level="\+encodeURIComponent\(key\)\}/);
+  assert.match(details, /\{label:"Class "\+c,href:"school-learning\.html\?class="\+encodeURIComponent\(c\)\}/);
+  assert.match(details, /frame\.classList\.add\("gallery-frame--placeholder"\)/);
+  assert.match(page, /\.gallery-frame--placeholder\{width:min\(100%,260px\);min-height:0;aspect-ratio:2 \/ 3;margin-inline:auto\}/);
+  assert.match(page, /\.gallery-frame img\{[^}]*width:auto;height:auto;object-fit:contain/);
+});
+
+test("keeps Standard Kit's source-aware stage return and suppresses only the Kit Builder floating summary", () => {
+  const selection = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "catalogue-selection.js"), "utf8");
+  const standard = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "standard-kit.js"), "utf8");
+  assert.match(selection, /page === "book-details" \|\| page === "standard-kit"/);
+  assert.match(selection, /action\.textContent = "← Back to " \+ \(level \|\| "Early Learning"\)/);
+  assert.match(selection, /if \(isKitBuilderPage\(\)\) \{[\s\S]*existing\.hidden = true;[\s\S]*return;/);
+  assert.match(standard, /early-learning-level\.html\?level=/);
+  assert.match(standard, /Bootstrap\.withSource/);
 });
 
 test("Homepage education cards use source-aware primary and shortcut links without nesting controls", () => {

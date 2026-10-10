@@ -75,6 +75,10 @@
     return /(?:^|\/)book-details(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
   }
 
+  function isKitBuilderPage() {
+    return /(?:^|\/)kit-builder(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
+  }
+
   function currentRelativeUrl() {
     return window.location.pathname + window.location.search + window.location.hash;
   }
@@ -265,6 +269,93 @@
     link.setAttribute("aria-label", "My Selection");
   }
 
+  function currentPage() {
+    const filename = ((window.location && window.location.pathname) || "").split("/").pop() || "index";
+    return filename.replace(/\.html$/i, "").toLowerCase();
+  }
+
+  function stageLabel(value) {
+    const stages = { playgroup: "Playgroup", nursery: "Nursery", lkg: "LKG", ukg: "UKG" };
+    return stages[String(value || "").toLowerCase()] || "";
+  }
+
+  function classLabel(value) {
+    return /^(?:[1-9]|10)$/.test(String(value || "")) ? "Class " + value : "";
+  }
+
+  function breadcrumbItems() {
+    const page = currentPage(), params = new URLSearchParams((window.location && window.location.search) || "");
+    const home = { label: "Home", href: "index.html" };
+    const early = { label: "Early Learning", href: "early-learning.html" };
+    const school = { label: "School Learning", href: "school-education.html" };
+    const college = { label: "College & University", href: "college-university.html" };
+    const competitive = { label: "Competitive Exams", href: "competitive-exams.html" };
+    const level = stageLabel(params.get("level"));
+    const className = classLabel(params.get("class"));
+    if (page === "index" || page === "order" || page === "request" || page === "review-request" || page === "request-details") return [];
+    if (page === "browse" || page === "early-learning" || page === "school-education" || page === "college-university" || page === "competitive-exams") return [home];
+    if (page === "early-learning-level" || page === "early-learning-books") return [home, early];
+    if (page === "school-learning" || page === "school-books") return [home, school];
+    if (page === "exam-preparation") return [home, school].concat(className ? [{ label: className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) }] : []);
+    if (page === "college-books") return [home, college];
+    if (page === "competitive-exam-books") return [home, competitive];
+    if (page === "standard-kit" || page === "kit-builder" || page === "kit-review") return [home, early].concat(level ? [{ label: level, href: "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) }] : []);
+    if (page === "book-details") return [home];
+    return [];
+  }
+
+  function breadcrumbRoot() {
+    if (!document.querySelector) return null;
+    const existing = document.getElementById && document.getElementById("catalogueBreadcrumbs");
+    if (existing) return existing;
+    const legacy = document.querySelector(".context-nav");
+    const browseBack = document.querySelector(".browse-back");
+    const anchor = legacy || browseBack;
+    if (!anchor || !anchor.parentNode || !document.createElement) return null;
+    const root = document.createElement("nav");
+    root.id = "catalogueBreadcrumbs";
+    root.className = "catalogue-breadcrumbs";
+    root.setAttribute("aria-label", "Catalogue hierarchy");
+    anchor.parentNode.insertBefore(root, anchor);
+
+    if (legacy) {
+      const page = currentPage();
+      const action = page === "book-details" || page === "standard-kit" ? legacy.querySelector("#back") : legacy.querySelector("#editNav");
+      if (action) {
+        if (page === "standard-kit") {
+          const level = stageLabel(new URLSearchParams((window.location && window.location.search) || "").get("level"));
+          action.textContent = "← Back to " + (level || "Early Learning");
+        }
+        action.classList.add("catalogue-context-action");
+        root.parentNode.insertBefore(action, legacy.nextSibling);
+      }
+      legacy.remove();
+    } else browseBack.remove();
+    return root;
+  }
+
+  function setBreadcrumbs(items = breadcrumbItems()) {
+    if (!Array.isArray(items) || !items.length) return;
+    const root = breadcrumbRoot();
+    if (!root) return;
+    root.replaceChildren();
+    const source = window.CambridgeCatalogueBootstrap;
+    items.forEach((item, index) => {
+      if (index) {
+        const separator = document.createElement("span");
+        separator.className = "catalogue-breadcrumbs__separator";
+        separator.setAttribute("aria-hidden", "true");
+        separator.textContent = "›";
+        root.appendChild(separator);
+      }
+      const node = item.href ? document.createElement("a") : document.createElement("span");
+      node.textContent = item.label;
+      if (item.href) node.href = source ? source.withSource(item.href) : item.href;
+      else node.setAttribute("aria-current", "page");
+      root.appendChild(node);
+    });
+  }
+
   function ensureFloatingBar() {
     if (isSelectionPage()) return null;
     let bar = document.getElementById(FLOATING_BAR_ID);
@@ -297,6 +388,12 @@
 
   function updateFloatingBar() {
     if (!document.body || isSelectionPage()) return;
+    if (isKitBuilderPage()) {
+      const existing = document.getElementById(FLOATING_BAR_ID);
+      if (existing) existing.hidden = true;
+      document.body.classList.remove(BODY_ACTIVE_CLASS);
+      return;
+    }
     const count = selectedCount();
     const total = selectedQuantityTotal();
     const bar = ensureFloatingBar();
@@ -471,13 +568,13 @@
 
   window.addEventListener("storage", event => { if (event.key === ORDER_KEY) emitChange(); });
   window.addEventListener(CHANGE_EVENT, updateBar);
-  document.addEventListener("DOMContentLoaded", updateBar);
+  document.addEventListener("DOMContentLoaded", () => { setBreadcrumbs(); updateBar(); });
   window.addEventListener("pageshow", event => { if (event.persisted) scheduleBookReturnRestore(); });
 
   window.CambridgeSelection = Object.freeze({
     ORDER_KEY, MAX_QUANTITY, CHANGE_EVENT, CHECKLIST_RETURN_KEY,
     validQty, readOrder, saveOrder, itemKey, indexOfBook, selectedItem, selectedItems,
     selectedCount, selectedQuantityTotal, updateBar, updateFloatingBar, add, remove, setQty,
-    detailsUrl, coverNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn
+    detailsUrl, coverNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
   });
 })();

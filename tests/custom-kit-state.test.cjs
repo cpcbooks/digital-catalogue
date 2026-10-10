@@ -80,6 +80,26 @@ test("becomes incomplete immediately when removal drops below its configured min
   assert.equal(state.isComplete(), false);
 });
 
+test("retains every remaining working title and the Kit name after removal drops below the configured minimum", () => {
+  const state = kit(8);
+  state.setName("LKG working Kit");
+  for (let index = 1; index <= 8; index += 1) state.add({ id: "book-" + index });
+  state.remove("book-8");
+  assert.equal(state.count(), 7);
+  assert.equal(state.selectedItems().length, 7);
+  assert.equal(state.remaining(), 1);
+  assert.equal(state.isComplete(), false);
+  assert.equal(state.getName(), "LKG working Kit");
+});
+
+test("Kit Review renders non-empty incomplete drafts and reserves its empty state for zero titles", () => {
+  const review = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "kit-review.html"), "utf8");
+  assert.match(review, /if \(state\.count\(\) === 0\) \{ renderEmpty\(\); return; \}/);
+  assert.doesNotMatch(review, /if\s*\(!state\.canReview\(\)\)/);
+  assert.match(review, /Select " \+ state\.remaining\(\) \+ " more/);
+  assert.match(review, /Your Kit is empty/);
+});
+
 test("uses the supplied minimum rather than a permanent eight-title rule", () => {
   const state = kit(4);
   for (const id of ["one", "two", "three", "four"]) state.add({ id });
