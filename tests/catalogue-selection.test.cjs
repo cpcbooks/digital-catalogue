@@ -9,6 +9,40 @@ function selectionWithStorage(storageData = {}) {
   return { selection: sandbox.window.CambridgeSelection, storage: sandbox.localStorage };
 }
 
+function headerSelection(storageData = {}, search = "") {
+  const sandbox = createBrowserSandbox({
+    localStorage: createStorage(storageData),
+    location: {
+      href: `https://catalogue.example.test/index.html${search}`,
+      pathname: "/index.html",
+      search
+    }
+  });
+  const nodes = [];
+  const node = () => {
+    const value = {
+      children: [], classList: { add() {}, remove() {} }, attributes: {}, dataset: {}, style: {},
+      appendChild(child) { this.children.push(child); child.parent = this; },
+      insertBefore(child, before) { const index = this.children.indexOf(before); this.children.splice(index < 0 ? this.children.length : index, 0, child); child.parent = this; },
+      append(...children) { children.forEach(child => this.appendChild(child)); },
+      setAttribute(name, attribute) { this.attributes[name] = attribute; },
+      addEventListener(name, listener) { this.listeners ||= {}; this.listeners[name] = listener; },
+      querySelector(selector) { return this.children.find(child => selector === ".catalogue-year" && child.className === "catalogue-year") || null; }
+    };
+    nodes.push(value);
+    return value;
+  };
+  const header = node(); header.className = "catalogue-header";
+  const year = node(); year.className = "catalogue-year"; header.appendChild(year);
+  sandbox.window.document.querySelector = selector => selector === ".catalogue-header" ? header : null;
+  sandbox.window.document.getElementById = id => nodes.find(item => item.id === id) || null;
+  sandbox.window.document.createElement = node;
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-selection.js");
+  sandbox.window.document.dispatchEvent({ type: "DOMContentLoaded" });
+  return { selection: sandbox.window.CambridgeSelection, header, nodes };
+}
+
 function interactiveSelection(search = "?catalogueSource=supabase") {
   const sandbox = createBrowserSandbox({ location: {
     href: `https://catalogue.example.test/book-details.html${search}`,
@@ -121,6 +155,45 @@ test("returns an empty selection when storage is absent", () => {
 test("recovers safely from corrupt selection storage", () => {
   const { selection } = selectionWithStorage({ cambridgeOrder: "not-json" });
   assert.deepEqual(Array.from(selection.readOrder()), []);
+});
+
+test("renders one source-aware Header My Selection link without a count badge", () => {
+  const { selection, header } = headerSelection({}, "?catalogueSource=supabase");
+  const link = header.children.find(node => node.className === "catalogue-header-selection");
+  assert.ok(link);
+  assert.equal(link.href, "order.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(link.textContent, "My Selection");
+  assert.equal(link.attributes["aria-label"], "My Selection");
+
+  selection.add(clonePublications()[1]);
+  selection.updateBar();
+  selection.add(clonePublications()[2]);
+  selection.updateBar();
+  assert.equal(link.textContent, "My Selection");
+  assert.equal(link.children.length, 0);
+
+  const { header: staticHeader } = headerSelection();
+  const staticLink = staticHeader.children.find(node => node.className === "catalogue-header-selection");
+  assert.equal(staticLink.href, "order.html");
+});
+
+test("Homepage education cards use source-aware primary and shortcut links without nesting controls", () => {
+  const homepage = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "index.html"), "utf8");
+  assert.doesNotMatch(homepage, /<article class="level-card[^>]*\brole="link"/);
+  assert.doesNotMatch(homepage, /<article class="level-card[^>]*\btabindex=/);
+  assert.match(homepage, /class="level-primary" href="early-learning\.html"/);
+  assert.match(homepage, /class="level-primary" href="school-education\.html"/);
+  assert.match(homepage, /class="level-primary" href="college-university\.html"/);
+  assert.match(homepage, /class="level-primary" href="competitive-exams\.html"/);
+  assert.match(homepage, /class="level-action" href="early-learning\.html"/);
+  assert.doesNotMatch(homepage, /level-action" data-href/);
+  assert.doesNotMatch(homepage, /querySelectorAll\('\.level-action/);
+  assert.match(homepage, /class="collection-panel" href="browse\.html\?view=all"/);
+});
+
+test("Custom Kit Builder loads the shared Selection module for Header My Selection access", () => {
+  const builder = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "kit-builder.html"), "utf8");
+  assert.match(builder, /catalogue-source-links\.js"><\/script><script src="js\/catalogue-selection\.js/);
 });
 
 test("adds a publication once and keeps duplicate add operations idempotent", () => {

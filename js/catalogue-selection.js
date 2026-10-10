@@ -6,6 +6,7 @@
   const MAX_QUANTITY = 10000;
   const CHANGE_EVENT = "cambridge-selection-change";
   const FLOATING_BAR_ID = "cambridgeFloatingSelection";
+  const HEADER_LINK_ID = "cambridgeHeaderSelection";
   const FLOATING_STYLE_ID = "cambridgeFloatingSelectionStyle";
   const BODY_ACTIVE_CLASS = "cambridge-floating-selection-active";
   const BOOK_RETURN_KEY = "cambridgeBookReturn";
@@ -240,6 +241,30 @@
     window.location.href = orderUrl;
   }
 
+  function ensureHeaderSelection() {
+    if (isSelectionPage()) return null;
+    let link = document.getElementById(HEADER_LINK_ID);
+    if (link) return link;
+    const header = document.querySelector(".catalogue-header");
+    if (!header) return null;
+    link = document.createElement("a");
+    link.id = HEADER_LINK_ID;
+    link.className = "catalogue-header-selection";
+    link.addEventListener("click", event => { event.preventDefault(); openSelection(); });
+    const year = header.querySelector(".catalogue-year");
+    header.insertBefore(link, year || null);
+    return link;
+  }
+
+  function updateHeaderSelection() {
+    const link = ensureHeaderSelection();
+    if (!link) return;
+    const source = window.CambridgeCatalogueBootstrap;
+    link.href = source ? source.withSource("order.html") : "order.html";
+    link.textContent = "My Selection";
+    link.setAttribute("aria-label", "My Selection");
+  }
+
   function ensureFloatingBar() {
     if (isSelectionPage()) return null;
     let bar = document.getElementById(FLOATING_BAR_ID);
@@ -292,6 +317,7 @@
   function updateBar() {
     const legacyBar = document.getElementById("selectionBar");
     if (legacyBar) legacyBar.hidden = true;
+    updateHeaderSelection();
     updateFloatingBar();
     const listing = document.getElementById("list") || document.getElementById("browseResults") || document.getElementById("results");
     if (listing && listing.children && listing.children.length) restoreBookReturn();
