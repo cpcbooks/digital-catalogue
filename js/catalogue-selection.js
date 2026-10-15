@@ -67,16 +67,36 @@
     return selectedItems().reduce((total, item) => total + (validQty(item.quantity) ? Number(item.quantity) : 1), 0);
   }
 
+  function floatingSelectionSummary() {
+    return readOrder().reduce((summary, item) => {
+      if (item.type === "custom-kit") return summary;
+      const quantity = validQty(item.quantity) ? Number(item.quantity) : 1;
+      if (item.type === "standard-kit") summary.kits += quantity;
+      else { summary.titles += 1; summary.books += quantity; }
+      return summary;
+    }, { titles: 0, books: 0, kits: 0 });
+  }
+
+  function floatingSelectionLabels(summary = floatingSelectionSummary()) {
+    return [[summary.titles, "title"], [summary.books, "book"], [summary.kits, "kit"]]
+      .filter(([count]) => count)
+      .map(([count, label]) => count + " " + label + (count === 1 ? "" : "s"));
+  }
+
+  function isFloatingSelectionPage() {
+    return ["early-learning-books", "school-books", "exam-preparation", "college-books", "competitive-exam-books", "browse", "book-details"].includes(currentPage());
+  }
+
+  function clearFloatingSelectionClearance() {
+    if (document.body && document.body.style && typeof document.body.style.removeProperty === "function") document.body.style.removeProperty("--cambridge-floating-selection-clearance");
+  }
+
   function isSelectionPage() {
     return /(?:^|\/)order(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
   }
 
   function isBookDetailsPage() {
     return /(?:^|\/)book-details(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
-  }
-
-  function isKitBuilderPage() {
-    return /(?:^|\/)kit-builder(?:\.html)?$/i.test((window.location && window.location.pathname) || "");
   }
 
   function currentRelativeUrl() {
@@ -209,15 +229,16 @@
     style.id = FLOATING_STYLE_ID;
     style.textContent = `
       .selection-bar{display:none!important}
-      .cambridge-floating-selection{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:9px 9px 9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:#12233f;color:#fff;box-shadow:0 10px 28px rgba(18,35,63,.22);font-family:inherit;cursor:pointer;touch-action:manipulation}
+      .cambridge-floating-selection{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:9px 9px 9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:#12233f;color:#fff;box-shadow:0 10px 28px rgba(18,35,63,.22);font-family:inherit;cursor:pointer;touch-action:manipulation;text-decoration:none}
       .cambridge-floating-selection[hidden]{display:none!important}
       .cambridge-floating-selection:focus-visible{outline:3px solid rgba(18,35,63,.28);outline-offset:3px}
-      .cambridge-floating-selection__summary{display:flex;align-items:baseline;gap:4px;white-space:nowrap;font-size:10px;line-height:1.3}
+      .cambridge-floating-selection__summary{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;font-size:10px;line-height:1.3}
+      .cambridge-floating-selection__count{white-space:nowrap}
       .cambridge-floating-selection__summary strong{font-size:11px;font-weight:800}
       .cambridge-floating-selection__separator{opacity:.6}
       .cambridge-floating-selection__link{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border-radius:7px;background:#fff;color:#12233f;text-decoration:none;font-size:9px;font-weight:800;white-space:nowrap}
-      body.cambridge-floating-selection-active{padding-bottom:68px}
-      @media(max-width:520px){.cambridge-floating-selection{right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:8px 8px 8px 10px}.cambridge-floating-selection__summary{font-size:9px}.cambridge-floating-selection__summary strong{font-size:10px}.cambridge-floating-selection__link{min-height:30px;padding:0 9px}body.cambridge-floating-selection-active{padding-bottom:62px}}
+      body.cambridge-floating-selection-active{padding-bottom:max(68px,var(--cambridge-floating-selection-clearance,68px))}
+      @media(max-width:768px){.cambridge-floating-selection{right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:8px 8px 8px 10px;min-height:48px}.cambridge-floating-selection__summary{font-size:11px}.cambridge-floating-selection__summary strong{font-size:12px}.cambridge-floating-selection__link{min-height:30px;padding:0 9px;font-size:11px}body.cambridge-floating-selection-active{padding-bottom:max(62px,var(--cambridge-floating-selection-clearance,62px))}}
     `;
     document.head.appendChild(style);
   }
@@ -408,54 +429,55 @@
     let bar = document.getElementById(FLOATING_BAR_ID);
     if (bar) return bar;
     ensureFloatingStyle();
-    bar = document.createElement("aside");
+    bar = document.createElement("a");
     bar.id = FLOATING_BAR_ID;
     bar.className = "cambridge-floating-selection";
     bar.hidden = true;
-    bar.tabIndex = 0;
-    bar.setAttribute("role", "link");
     bar.setAttribute("aria-label", "View current book selection");
 
     const summary = document.createElement("div");
     summary.className = "cambridge-floating-selection__summary";
     summary.setAttribute("aria-live", "polite");
-    const titleText = document.createElement("span"); titleText.dataset.role = "titles";
-    const separator = document.createElement("span"); separator.className = "cambridge-floating-selection__separator"; separator.textContent = "·";
-    const quantityText = document.createElement("span"); quantityText.dataset.role = "quantity";
+    const counts = document.createElement("span"); counts.dataset.role = "counts";
     const link = document.createElement("span"); link.className = "cambridge-floating-selection__link"; link.textContent = "View Selection →";
-    summary.append(titleText, separator, quantityText);
+    summary.append(counts);
     bar.append(summary, link);
-    bar.addEventListener("click", openSelection);
-    bar.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openSelection(); }
-    });
+    bar.addEventListener("click", event => { event.preventDefault(); openSelection(); });
     document.body.appendChild(bar);
     return bar;
   }
 
   function updateFloatingBar() {
-    if (!document.body || isSelectionPage()) return;
-    if (isKitBuilderPage()) {
+    if (!document.body || !isFloatingSelectionPage()) {
       const existing = document.getElementById(FLOATING_BAR_ID);
       if (existing) existing.hidden = true;
       document.body.classList.remove(BODY_ACTIVE_CLASS);
+      clearFloatingSelectionClearance();
       return;
     }
-    const count = selectedCount();
-    const total = selectedQuantityTotal();
+    const counts = floatingSelectionSummary();
     const bar = ensureFloatingBar();
     if (!bar) return;
-    if (count === 0) {
+    if (!counts.titles && !counts.kits) {
       bar.hidden = true;
       document.body.classList.remove(BODY_ACTIVE_CLASS);
+      clearFloatingSelectionClearance();
       return;
     }
-    const titles = bar.querySelector('[data-role="titles"]');
-    const quantity = bar.querySelector('[data-role="quantity"]');
-    if (titles) titles.innerHTML = "<strong>" + count + "</strong> " + (count === 1 ? "title" : "titles");
-    if (quantity) quantity.innerHTML = "<strong>" + total + "</strong> " + (total === 1 ? "book" : "books");
+    const source = window.CambridgeCatalogueBootstrap;
+    bar.href = source ? source.withSource("order.html") : "order.html";
+    const countRoot = bar.querySelector('[data-role="counts"]');
+    if (countRoot) {
+      countRoot.replaceChildren();
+      floatingSelectionLabels(counts).forEach((label, index) => {
+        if (index) { const separator = document.createElement("span"); separator.className = "cambridge-floating-selection__separator"; separator.textContent = "·"; countRoot.appendChild(separator); }
+        const part = document.createElement("span"); part.className = "cambridge-floating-selection__count"; const [count, ...words] = label.split(" "); part.innerHTML = "<strong>" + count + "</strong> " + words.join(" "); countRoot.appendChild(part);
+      });
+    }
     bar.hidden = false;
     document.body.classList.add(BODY_ACTIVE_CLASS);
+    const mobile = typeof window.matchMedia === "function" && window.matchMedia("(max-width:768px)").matches;
+    if (document.body.style && typeof document.body.style.setProperty === "function") document.body.style.setProperty("--cambridge-floating-selection-clearance", (bar.offsetHeight + (mobile ? 14 : 16)) + "px");
   }
 
   function updateBar() {
@@ -621,7 +643,7 @@
   window.CambridgeSelection = Object.freeze({
     ORDER_KEY, MAX_QUANTITY, CHANGE_EVENT, CHECKLIST_RETURN_KEY,
     validQty, readOrder, saveOrder, itemKey, indexOfBook, selectedItem, selectedItems,
-    selectedCount, selectedQuantityTotal, updateBar, updateFloatingBar, add, remove, setQty,
+    selectedCount, selectedQuantityTotal, floatingSelectionSummary, floatingSelectionLabels, isFloatingSelectionPage, updateBar, updateFloatingBar, add, remove, setQty,
     detailsUrl, coverNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
   });
 })();

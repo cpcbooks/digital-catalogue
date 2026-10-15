@@ -4,8 +4,8 @@ const vm = require("node:vm");
 const { createBrowserSandbox, createStorage, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 const { clonePublications } = require("./fixtures/publications.cjs");
 
-function selectionWithStorage(storageData = {}) {
-  const sandbox = createBrowserSandbox({ localStorage: createStorage(storageData) });
+function selectionWithStorage(storageData = {}, location) {
+  const sandbox = createBrowserSandbox({ localStorage: createStorage(storageData), location });
   loadBrowserScript(sandbox, "js/catalogue-selection.js");
   return { selection: sandbox.window.CambridgeSelection, storage: sandbox.localStorage };
 }
@@ -281,12 +281,12 @@ test("Book Details uses the loaded publication title as a non-link current bread
   assert.match(page, /\.gallery-frame img\{[^}]*width:auto;height:auto;object-fit:contain/);
 });
 
-test("keeps Standard Kit's source-aware stage return and suppresses only the Kit Builder floating summary", () => {
+test("keeps Standard Kit's source-aware stage return and classifies the Kit Builder as a hidden Floating Selection route", () => {
   const selection = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "catalogue-selection.js"), "utf8");
   const standard = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "standard-kit.js"), "utf8");
   assert.match(selection, /page === "standard-kit" \|\| page === "kit-builder"/);
   assert.match(selection, /label: "← Back to " \+ \(level \|\| "Early Learning"\)/);
-  assert.match(selection, /if \(isKitBuilderPage\(\)\) \{[\s\S]*existing\.hidden = true;[\s\S]*return;/);
+  assert.match(selection, /function isFloatingSelectionPage\(\) \{[\s\S]*"kit-builder"/);
   assert.match(standard, /early-learning-level\.html\?level=/);
   assert.match(standard, /Bootstrap\.withSource/);
 });
@@ -317,6 +317,34 @@ test("adds a publication once and keeps duplicate add operations idempotent", ()
   assert.equal(selection.add(book), true);
   assert.equal(selection.selectedCount(), 1);
   assert.equal(selection.selectedQuantityTotal(), 1);
+});
+
+test("formats Floating Selection counts without treating Standard Kits as books", () => {
+  const { selection } = selectionWithStorage({ cambridgeOrder: JSON.stringify([
+    { id: "one", title: "One", quantity: 5 },
+    { id: "two", title: "Two", quantity: 5 },
+    { id: "three", title: "Three", quantity: 1 },
+    { id: "kit-one", type: "standard-kit", quantity: 1, books: [{}] },
+    { id: "kit-two", type: "standard-kit", quantity: 2, books: [{}] },
+    { id: "custom", type: "custom-kit", quantity: 9, books: [{}] }
+  ]) });
+  assert.deepEqual(JSON.parse(JSON.stringify(selection.floatingSelectionSummary())), { titles: 3, books: 11, kits: 3 });
+  assert.deepEqual(Array.from(selection.floatingSelectionLabels()), ["3 titles", "11 books", "3 kits"]);
+  assert.deepEqual(Array.from(selection.floatingSelectionLabels({ titles: 1, books: 1, kits: 0 })), ["1 title", "1 book"]);
+  assert.deepEqual(Array.from(selection.floatingSelectionLabels({ titles: 0, books: 0, kits: 1 })), ["1 kit"]);
+});
+
+test("shows Floating Selection only on publication routes", () => {
+  const visible = ["early-learning-books", "school-books", "exam-preparation", "college-books", "competitive-exam-books", "browse", "book-details"];
+  const hidden = ["index", "early-learning", "early-learning-level", "school-education", "school-learning", "college-university", "competitive-exams", "standard-kit", "kit-builder", "kit-review", "order", "request", "review-request", "request-details"];
+  visible.forEach(page => {
+    const { selection } = selectionWithStorage({}, { pathname: "/" + page, href: "https://catalogue.example.test/" + page });
+    assert.equal(selection.isFloatingSelectionPage(), true, page);
+  });
+  hidden.forEach(page => {
+    const { selection } = selectionWithStorage({}, { pathname: "/" + page, href: "https://catalogue.example.test/" + page });
+    assert.equal(selection.isFloatingSelectionPage(), false, page);
+  });
 });
 
 test("updates a quantity and removes the item when set to zero", () => {
