@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — User Flows
 
-> Current-state update: Custom Kit Builder → Review → Edit is implemented for Playgroup/Nursery/LKG/UKG. Cambridge Standard Kit is implemented; DEVELOPMENT/PILOT Supabase currently has an enabled temporary LKG composition with eight configured titles. Final CPC-approved compositions remain pending final Item Master reconciliation. Sharing and PDF outputs are deferred.
+> Current-state update: Custom Kit Builder → Review → Edit is implemented for Playgroup/Nursery/LKG/UKG. Standard Kit support is implemented, while static definitions are deliberately unconfigured. A temporary LKG Supabase pilot composition was previously documented; its current remote availability is unverified. Final CPC-approved compositions remain pending Item Master reconciliation. Sharing and PDF outputs are deferred.
 
 ## Purpose and flow principles
 
@@ -72,6 +72,10 @@ flowchart TD
 
 No broken sample action is shown when no public sample exists. Samples return visitors to the relevant publication/catalogue context. Public sample viewing requires no login or contact information; permitted downloading is a separate CPC decision.
 
+### Accepted contextual navigation
+
+Applicable catalogue pages use full hierarchy breadcrumbs, with the current page as the non-link endpoint. Book Details uses the loaded publication title as that endpoint, falling back to **Book Details** when no title is available. Contextual Back navigation preserves the relevant parent or originating browsing context, including the selected catalogue source where applicable. My Selection keeps its distinct Home and Continue Browsing navigation rather than hierarchy breadcrumbs; Kit Review retains **Edit Kit**; Requirement pages retain their accepted requirement-specific Back/View Selection navigation.
+
 ## 4. My Selection and Send Requirement — CORE / LAUNCH
 
 ```mermaid
@@ -89,6 +93,8 @@ flowchart TD
 ```
 
 Adding a title does not collect contact details. Selection may initially persist locally on the visitor's device, subject to later privacy/technical design. Send Requirement is optional and never changes Selection into checkout.
+
+On publication listings and Book Details, a populated Floating Selection may provide a contextual shortcut to My Selection. It does not replace the header My Selection action and is not a cart. Its counts distinguish individual publication titles/books from Standard Kits; Custom Kits remain a separate workflow and are excluded from this shortcut summary.
 
 Requirement behaviour:
 
@@ -121,7 +127,7 @@ flowchart TD
 
 A normal temporary Kit requires no account. Durable cross-browser-session Kit persistence, Kit sharing, and Kit downloads/PDF are deferred/post-launch.
 
-Cambridge Standard Kit is a separate CPC-controlled, fixed-composition flow. DEVELOPMENT/PILOT Supabase currently provides an enabled temporary LKG Kit with eight configured titles; it is not a final CPC-approved composition or a production-readiness claim. Final Standard Kit compositions remain pending final Item Master reconciliation.
+Cambridge Standard Kit is a separate CPC-controlled, fixed-composition flow. Static definitions are intentionally unconfigured. A temporary LKG Supabase pilot Kit with eight configured titles was previously documented, but its current remote availability is unverified; it is not a final CPC-approved composition or a production-readiness claim. Final Standard Kit compositions remain pending Item Master reconciliation.
 
 ## 6. Requirement tracking — PLANNED
 

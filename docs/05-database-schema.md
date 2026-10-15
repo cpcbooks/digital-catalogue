@@ -2,7 +2,7 @@
 
 ## Purpose and authority
 
-This document defines the target logical and physical data model for CPC Digital Catalogue. It distinguishes recovered live-state evidence from the intended target model and from deliberately deferred possibilities. It is not migration SQL, an implementation plan, or authorization-policy code.
+This document defines the target logical and physical data model for CPC Digital Catalogue. It distinguishes recovered historical database evidence from the intended target model and from deliberately deferred possibilities. It is not migration SQL, an implementation plan, or authorization-policy code.
 
 Product scope is governed by [01-product-requirements.md](01-product-requirements.md), system boundaries by [02-system-architecture.md](02-system-architecture.md), behaviour by [03-user-flows.md](03-user-flows.md), and UI/UX direction by [04-ui-ux-specification.md](04-ui-ux-specification.md). The current-schema section is grounded in `supabase/recovery/` and the recovered `submit-catalogue-request` Edge Function, not production rows or older planning documents.
 
@@ -21,7 +21,7 @@ Product scope is governed by [01-product-requirements.md](01-product-requirement
 - Do not create speculative ERP, e-commerce, pricing, inventory, or generic rules-engine structures.
 - Design for hundreds or thousands of publications and their assets, not an imagined marketplace at massive scale.
 
-## 2. Current verified schema
+## 2. Recovered historical schema evidence
 
 Recovery evidence lists six `public` base tables, no recovered views/materialized views, and no recovered database enums. All six tables have RLS enabled (not forced).
 
@@ -158,7 +158,7 @@ Retain `requests`, `request_items`, and normalized `request_kit_components`. The
 
 Target request header retains UUID, unique human reference, created-at, simple status, necessary contact/institution information, notes, and server-derived item/quantity counts. Target statuses should be constrained to the product vocabulary **Received**, **Under Review**, **Contacted**, and **Closed** (with a deliberate cancellation state only if required). Existing `new/reviewing/accepted/rejected/cancelled` are legacy/current values requiring an explicit mapping before change; no order fulfilment status is introduced.
 
-Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a Kit line include stage code, optional Custom Kit name where applicable, line quantity, and a snapshot. The current remote schema supports book/custom-kit; the prepared pending migration adds `standard-kit` compatibility. A Standard Kit submission requires an enabled CPC definition whose ordered canonical IDs exactly match the submitted components; no definition is seeded. Keep a strict book-vs-kit check and unique positions.
+Target request-item fields include nullable canonical `publication_id uuid` for a book, position, type, quantity, and a whitelisted snapshot of customer-facing title/series/stage/subject/medium/ISBN/SKU/MRP as justified. For a Kit line include stage code, optional Custom Kit name where applicable, line quantity, and a snapshot. Recovered historical schema evidence supports book/custom-kit; prepared repository migration SQL adds `standard-kit` compatibility, but live deployment is unverified. A Standard Kit submission requires an enabled CPC definition whose ordered canonical IDs exactly match the submitted components; no approved production definition is asserted here. Keep a strict book-vs-kit check and unique positions.
 
 `request_kit_components` is worth preserving: it supports historical component-level understanding without becoming an ERP BOM. It should move from nullable legacy text `product_id` to an optional canonical `publication_id uuid` where resolvable, retain quantity-per-kit and total quantity, position, and a limited customer-facing snapshot. Its parent is a Kit request item (custom or Standard Kit once the prepared migration is deployed).
 
@@ -174,7 +174,7 @@ The duplicated current `request_items.kit_books jsonb` is transitional once norm
 | Requirement reference, counts, mapping status, timestamps | Server/database derived. |
 | Completed Kit minimum | Server applies applicable stage configuration to canonical distinct eligible publications. |
 
-The Edge Function remains a public ingress but requires a hardened trusted submission boundary: request-size checks before parsing where practical, strict schema validation, anti-spam/rate limiting, idempotency/retry design, minimal safe errors/logging, and a single transaction. These are Security/Technical Design actions, not schema changes in this document.
+The repository Edge Function remains a public ingress and includes request-size checks, strict DTO validation, and an idempotency-key contract. Live deployment and RPC behaviour remain unverified. Anti-spam/rate limiting, minimal safe errors/logging, and a single transaction remain Security/Technical Design actions, not schema changes in this document.
 
 ## 8. Search, MRP, lifecycle, timestamps, and indexes
 
@@ -214,7 +214,7 @@ RLS is a defence layer, not a substitute for narrowed grants. Current broad gran
 | `requests` | **MODIFY** | Private requirement header: UUID, unique reference, simple lifecycle, necessary PII, counts, notes, submitted timestamp. Retire duplicate new `customer_snapshot` writes after review. |
 | `request_items` | **MODIFY** | Private top-level book or Kit snapshot line. Add nullable canonical publication reference for books and stage/name fields for Kits; preserve snapshot integrity; retire new duplicate `kit_books` array writes when components are authoritative. |
 | `request_kit_components` | **KEEP / MODIFY** | Private normalized immutable Kit components. Preserve relationship/positions/quantities; introduce optional canonical publication UUID and customer-safe snapshot. |
-| `submit_catalogue_request` | **MODIFY** | Trusted transactional submission routine. Canonical lookup, server-derived snapshots/reference/counts, Kit stage/minimum validation, constrained execution. |
+| `submit_catalogue_request` | **MODIFY** | Repository target transactional submission routine. Canonical lookup, server-derived snapshots/reference/counts, Kit stage/minimum validation, constrained execution; live deployment requires separate verification. |
 | `check_catalogue_request_rate_limit` and private attempts store | **DEFER / RECOVER** | Do not redesign from inference. Verify private schema and intended use separately; current helper mutates rate-limit data and is not in recovered call path. |
 | Shareable Kit persistence | **DEFER** | Required only if implemented share links cannot safely be self-contained; needs separate security/retention design. |
 | Selection persistence | **DEFER** | Local state is sufficient for launch. |

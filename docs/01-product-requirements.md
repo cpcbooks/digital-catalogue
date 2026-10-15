@@ -211,11 +211,11 @@ Search should account for relevant fields such as title, series, class, subject,
 
 The product should handle no-result searches gracefully.
 
-Anonymous aggregate no-result search information may be used to improve catalogue discoverability and understand unmet search needs.
+Anonymous aggregate no-result search information may be considered after launch to improve catalogue discoverability and understand unmet search needs. It is not required for the initial catalogue release.
 
 ## 13. Catalogue Analytics & Insights
 
-The Digital Catalogue should support privacy-conscious analytics that help CPC understand and improve catalogue usage.
+Privacy-conscious aggregate analytics are deferred/post-launch rather than mandatory for the initial catalogue release. When CPC elects to introduce them, they should help CPC understand and improve catalogue usage without changing the catalogue-first purpose of discovery or requiring visitor identity.
 
 Useful aggregate events/metrics may include:
 

@@ -6,7 +6,9 @@ This document defines the intended system boundaries and architectural direction
 
 [01-product-requirements.md](01-product-requirements.md) is authoritative for product scope. In particular, CPC Digital Catalogue is a standalone, catalogue-first product. My Selection, Custom Kit, and Send Requirement are supplementary catalogue features—not e-commerce, ordering, or ERP workflows.
 
-## 1. Current verified architecture
+## 1. Repository-verified frontend and recovered backend evidence
+
+This section distinguishes repository-verified browser implementation from historical Supabase recovery evidence. It does not reverify the current remote Supabase project, deployed functions, policies, data, or migration state.
 
 ### 1.1 Public experience and frontend
 
@@ -22,11 +24,11 @@ The application has a Supabase pilot path selected with `?catalogueSource=supaba
 
 My Selection is persisted locally under `localStorage` key `cambridgeOrder`. Short-lived return/navigation context and the Supabase pilot cache use `sessionStorage`. This is current browser-state handling, not a customer account or server-side selection service.
 
-Cambridge Standard Kit definitions use a small browser-local CPC configuration contract (`stageCode`, optional display name, enabled state, and ordered canonical publication IDs). It resolves only against the selected normalized catalogue source; the current real definitions are intentionally unconfigured until CPC supplies approved compositions.
+Cambridge Standard Kit definitions use a small browser-local CPC configuration contract (`stageCode`, optional display name, enabled state, and ordered canonical publication IDs). Static definitions are deliberately unconfigured. A temporary remote LKG pilot composition was previously documented, but its current availability is not reverified here. Production compositions require CPC approval and Item Master reconciliation, and resolve only against the selected normalized catalogue source.
 
-### 1.2 Verified catalogue backend
+### 1.2 Historical Supabase recovery evidence
 
-Supabase is the selected managed backend platform. PostgreSQL is the relational database.
+Supabase is the selected managed backend platform and PostgreSQL is the relational database. The statements below are recovered historical evidence, not a claim that the latest remote state has been reverified.
 
 Recovered metadata verifies these public tables:
 
@@ -41,13 +43,13 @@ All six tables have RLS enabled. Current public read policies allow `anon` and `
 
 The recovered `publication-assets` Storage bucket is public, allows JPEG, PNG, WebP, and PDF, and has a 10 MiB file limit. It is a current asset-delivery capability, not a requirement that every publication have Storage assets.
 
-### 1.3 Verified requirement boundary
+### 1.3 Repository requirement boundary and recovered deployment evidence
 
-The deployed `submit-catalogue-request` Edge Function accepts public POST submissions, performs basic request-shape and size checks, uses server-side Supabase environment variables, and invokes the `submit_catalogue_request(payload jsonb)` database routine.
+The repository's `submit-catalogue-request` Edge Function accepts public POST submissions, performs basic request-shape and size checks, uses server-side Supabase environment variables, and invokes the `submit_catalogue_request(payload jsonb)` database routine. Recovery evidence previously indicated a deployed counterpart; the latest audit did not reverify that live deployment.
 
 That routine is a `SECURITY DEFINER` transactional boundary. It validates core item/quantity rules, generates a CPC reference, records header/items/components, and preserves submitted snapshots. It looks up internal mapping data server-side where applicable.
 
-This is a useful current boundary, but it is transitional rather than the complete target security design. The recovered rate-limit helper is not called by the recovered Edge Function or submission routine. The current flow also has no verified CAPTCHA or idempotency design.
+This is a useful repository boundary, but it is transitional rather than the complete target security design. The recovered rate-limit helper is not called by the recovered Edge Function or submission routine. The repository includes an idempotency-key contract, but live RPC/deployment behaviour, rate limiting, and CAPTCHA remain unverified by the latest audit.
 
 ### 1.4 Current architecture diagram
 
@@ -198,7 +200,7 @@ The Admin Console is a separate trust boundary. Controlled Supabase/import proce
 
 For now:
 
-- Supabase/PostgreSQL is intended to own authoritative Digital Catalogue publication data, asset metadata, catalogue lifecycle/presentation information, requirements, and necessary catalogue application data after final cutover. The current project is development/pilot; static data remains a development/reference/fallback source.
+- Supabase/PostgreSQL is intended to own authoritative Digital Catalogue publication data, asset metadata, catalogue lifecycle/presentation information, requirements, and necessary catalogue application data after final cutover. The current project remains development/pilot in this repository; static data remains a development/reference/fallback source. Prepared migration SQL is repository target state until deliberately applied and live-verified.
 - Supabase Storage owns catalogue assets as appropriate.
 - Future ERP ownership is deliberately undecided until such a system exists.
 

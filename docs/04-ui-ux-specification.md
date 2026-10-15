@@ -117,20 +117,17 @@ flowchart TD
   S -->|No| E[Continue exploration]
   V --> D
   D --> SEL[Add to Selection]
-  D --> SH[Share]
-  D --> REL[Same-series / related exploration]
   D --> KIT{Eligible Early Learning?}
   KIT -->|Yes| KB[Add to Custom Kit]
 ```
 
-Detail prioritizes cover/assets, title, series, stage/class, subject, medium/language, book type, board/curriculum where applicable, ISBN/SKU where useful, MRP, description/features, samples, and related/same-series exploration.
+Detail prioritizes cover/assets, title, series, stage/class, subject, medium/language, book type, board/curriculum where applicable, ISBN/SKU where useful, MRP, description/features, and samples. Related/same-series exploration is deferred.
 
 Action hierarchy when available:
 
 1. View Book Details gallery
 2. Add to Selection
-3. Share
-4. Add to Custom Kit for eligible Early Learning publications
+3. Add to Custom Kit for eligible Early Learning publications
 
 Never show a broken or disabled sample action merely because no sample exists. An available sample opens an in-catalogue, responsive viewer with clear back/close, loading, error recovery, and sample navigation. It requires no login, contact form, or requirement submission. Viewer technology is intentionally unspecified.
 
@@ -162,7 +159,7 @@ The current baseline minimum is **8 eligible titles**, but it is configurable by
 
 An incomplete kit—for example, 2 of 8 selected—never loses work. The visitor may continue building, remove titles, leave, and return if persistence supports it. The working Kit remains editable, but Review and completed-kit actions remain unavailable until the configured minimum is satisfied.
 
-Only completed-kit actions may require the configured minimum: Complete Kit, PDF summary, Share Kit, and Send as Custom Kit Requirement. Use helpful progress language such as “Add 6 more titles to complete your LKG Custom Kit.” A visitor who needs one or two individual books uses My Selection.
+Only completed-kit actions may require the configured minimum. Current completed-kit actions are Complete Kit and Send as Custom Kit Requirement; deferred PDF summary and Share Kit actions, if introduced, must follow the same rule. Use helpful progress language such as “Add 6 more titles to complete your LKG Custom Kit.” A visitor who needs one or two individual books uses My Selection.
 
 ### Builder and review
 
@@ -185,7 +182,7 @@ Review is distinct from building and supports covers, selected titles, quantitie
 
 ## 13. Deferred Kit and sharing features
 
-Custom Kit PDF summaries, Custom Kit sharing, and publication Share/Copy Link are deferred/post-launch. They are not launch requirements and must not add anonymous server persistence merely to support a speculative sharing flow. Existing direct publication URLs and normal catalogue navigation remain useful.
+Custom Kit PDF summaries, Custom Kit sharing, publication Share/Copy Link, and related/same-series recommendations are deferred/post-launch. They are not launch requirements and must not add anonymous server persistence merely to support a speculative sharing flow. Existing direct publication URLs and normal catalogue navigation remain useful.
 
 ## 14. Direct links
 
@@ -201,6 +198,11 @@ This contract records accepted implementation behaviour. It supplements the prod
 - Static/default navigation remains parameter-free: do not add `catalogueSource=static`.
 - Direct links retain safe fallback behaviour when no valid prior context exists.
 
+### Breadcrumbs and contextual Back navigation
+
+- Applicable catalogue pages use full hierarchy breadcrumbs with a non-link current-page endpoint. Book Details uses the loaded publication title as that endpoint, falling back to **Book Details** when unavailable.
+- Contextual Back navigation preserves the appropriate parent or originating browsing context, including selected source and safe fallback behaviour. My Selection remains distinct: it uses Home and Continue Browsing rather than hierarchy breadcrumbs. Kit Review retains **Edit Kit**, and Requirement pages retain their accepted requirement-specific Back/View Selection navigation.
+
 ### Home search
 
 Submitting Home search retains the query and selected catalogue source when it opens Browse.
@@ -211,6 +213,13 @@ Submitting Home search retains the query and selected catalogue source when it o
 - A deliberate switch to a different discovery tab starts fresh exploration: it clears query, category, class/stage, Series, Subject, Book Type, and Medium while preserving catalogue source and My Selection. Clicking the active tab is a no-op. Back/Forward, direct/bookmarked URL hydration, Details return, and My Selection → Continue Browsing restore the exact URL-backed context instead.
 - Changing a Series, Subject, or Book Type within the active tab retains compatible query and refinements. Medium is cleared only when a newly chosen discovery context makes it inapplicable; Clear Filters retains the active tab and catalogue source.
 - Normal publication listings use the shared Selection actions: **View Book** appears before **Add to Selection**. Successful add, quantity increase, quantity decrease, or removal immediately refreshes the listing action state so Browse, Details, and My Selection show the same persisted quantity. Existing identity, duplicate-prevention, quantity-limit, and persistence rules apply unchanged.
+
+### Contextual Floating Selection
+
+- The Floating Selection is a contextual shortcut to My Selection, not a cart and not a replacement for the header My Selection action. It appears only when the Selection contains eligible individual publications or Standard Kits.
+- It is shown on Early Learning, School, Exam Preparation, College, and Competitive Exam publication listings; Browse Publications; and Book Details. It is hidden on Home; category, stage, and class landing pages; Standard Kit; Custom Kit Builder; Kit Review; My Selection; and Requirement pages.
+- Counts distinguish individual publications from Standard Kits: `1 title · 1 book`, `3 titles · 10 books`, `1 kit`, `2 kits`, and `3 titles · 10 books · 1 kit`. Individual publication quantities contribute to book counts, Standard Kit quantities contribute to kit counts, and Custom Kits are excluded.
+- It remains a native source-aware anchor. It is fixed bottom-right using the accepted existing presentation: 16px desktop offsets; 10px mobile offsets through 768px; mobile 11px/12px text hierarchy; responsive maximum width with controlled wrapping; no horizontal overflow; and bottom clearance only while visible, expanding for wrapped content when needed.
 
 ### Book Details and browsing context
 
