@@ -283,6 +283,16 @@
     return /^(?:[1-9]|10)$/.test(String(value || "")) ? "Class " + value : "";
   }
 
+  function stageBreadcrumb(params) {
+    const stages = { "1st-puc": "1st PUC", "2nd-puc": "2nd PUC", degree: "Degree" };
+    return stages[params.get("stage") || "1st-puc"] || "1st PUC";
+  }
+
+  function examBreadcrumb(params) {
+    const exams = { vao: "VAO", "land-surveyor": "Land Surveyor", other: "Other Exams" };
+    return exams[params.get("exam") || "vao"] || "VAO";
+  }
+
   function breadcrumbItems() {
     const page = currentPage(), params = new URLSearchParams((window.location && window.location.search) || "");
     const home = { label: "Home", href: "index.html" };
@@ -293,15 +303,36 @@
     const level = stageLabel(params.get("level"));
     const className = classLabel(params.get("class"));
     if (page === "index" || page === "order" || page === "request" || page === "review-request" || page === "request-details") return [];
-    if (page === "browse" || page === "early-learning" || page === "school-education" || page === "college-university" || page === "competitive-exams") return [home];
-    if (page === "early-learning-level" || page === "early-learning-books") return [home, early];
-    if (page === "school-learning" || page === "school-books") return [home, school];
-    if (page === "exam-preparation") return [home, school].concat(className ? [{ label: className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) }] : []);
-    if (page === "college-books") return [home, college];
-    if (page === "competitive-exam-books") return [home, competitive];
-    if (page === "standard-kit" || page === "kit-builder" || page === "kit-review") return [home, early].concat(level ? [{ label: level, href: "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) }] : []);
-    if (page === "book-details") return [home];
+    if (page === "browse") return [home, { label: "Browse Publications" }];
+    if (page === "early-learning") return [home, { label: "Early Learning" }];
+    if (page === "school-education") return [home, { label: "School Learning" }];
+    if (page === "college-university") return [home, { label: "College & University" }];
+    if (page === "competitive-exams") return [home, { label: "Competitive Exams" }];
+    if (page === "early-learning-level" || page === "early-learning-books") return [home, early, { label: level || "Early Learning" }];
+    if (page === "school-learning" || page === "school-books") return [home, school, { label: className || "School Publications" }];
+    if (page === "exam-preparation") return [home, school].concat(className ? [{ label: className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) }] : []).concat({ label: "Exam Preparation" });
+    if (page === "college-books") return [home, college, { label: stageBreadcrumb(params) }];
+    if (page === "competitive-exam-books") return [home, competitive, { label: examBreadcrumb(params) }];
+    if (page === "standard-kit" || page === "kit-builder" || page === "kit-review") {
+      const current = page === "standard-kit" ? "Standard Kit" : page === "kit-builder" ? "Build Your Own Kit" : "Review Kit";
+      return [home, early].concat(level ? [{ label: level, href: "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) }] : []).concat({ label: current });
+    }
+    if (page === "book-details") return [home, { label: "Book Details" }];
     return [];
+  }
+
+  function contextBack(page, params) {
+    const home = { label: "← Back to Home", href: "index.html" };
+    const level = stageLabel(params.get("level"));
+    const className = classLabel(params.get("class"));
+    if (["early-learning", "school-education", "college-university", "competitive-exams", "browse"].includes(page)) return home;
+    if (["early-learning-level", "early-learning-books"].includes(page)) return { label: "← Back to Early Learning", href: "early-learning.html" };
+    if (["school-learning", "school-books"].includes(page)) return { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "exam-preparation") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "college-books") return { label: "← Back to College & University", href: "college-university.html" };
+    if (page === "competitive-exam-books") return { label: "← Back to Competitive Exams", href: "competitive-exams.html" };
+    if (["standard-kit", "kit-builder"].includes(page)) return { label: "← Back to " + (level || "Early Learning"), href: level ? "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) : "early-learning.html" };
+    return null;
   }
 
   function breadcrumbRoot() {
@@ -319,18 +350,31 @@
     anchor.parentNode.insertBefore(root, anchor);
 
     if (legacy) {
-      const page = currentPage();
-      const action = page === "book-details" || page === "standard-kit" ? legacy.querySelector("#back") : legacy.querySelector("#editNav");
+      const page = currentPage(), params = new URLSearchParams((window.location && window.location.search) || "");
+      let action = legacy.querySelector("#back") || legacy.querySelector("#kitBack") || legacy.querySelector("#editNav") || legacy.querySelector("a:not([href='index.html'])");
+      const back = contextBack(page, params);
+      if (!action && back) action = document.createElement("a");
       if (action) {
-        if (page === "standard-kit") {
-          const level = stageLabel(new URLSearchParams((window.location && window.location.search) || "").get("level"));
-          action.textContent = "← Back to " + (level || "Early Learning");
+        if (back) {
+          const source = window.CambridgeCatalogueBootstrap;
+          action.href = source ? source.withSource(back.href) : back.href;
+          action.textContent = back.label;
         }
         action.classList.add("catalogue-context-action");
         root.parentNode.insertBefore(action, legacy.nextSibling);
       }
       legacy.remove();
-    } else browseBack.remove();
+    } else {
+      const back = contextBack(currentPage(), new URLSearchParams((window.location && window.location.search) || ""));
+      if (back) {
+        const action = document.createElement("a"), source = window.CambridgeCatalogueBootstrap;
+        action.href = source ? source.withSource(back.href) : back.href;
+        action.textContent = back.label;
+        action.className = "catalogue-context-action";
+        root.parentNode.insertBefore(action, browseBack.nextSibling);
+      }
+      browseBack.remove();
+    }
     return root;
   }
 
@@ -351,7 +395,10 @@
       const node = item.href ? document.createElement("a") : document.createElement("span");
       node.textContent = item.label;
       if (item.href) node.href = source ? source.withSource(item.href) : item.href;
-      else node.setAttribute("aria-current", "page");
+      else {
+        node.className = "catalogue-breadcrumbs__current";
+        node.setAttribute("aria-current", "page");
+      }
       root.appendChild(node);
     });
   }

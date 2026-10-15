@@ -203,6 +203,14 @@ input {
 }
 
 
+.catalogue-breadcrumbs__current {
+
+    color: var(--muted);
+    overflow-wrap: anywhere;
+
+}
+
+
 .catalogue-context-action {
 
     display: inline-flex;

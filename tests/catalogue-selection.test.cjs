@@ -1,5 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const vm = require("node:vm");
 const { createBrowserSandbox, createStorage, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 const { clonePublications } = require("./fixtures/publications.cjs");
 
@@ -73,6 +74,15 @@ function breadcrumbSelection(pathname, search = "") {
   loadBrowserScript(sandbox, "js/catalogue-selection.js");
   sandbox.window.document.dispatchEvent({ type: "DOMContentLoaded" });
   return nodes.find(item => item.id === "catalogueBreadcrumbs");
+}
+
+function bookDetailsBreadcrumbs(book) {
+  const fs = require("node:fs"), path = require("node:path");
+  const source = fs.readFileSync(path.join(__dirname, "..", "js", "book-details.js"), "utf8");
+  const start = source.indexOf("  function detailBreadcrumbs(book)"), end = source.indexOf("  function imageList(book)");
+  const context = { book, encodeURIComponent, Query: { classValues(item) { return Array.isArray(item.class) ? item.class : []; } } };
+  vm.runInNewContext(source.slice(start, end) + "result=detailBreadcrumbs(book);", context);
+  return context.result;
 }
 
 function interactiveSelection(search = "?catalogueSource=supabase") {
@@ -209,7 +219,7 @@ test("renders one source-aware Header My Selection link without a count badge", 
   assert.equal(staticLink.href, "order.html");
 });
 
-test("renders source-aware ancestor-only hierarchy breadcrumbs", () => {
+test("renders source-aware full hierarchy breadcrumbs with a non-link current page", () => {
   const crumbs = breadcrumbSelection("/early-learning-level.html", "?level=lkg&catalogueSource=supabase");
   assert.ok(crumbs);
   assert.equal(crumbs.attributes["aria-label"], "Catalogue hierarchy");
@@ -217,8 +227,29 @@ test("renders source-aware ancestor-only hierarchy breadcrumbs", () => {
   assert.equal(crumbs.children[0].href, "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(crumbs.children[2].textContent, "Early Learning");
   assert.equal(crumbs.children[2].href, "early-learning.html#cpc-route=catalogueSource%3Dsupabase");
-  assert.equal(crumbs.children.length, 3);
-  assert.equal(crumbs.children.some(node => node.attributes["aria-current"] === "page"), false);
+  assert.equal(crumbs.children[4].textContent, "LKG");
+  assert.equal(crumbs.children[4].attributes["aria-current"], "page");
+  assert.equal(crumbs.children.length, 5);
+});
+
+test("renders the complete Class 8 Exam Preparation hierarchy and its source-aware parent back action", () => {
+  const crumbs = breadcrumbSelection("/exam-preparation.html", "?class=8&catalogueSource=supabase");
+  assert.deepEqual(crumbs.children.filter(node => node.textContent !== "›").map(node => node.textContent), ["Home", "School Learning", "Class 8", "Exam Preparation"]);
+  const current = crumbs.children.at(-1);
+  assert.equal(current.attributes["aria-current"], "page");
+  assert.equal(current.href, undefined);
+  assert.equal(crumbs.parentNode.children[1].textContent, "← Back to Class 8");
+  assert.equal(crumbs.parentNode.children[1].href, "school-learning.html#cpc-route=class%3D8%26catalogueSource%3Dsupabase");
+  assert.equal(crumbs.parentNode.children.length, 2);
+});
+
+test("uses deterministic parent back actions without replacing Details or Kit Review contextual actions", () => {
+  const early = breadcrumbSelection("/early-learning.html", "?catalogueSource=supabase");
+  assert.equal(early.parentNode.children[1].textContent, "← Back to Home");
+  assert.equal(early.parentNode.children[1].href, "index.html#cpc-route=catalogueSource%3Dsupabase");
+  const standard = breadcrumbSelection("/standard-kit.html", "?level=lkg");
+  assert.equal(standard.parentNode.children[1].textContent, "← Back to LKG");
+  assert.equal(standard.parentNode.children[1].href, "early-learning-level.html?level=lkg");
 });
 
 test("keeps My Selection and Requirement workflows free of hierarchy breadcrumbs", () => {
@@ -234,12 +265,17 @@ test("My Selection keeps Home above its contextual return without hierarchy brea
   assert.doesNotMatch(order, /\.order-nav\{[^}]*justify-content:space-between/);
 });
 
-test("Book Details keeps publication titles out of breadcrumbs and uses a portrait-only fallback frame", () => {
+test("Book Details uses the loaded publication title as a non-link current breadcrumb and a portrait-only fallback frame", () => {
   const details = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "book-details.js"), "utf8");
   const page = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "book-details.html"), "utf8");
-  assert.doesNotMatch(details, /\{label:title\}/);
+  assert.equal(bookDetailsBreadcrumbs({ category: "school", class: ["4"], title: "Static Science Reader" }).at(-1).label, "Static Science Reader");
+  assert.equal(bookDetailsBreadcrumbs({ category: "college-university", title: "Supabase PUC Guide" }).at(-1).label, "Supabase PUC Guide");
+  assert.equal(bookDetailsBreadcrumbs({ category: "school", class: ["4"], title: "" }).at(-1).label, "Book Details");
+  assert.match(details, /String\(book\.title\|\|""\)\.trim\(\)\|\|"Book Details"/);
+  assert.match(details, /back\.href=sourceBack\(current\);\s*back\.textContent=backLabel\(current\)/);
   assert.match(details, /\{label:c,href:"early-learning-level\.html\?level="\+encodeURIComponent\(key\)\}/);
   assert.match(details, /\{label:"Class "\+c,href:"school-learning\.html\?class="\+encodeURIComponent\(c\)\}/);
+  assert.match(require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "css", "catalogue.css"), "utf8"), /\.catalogue-breadcrumbs__current\s*\{[\s\S]*?overflow-wrap: anywhere/);
   assert.match(details, /frame\.classList\.add\("gallery-frame--placeholder"\)/);
   assert.match(page, /\.gallery-frame--placeholder\{width:min\(100%,260px\);min-height:0;aspect-ratio:2 \/ 3;margin-inline:auto\}/);
   assert.match(page, /\.gallery-frame img\{[^}]*width:auto;height:auto;object-fit:contain/);
@@ -248,8 +284,8 @@ test("Book Details keeps publication titles out of breadcrumbs and uses a portra
 test("keeps Standard Kit's source-aware stage return and suppresses only the Kit Builder floating summary", () => {
   const selection = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "catalogue-selection.js"), "utf8");
   const standard = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "standard-kit.js"), "utf8");
-  assert.match(selection, /page === "book-details" \|\| page === "standard-kit"/);
-  assert.match(selection, /action\.textContent = "← Back to " \+ \(level \|\| "Early Learning"\)/);
+  assert.match(selection, /page === "standard-kit" \|\| page === "kit-builder"/);
+  assert.match(selection, /label: "← Back to " \+ \(level \|\| "Early Learning"\)/);
   assert.match(selection, /if \(isKitBuilderPage\(\)\) \{[\s\S]*existing\.hidden = true;[\s\S]*return;/);
   assert.match(standard, /early-learning-level\.html\?level=/);
   assert.match(standard, /Bootstrap\.withSource/);

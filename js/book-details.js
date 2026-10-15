@@ -66,23 +66,23 @@
     return values.length===1?"Class "+values[0]:"Classes "+values.join(", ")
   }
   function detailBreadcrumbs(book) {
-    const home={label:"Home",href:"index.html"},classes=Query.classValues(book);
+    const home={label:"Home",href:"index.html"},classes=Query.classValues(book),current={label:String(book.title||"").trim()||"Book Details"};
     if(book.category==="early-learning") {
       const c=detailEarlyClass(book),key=earlyKey(c);
-      return [home].concat(key?[{label:"Early Learning",href:"early-learning.html"},{label:c,href:"early-learning-level.html?level="+encodeURIComponent(key)}]:[{label:"Early Learning",href:"early-learning.html"}])
+      return [home].concat(key?[{label:"Early Learning",href:"early-learning.html"},{label:c,href:"early-learning-level.html?level="+encodeURIComponent(key)}]:[{label:"Early Learning",href:"early-learning.html"}]).concat(current)
     }
     if(book.category==="school") {
       const c=classes[0]||"";
-      return [home].concat(c?[{label:"School Learning",href:"school-education.html"},{label:"Class "+c,href:"school-learning.html?class="+encodeURIComponent(c)}]:[{label:"School Learning",href:"school-education.html"}])
+      return [home].concat(c?[{label:"School Learning",href:"school-education.html"},{label:"Class "+c,href:"school-learning.html?class="+encodeURIComponent(c)}]:[{label:"School Learning",href:"school-education.html"}]).concat(current)
     }
     if(book.category==="exam") {
       const c=classes[0]||"",base=[home,{label:"School Learning",href:"school-education.html"}];
       if(c)base.push({label:"Class "+c,href:"school-learning.html?class="+encodeURIComponent(c)},{label:"Exam Preparation",href:"exam-preparation.html?class="+encodeURIComponent(c)});
-      return base
+      return base.concat(current)
     }
-    if(book.category==="college-university")return [home,{label:"College & University",href:"college-university.html"}];
-    if(book.category==="competitive-exams")return [home,{label:"Competitive Exams",href:"competitive-exams.html"}];
-    return [home]
+    if(book.category==="college-university")return [home,{label:"College & University",href:"college-university.html"},current];
+    if(book.category==="competitive-exams")return [home,{label:"Competitive Exams",href:"competitive-exams.html"},current];
+    return [home,current]
   }
   function imageList(book) {
     const a=[],push=(src,label)=> {
