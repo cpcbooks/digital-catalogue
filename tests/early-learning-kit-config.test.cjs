@@ -41,6 +41,22 @@ test("does not expose a disabled stage as available for Custom Kit use", () => {
   assert.equal(provider.getStageConfig("synthetic"), null);
 });
 
+test("derives landing guidance from the supplied stage configuration", () => {
+  const provider = config();
+  assert.equal(provider.landingGuidance(provider.getStageConfig("nursery")).text, "Minimum 8 books required to create a kit");
+  assert.equal(provider.landingGuidance({ enabled: true, minimumDistinctTitles: 3, completionEnabled: true }).text, "Minimum 3 books required to create a kit");
+});
+
+test("keeps Playgroup guidance incomplete and hides unavailable Custom Kits", () => {
+  const provider = config();
+  const playgroup = provider.landingGuidance(provider.getStageConfig("playgroup"));
+  const unavailable = provider.landingGuidance(null);
+  assert.equal(playgroup.available, true);
+  assert.equal(playgroup.text, "Custom Kit completion is not configured for this level.");
+  assert.equal(unavailable.available, false);
+  assert.equal(unavailable.text, "Custom Kit is unavailable for this level.");
+});
+
 test("keeps existing stage titles eligible unless explicitly opted out", () => {
   const provider = config();
   assert.equal(provider.belongsToStage({ class: ["NUR"] }, "Nursery"), true);

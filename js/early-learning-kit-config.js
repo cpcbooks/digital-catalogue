@@ -48,9 +48,18 @@
     return Object.freeze({ getStageConfig });
   }
 
+  function landingGuidance(config) {
+    if (!config) return { available: false, text: "Custom Kit is unavailable for this level." };
+    if (!config.completionEnabled || !Number.isInteger(config.minimumDistinctTitles) || config.minimumDistinctTitles < 1) {
+      return { available: true, text: "Custom Kit completion is not configured for this level." };
+    }
+    return { available: true, text: "Minimum " + config.minimumDistinctTitles + " books required to create a kit" };
+  }
+
   global.CambridgeEarlyLearningKitConfig = Object.freeze({
     ...createProvider(STAGES),
     createProvider,
+    landingGuidance,
     belongsToStage,
     isEligible,
     groupBooksForDisplay

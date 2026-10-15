@@ -88,16 +88,17 @@ test("School dynamic navigation applies the current source after the shared-link
 
 test("Early Learning dynamic navigation applies the current source after the shared-link pass", () => {
   const level = read("early-learning-level.html");
+  const levelScript = read("js/early-learning-level.js");
   const targets = [
-    [/a\.href=Bootstrap\.withSource\("\?level="\+key\)/, "?level=lkg", "early-learning-level.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase"],
-    [/standardUrl=Bootstrap\.withSource\("standard-kit\.html\?level="\+encodeURIComponent\(level\)\)/, "standard-kit.html?level=nursery", "standard-kit.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
-    [/customUrl=Bootstrap\.withSource\("kit-builder\.html\?level="\+encodeURIComponent\(level\)\)/, "kit-builder.html?level=nursery", "kit-builder.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
-    [/individualUrl=Bootstrap\.withSource\("early-learning-books\.html\?level="\+encodeURIComponent\(level\)\)/, "early-learning-books.html?level=nursery", "early-learning-books.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"]
+    [/Bootstrap\.withSource\("\?level="\s*\+\s*code\)/, "?level=lkg", "early-learning-level.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase"],
+    [/standardUrl\s*=\s*Bootstrap\.withSource\("standard-kit\.html\?level="\s*\+\s*encodeURIComponent\(level\)\)/, "standard-kit.html?level=nursery", "standard-kit.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
+    [/Bootstrap\.withSource\("kit-builder\.html\?level="\s*\+\s*encodeURIComponent\(level\)\)/, "kit-builder.html?level=nursery", "kit-builder.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"],
+    [/individualUrl\s*=\s*Bootstrap\.withSource\("early-learning-books\.html\?level="\s*\+\s*encodeURIComponent\(level\)\)/, "early-learning-books.html?level=nursery", "early-learning-books.html#cpc-route=level%3Dnursery%26catalogueSource%3Dsupabase"]
   ];
 
   for (const [assignment, target, sourcedTarget] of targets) {
-    assert.ok(level.indexOf("catalogue-source-links.js") < level.search(assignment));
-    assert.match(level, assignment);
+    assert.ok(level.indexOf("catalogue-source-links.js") < level.indexOf("early-learning-level.js"));
+    assert.match(levelScript, assignment);
     assert.equal(source("early-learning-level.html", "?level=nursery&catalogueSource=supabase").withSource(target), sourcedTarget);
     assert.equal(source("early-learning-level.html", "?level=nursery").withSource(target), target);
   }
