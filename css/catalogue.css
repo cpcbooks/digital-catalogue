@@ -100,6 +100,24 @@ input {
 }
 
 
+.catalogue-header-brand {
+
+    color: inherit;
+
+    text-decoration: none;
+
+}
+
+
+.catalogue-header-brand:focus-visible {
+
+    outline: 3px solid rgba(18, 35, 63, .28);
+
+    outline-offset: 4px;
+
+}
+
+
 .catalogue-year {
     display: none;
 
@@ -168,6 +186,20 @@ input {
     font-size: 11px;
     font-weight: 700;
     line-height: 1.45;
+
+}
+
+
+.catalogue-breadcrumbs--generated {
+
+    margin-top: -18px;
+
+}
+
+
+.catalogue-section > .catalogue-breadcrumbs--generated {
+
+    margin-top: -34px;
 
 }
 
@@ -864,6 +896,20 @@ footer p {
         margin-bottom: 15px;
 
         font-size: 10px;
+
+    }
+
+
+    .catalogue-breadcrumbs--generated {
+
+        margin-top: -12px;
+
+    }
+
+
+    .catalogue-section > .catalogue-breadcrumbs--generated {
+
+        margin-top: -20px;
 
     }
 

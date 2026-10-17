@@ -366,7 +366,7 @@
     if (!anchor || !anchor.parentNode || !document.createElement) return null;
     const root = document.createElement("nav");
     root.id = "catalogueBreadcrumbs";
-    root.className = "catalogue-breadcrumbs";
+    root.className = "catalogue-breadcrumbs catalogue-breadcrumbs--generated";
     root.setAttribute("aria-label", "Catalogue hierarchy");
     anchor.parentNode.insertBefore(root, anchor);
 
@@ -410,7 +410,7 @@
         const separator = document.createElement("span");
         separator.className = "catalogue-breadcrumbs__separator";
         separator.setAttribute("aria-hidden", "true");
-        separator.textContent = "›";
+        separator.textContent = "/";
         root.appendChild(separator);
       }
       const node = item.href ? document.createElement("a") : document.createElement("span");

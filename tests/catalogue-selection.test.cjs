@@ -223,6 +223,7 @@ test("renders source-aware full hierarchy breadcrumbs with a non-link current pa
   const crumbs = breadcrumbSelection("/early-learning-level.html", "?level=lkg&catalogueSource=supabase");
   assert.ok(crumbs);
   assert.equal(crumbs.attributes["aria-label"], "Catalogue hierarchy");
+  assert.equal(crumbs.className, "catalogue-breadcrumbs catalogue-breadcrumbs--generated");
   assert.equal(crumbs.children[0].textContent, "Home");
   assert.equal(crumbs.children[0].href, "index.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(crumbs.children[2].textContent, "Early Learning");
@@ -234,7 +235,8 @@ test("renders source-aware full hierarchy breadcrumbs with a non-link current pa
 
 test("renders the complete Class 8 Exam Preparation hierarchy and its source-aware parent back action", () => {
   const crumbs = breadcrumbSelection("/exam-preparation.html", "?class=8&catalogueSource=supabase");
-  assert.deepEqual(crumbs.children.filter(node => node.textContent !== "›").map(node => node.textContent), ["Home", "School Learning", "Class 8", "Exam Preparation"]);
+  assert.deepEqual(crumbs.children.filter(node => node.textContent !== "/").map(node => node.textContent), ["Home", "School Learning", "Class 8", "Exam Preparation"]);
+  assert.equal(crumbs.children[1].textContent, "/");
   const current = crumbs.children.at(-1);
   assert.equal(current.attributes["aria-current"], "page");
   assert.equal(current.href, undefined);
@@ -276,6 +278,7 @@ test("Book Details uses the loaded publication title as a non-link current bread
   assert.match(details, /\{label:c,href:"early-learning-level\.html\?level="\+encodeURIComponent\(key\)\}/);
   assert.match(details, /\{label:"Class "\+c,href:"school-learning\.html\?class="\+encodeURIComponent\(c\)\}/);
   assert.match(require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "css", "catalogue.css"), "utf8"), /\.catalogue-breadcrumbs__current\s*\{[\s\S]*?overflow-wrap: anywhere/);
+  assert.match(require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "css", "catalogue.css"), "utf8"), /\.catalogue-breadcrumbs--generated\s*\{[\s\S]*?margin-top: -18px/);
   assert.match(details, /frame\.classList\.add\("gallery-frame--placeholder"\)/);
   assert.match(page, /\.gallery-frame--placeholder\{width:min\(100%,260px\);min-height:0;aspect-ratio:2 \/ 3;margin-inline:auto\}/);
   assert.match(page, /\.gallery-frame img\{[^}]*width:auto;height:auto;object-fit:contain/);

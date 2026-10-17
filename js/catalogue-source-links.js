@@ -1,6 +1,16 @@
 /* Carry an explicitly selected catalogue source through local catalogue links. */
 (function (global) {
   "use strict";
+  function addBrandLink(bootstrap) {
+    const brand = document.querySelector(".catalogue-header > .brand");
+    if (!brand) return;
+    const link = document.createElement("a");
+    link.className = "catalogue-header-brand";
+    link.href = bootstrap ? bootstrap.withSource("index.html") : "index.html";
+    link.setAttribute("aria-label", "Cambridge — Go to homepage");
+    brand.parentNode.insertBefore(link, brand);
+    link.appendChild(brand);
+  }
   function addPrivacyLink(bootstrap) {
     const footer = document.querySelector("footer");
     const note = footer && footer.querySelector(".footer-note");
@@ -19,6 +29,7 @@
   }
   function apply() {
     const bootstrap = global.CambridgeCatalogueBootstrap;
+    addBrandLink(bootstrap);
     addPrivacyLink(bootstrap);
     if (bootstrap && bootstrap.requestedSource === "supabase") {
       document.querySelectorAll("a[href]").forEach(link => {

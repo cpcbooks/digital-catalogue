@@ -28,6 +28,34 @@ function sourceLinkedHrefs(search, hrefs = ["index.html"]) {
   return links.map(link => link.href);
 }
 
+function brandingLink(search = "") {
+  const sandbox = createBrowserSandbox({ location: {
+    href: `https://catalogue.example.test/browse.html${search}`,
+    pathname: "/browse.html",
+    search
+  } });
+  const node = () => ({
+    children: [], attributes: {},
+    appendChild(child) {
+      if (child.parentNode) child.parentNode.children.splice(child.parentNode.children.indexOf(child), 1);
+      this.children.push(child); child.parentNode = this;
+    },
+    insertBefore(child, before) {
+      const index = this.children.indexOf(before);
+      this.children.splice(index < 0 ? this.children.length : index, 0, child); child.parentNode = this;
+    },
+    setAttribute(name, value) { this.attributes[name] = value; }
+  });
+  const header = node(), brand = node(); brand.className = "brand"; header.appendChild(brand);
+  sandbox.window.document.readyState = "complete";
+  sandbox.window.document.querySelector = selector => selector === ".catalogue-header > .brand" ? brand.parentNode === header ? brand : null : null;
+  sandbox.window.document.querySelectorAll = () => [];
+  sandbox.window.document.createElement = node;
+  loadBrowserScript(sandbox, "js/catalogue-bootstrap.js");
+  loadBrowserScript(sandbox, "js/catalogue-source-links.js");
+  return header.children[0];
+}
+
 test("static remains the default source and keeps ordinary local URLs clean", async () => {
   const source = bootstrap();
   assert.equal(source.requestedSource, "static");
@@ -108,6 +136,16 @@ test("shared source links preserve an explicit source before catalogue loading",
   assert.match(browse, /catalogue-bootstrap\.js[^>]*><\/script>\s*<script src="js\/catalogue-source-links\.js"><\/script>/);
   const details = fs.readFileSync(path.join(__dirname, "..", "book-details.html"), "utf8");
   assert.match(details, /catalogue-bootstrap\.js[^>]*><\/script><script src="js\/catalogue-source-links\.js"><\/script>/);
+});
+
+test("header branding is one accessible, source-aware homepage link", () => {
+  const supabase = brandingLink("?catalogueSource=supabase");
+  assert.equal(supabase.className, "catalogue-header-brand");
+  assert.equal(supabase.href, "index.html#cpc-route=catalogueSource%3Dsupabase");
+  assert.equal(supabase.attributes["aria-label"], "Cambridge — Go to homepage");
+  assert.equal(supabase.children.length, 1);
+  assert.equal(supabase.children[0].className, "brand");
+  assert.equal(brandingLink().href, "index.html");
 });
 
 test("Standard Kit definitions use the selected shared source", async () => {

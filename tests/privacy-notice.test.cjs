@@ -11,6 +11,7 @@ test("Privacy Notice contains the approved contact information and seven section
 
   assert.match(privacy, /<title>Privacy Notice \| Cambridge Digital Catalogue<\/title>/);
   assert.match(privacy, /<a href="index\.html">Home<\/a>/);
+  assert.match(privacy, /<main class="privacy-page"><div class="privacy-layout">[\s\S]*?<div class="privacy-content">/);
   for (const heading of ["Information We Collect", "How We Use Your Information", "Temporary Browser Storage", "Data Retention", "Information Sharing", "Your Privacy Requests", "Contact"]) {
     assert.match(privacy, new RegExp(`<h2>\\d\\. ${heading}<\\/h2>`));
   }
