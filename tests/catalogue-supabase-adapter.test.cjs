@@ -2,8 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { createBrowserSandbox, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 
-function adapter() {
-  const sandbox = createBrowserSandbox();
+function adapter(options) {
+  const sandbox = createBrowserSandbox(options);
   loadBrowserScript(sandbox, "js/catalogue-supabase-adapter.js");
   return sandbox.window.CambridgeSupabaseCatalogue;
 }
@@ -43,6 +43,16 @@ test("preserves explicit and compatibility Custom Kit eligibility values", () =>
   assert.equal(catalogue.toLegacyBook({ custom_kit_eligible: true }, []).customKitEligible, true);
   assert.equal(catalogue.toLegacyBook({ custom_kit_eligible: null }, []).customKitEligible, null);
   assert.equal(catalogue.toLegacyBook({}, []).customKitEligible, undefined);
+});
+
+test("loads only Active publications", async () => {
+  const requests = [];
+  const catalogue = adapter({ fetch: async url => {
+    requests.push(url);
+    return { ok: true, json: async () => [] };
+  } });
+  await catalogue.load({ supabaseUrl: "https://catalogue.example.test", anonKey: "test-key" });
+  assert.match(requests.find(url => url.includes("/publications?")), /status=eq\.Active/);
 });
 
 test("uses an active primary cover and orders active sample-page assets", () => {
