@@ -1,15 +1,18 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { createBrowserSandbox, createStorage, loadBrowserScript } = require("./helpers/browser-script-sandbox.cjs");
 const { clonePublications } = require("./fixtures/publications.cjs");
 
-function submissionWithState(order, details = {}, legacyDetails = null) {
+function submissionWithState(order, details = {}, legacyDetails = null, options = {}) {
   const storage = createStorage({
     cambridgeOrder: JSON.stringify(order),
     ...(legacyDetails === null ? {} : { cambridgeRequestDetails: JSON.stringify(legacyDetails) })
   });
   const sessionStorage = createStorage({ cambridgeRequestDetails: JSON.stringify(details) });
-  const sandbox = createBrowserSandbox({ localStorage: storage, sessionStorage });
+  const sandbox = createBrowserSandbox({ localStorage: storage, sessionStorage, fetch: options.fetch });
+  if (options.config !== null) sandbox.window.CPC_CATALOGUE_CONFIG = { supabaseUrl: options.supabaseUrl || "https://ysaxagxortpxyifyaydx.supabase.co" };
   sandbox.window.CAMBRIDGE_CATALOGUE = clonePublications();
   loadBrowserScript(sandbox, "js/request-submission.js");
   return { submission: sandbox.window.CambridgeRequestSubmission, localStorage: storage, sessionStorage };
@@ -110,4 +113,27 @@ test("uses a session-only contact draft and clears both current and legacy conta
   assert.equal(sessionStorage.getItem("cambridgeRequestDetails"), null);
   assert.equal(localStorage.getItem("cambridgeRequestDetails"), null);
   assert.equal(sessionStorage.getItem("cpcRequirementAttemptKey"), null);
+});
+
+test("submits through the configured Supabase project endpoint", async () => {
+  const book = clonePublications()[0], details = { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure" };
+  let url = "";
+  const { submission } = submissionWithState([{ ...book, quantity: 1 }], details, null, { fetch: async (value) => { url = value; return { ok: true, json: async () => ({ ok: true, reference: "CPC-TEST" }) }; } });
+  await submission.submitLive();
+  assert.equal(url, "https://ysaxagxortpxyifyaydx.supabase.co/functions/v1/submit-catalogue-request");
+});
+
+test("refuses to submit when central Supabase configuration is absent or invalid", async () => {
+  const book = clonePublications()[0], details = { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure" };
+  let calls = 0;
+  const { submission } = submissionWithState([{ ...book, quantity: 1 }], details, null, { config: null, fetch: async () => { calls += 1; } });
+  await assert.rejects(submission.submitLive(), /configuration is unavailable/i);
+  assert.equal(calls, 0);
+  const invalid = submissionWithState([{ ...book, quantity: 1 }], details, null, { supabaseUrl: "http://localhost:54321" });
+  await assert.rejects(invalid.submission.submitLive(), /configuration is unavailable/i);
+});
+
+test("loads central Supabase configuration before request submission", () => {
+  const review = fs.readFileSync(path.join(__dirname, "..", "review-request.html"), "utf8");
+  assert.ok(review.indexOf('src="js/catalogue-pilot-config.js"') < review.indexOf('src="js/request-submission.js"'));
 });
