@@ -116,6 +116,10 @@ Recovery includes `check_catalogue_request_rate_limit(ip, limit, window)`. It is
 
 Before activating, replacing, or trusting it, verify its private schema, indexes/retention, caller boundary, concurrency behaviour, IP/proxy source, privacy impact, error handling, grants, and whether it is invoked before expensive work. Store the minimum abuse-control data necessary and set a documented retention policy; do not collect unnecessary identifiers.
 
+Repository migration `20261017100000_prepare_catalogue_request_rate_limit.sql` prepares, but does not activate, a replacement foundation: an opaque HMAC fingerprint, idempotency UUID, HMAC payload digest, and timestamps only. Its restricted claim function serialises same-UUID retries before fingerprint-window claims, allows eight distinct UUIDs per fingerprint in ten minutes, rejects a changed payload reusing a UUID, and expires attempts after 24 hours. The Edge Function does not call it until a hosted-route test establishes a trustworthy client-IP source. The existing submission RPC has no stored request-payload digest, so exact payload-equivalence cannot be retroactively determined for an idempotency UUID created before rate enforcement; activation must document and resolve that bounded compatibility case.
+
+The prepared cleanup function deletes deterministic bounded batches of expired attempts, but is not scheduled. Physical deletion within 24 hours requires a monitored operational schedule; an outage or missed job can delay deletion and must not be represented as an absolute guarantee.
+
 ### CAPTCHA / bot protection
 
 A privacy-conscious low-friction challenge should be evaluated before public launch because the endpoint accepts anonymous PII-bearing submissions. It should be adaptive/proportionate, accessible, avoid blocking normal catalogue/sample browsing, and be paired with server verification and rate limits—not treated as a standalone control. The exact vendor and whether it is always-on or risk-triggered remain open.
