@@ -12,7 +12,7 @@ function submissionWithState(order, details = {}, legacyDetails = null, options 
   });
   const sessionStorage = createStorage({ cambridgeRequestDetails: JSON.stringify(details) });
   const sandbox = createBrowserSandbox({ localStorage: storage, sessionStorage, fetch: options.fetch });
-  if (options.config !== null) sandbox.window.CPC_CATALOGUE_CONFIG = { supabaseUrl: options.supabaseUrl || "https://ysaxagxortpxyifyaydx.supabase.co" };
+  if (options.config !== null) sandbox.window.CPC_CATALOGUE_CONFIG = { supabaseUrl: options.supabaseUrl || "https://ysaxagxortpxyifyaydx.supabase.co", turnstileSiteKey: options.turnstileSiteKey === undefined ? "test-sitekey" : options.turnstileSiteKey };
   sandbox.window.CAMBRIDGE_CATALOGUE = clonePublications();
   loadBrowserScript(sandbox, "js/request-submission.js");
   return { submission: sandbox.window.CambridgeRequestSubmission, localStorage: storage, sessionStorage };
@@ -117,10 +117,12 @@ test("uses a session-only contact draft and clears both current and legacy conta
 
 test("submits through the configured Supabase project endpoint", async () => {
   const book = clonePublications()[0], details = { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure" };
-  let url = "";
-  const { submission } = submissionWithState([{ ...book, quantity: 1 }], details, null, { fetch: async (value) => { url = value; return { ok: true, json: async () => ({ ok: true, reference: "CPC-TEST" }) }; } });
+  let url = "", headers;
+  const { submission } = submissionWithState([{ ...book, quantity: 1 }], details, null, { fetch: async (value, init) => { url = value; headers = init.headers; return { ok: true, json: async () => ({ ok: true, reference: "CPC-TEST" }) }; } });
+  submission.setTurnstileToken("synthetic-turnstile-token");
   await submission.submitLive();
   assert.equal(url, "https://ysaxagxortpxyifyaydx.supabase.co/functions/v1/submit-catalogue-request");
+  assert.equal(headers["X-Turnstile-Token"], "synthetic-turnstile-token");
 });
 
 test("refuses to submit when central Supabase configuration is absent or invalid", async () => {
@@ -131,6 +133,17 @@ test("refuses to submit when central Supabase configuration is absent or invalid
   assert.equal(calls, 0);
   const invalid = submissionWithState([{ ...book, quantity: 1 }], details, null, { supabaseUrl: "http://localhost:54321" });
   await assert.rejects(invalid.submission.submitLive(), /configuration is unavailable/i);
+});
+
+test("requires a configured, fresh Turnstile token before fetch", async () => {
+  const book = clonePublications()[0], details = { contactName: "Synthetic Test User", mobile: "9000000000", city: "Bengaluru", customerType: "individual", existingCustomer: "Not sure" };
+  let calls = 0;
+  const missingKey = submissionWithState([{ ...book, quantity: 1 }], details, null, { turnstileSiteKey: "", fetch: async () => { calls += 1; } });
+  await assert.rejects(missingKey.submission.submitLive(), /verification is unavailable/i);
+  const missingToken = submissionWithState([{ ...book, quantity: 1 }], details, null, { fetch: async () => { calls += 1; } });
+  await assert.rejects(missingToken.submission.submitLive(), /complete the verification challenge/i);
+  assert.throws(() => missingToken.submission.setTurnstileToken("x".repeat(2049)), /verification challenge/i);
+  assert.equal(calls, 0);
 });
 
 test("loads central Supabase configuration before request submission", () => {
