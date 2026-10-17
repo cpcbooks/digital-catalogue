@@ -9,7 +9,7 @@
     "index", "browse", "book-details", "early-learning", "early-learning-level",
     "early-learning-books", "standard-kit", "kit-builder", "kit-review", "school-education",
     "school-learning", "school-books", "exam-preparation", "college-university", "college-books",
-    "competitive-exams", "competitive-exam-books", "order", "request", "request-details", "review-request"
+    "competitive-exams", "competitive-exam-books", "order", "request", "request-details", "review-request", "privacy"
   ]);
 
   function restoreRouteContext() {

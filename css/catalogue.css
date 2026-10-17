@@ -789,6 +789,53 @@ footer p {
 }
 
 
+.footer-meta {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+
+}
+
+
+.footer-meta a,
+.footer-separator {
+
+    color: rgba(255,255,255,.65);
+
+    font-size: 11px;
+
+}
+
+
+.footer-meta a {
+
+    text-decoration: none;
+
+}
+
+
+.footer-meta a:hover,
+.footer-meta a:focus-visible {
+
+    color: #fff;
+
+    text-decoration: underline;
+
+}
+
+
+.footer-meta .footer-note {
+
+    margin: 0;
+
+}
+
+
 /* TABLET */
 
 
@@ -1009,6 +1056,15 @@ footer p {
     .footer-note {
 
         text-align: left;
+
+    }
+
+
+    .footer-meta {
+
+        justify-content: flex-start;
+
+        flex-wrap: wrap;
 
     }
 

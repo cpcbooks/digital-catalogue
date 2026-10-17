@@ -92,6 +92,7 @@ test("saved Selection return targets are local and normalized to the current sou
   assert.equal(supabase.localReturnHref("/standard-kit.html?level=lkg&catalogueSource=supabase"), "standard-kit.html#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
   assert.equal(supabase.localReturnHref("/kit-review?level=lkg&catalogueSource=supabase"), "kit-review#cpc-route=level%3Dlkg%26catalogueSource%3Dsupabase");
   assert.equal(supabase.localReturnHref("/browse?subject=English"), "browse#cpc-route=subject%3DEnglish%26catalogueSource%3Dsupabase");
+  assert.equal(supabase.localReturnHref("privacy.html"), "privacy.html#cpc-route=catalogueSource%3Dsupabase");
   assert.equal(supabase.localReturnHref("https://elsewhere.example/browse.html"), null);
   assert.equal(supabase.localReturnHref("//elsewhere.example/browse.html"), null);
   assert.equal(supabase.localReturnHref("javascript:alert(1)"), null);
