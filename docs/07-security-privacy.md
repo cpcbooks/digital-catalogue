@@ -203,7 +203,11 @@ Operational logging should record enough to diagnose failures/abuse without comp
 
 At Send Requirement, visitors need clear notice of what they are sending, why CPC needs it, and the purpose of processing. Final privacy notice, retention, consent/other lawful basis as applicable, rights handling, and vendor processing must be reviewed against applicable Indian law/current requirements before launch. This is a legal/operational decision, not a legal conclusion in this document.
 
-Retention decisions are required for requirements/contact data, operational logs, rate-limit records, and analytics. No retention period is invented here.
+Requirements/contact data have an approved repository-prepared policy: retain for 12 calendar months after the last meaningful business interaction. The retention migration is not deployed, no cleanup is scheduled, and no deletion is active. A meaningful interaction is an authorised CPC staff record of an actual customer/business exchange; retries, status-only changes, and technical updates do not extend the period. Owner-authorised legal holds block cleanup and use only a constrained reason code. CPC must retain approval/audit evidence outside request PII when credentials are shared.
+
+The restricted retention routine previews a deterministic bounded batch by default. Any destructive execution needs separate owner approval, non-production synthetic verification, RLS/grant and cascade checks, and confirmation of Supabase backup/PITR retention. Deletion removes the request and cascaded item/Kit records; it does not guarantee immediate removal from backups. Normal retry idempotency applies while the request exists. Because no permanent retry-token registry is retained, a deliberately replayed UUID after deletion can create a new requirement; do not activate cleanup unless CPC accepts that limited stale-replay trade-off or separately approves a bounded mitigation.
+
+Retention decisions remain required for operational logs, rate-limit records, and analytics.
 
 ## 15. Security testing and acceptance gates
 

@@ -273,9 +273,21 @@ The diagram does not imply that publication rows are owned by a stage configurat
 | --- | --- | --- |
 | Public catalogue data | Publications/assets and public delivery metadata | Retire rather than delete when historically referenced. |
 | Operational mapping/configuration | Private mappings/stage configuration | Keep only as long as operationally required. |
-| Customer/requirement PII | Private request header and necessary snapshots | Minimise; retention period requires legal/operational decision. |
+| Customer/requirement PII | Private request header and necessary snapshots | Retain for 12 calendar months after the last meaningful business interaction; legal holds are an owner-authorised exception. |
 | Anonymous/aggregate analytics | Separate from PII | Retention/provider decision deferred; no behavioural profiles. |
 | Security/operational logs | Separate private operational boundary | Collect minimal data; retention/access require Security/Operations decision. |
+
+### Requirement retention controls
+
+Repository migration `20261017000000_prepare_requirement_retention.sql` is prepared only; it is not evidence of a deployed or scheduled deletion process. It adds a server-controlled `last_meaningful_business_interaction_at` anchor, which starts at submission and may only be advanced by an authorised CPC staff member after an actual customer/business interaction. Routine status changes, retries, and technical updates do not advance it.
+
+The migration also provides owner-authorised legal holds using only a limited reason code (`legal`, `dispute`, or `regulatory`), plus a restricted, default-preview retention routine. The routine selects unheld requests strictly older than 12 calendar months in a deterministic bounded batch; a destructive invocation remains a separately approved Supabase-administration action and is not scheduled by the repository. CPC must retain the human approval record outside the request data when administrative credentials are shared.
+
+Deleting a request cascades to its submitted items and Kit components. Existing `customer_snapshot` values remain historic data, but new trusted submissions store an empty object because the structured request columns already contain the required contact fields. The migration does not delete, anonymise, or rewrite existing request records.
+
+Normal idempotent retries remain safe while their request is retained. The browser keeps its retry UUID only in the current session and clears it after success; a deliberately replayed UUID after a request has been deleted would be treated as a new submission because no permanent token registry is retained. Do not activate destructive cleanup until CPC accepts that limited stale-replay trade-off or separately approves a bounded tombstone design.
+
+Before any activation, test only with synthetic records in controlled non-production, run the eligibility preview, verify RLS/grants and cascades, obtain deletion approval, and confirm Supabase backup/PITR retention. Backup expiry means active-database deletion must not be described as immediate erasure from every backup.
 
 ## 15. Migration and source-control principles
 
