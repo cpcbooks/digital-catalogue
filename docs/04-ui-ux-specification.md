@@ -2,7 +2,7 @@
 
 ## Status
 
-This focused document reconciles the accepted IM-12C production behaviour with IM-14A development work. It does not replace the historical specification retained in the previous development checkout. IM-14A is not deployed.
+This focused document reconciles the accepted IM-12C production behaviour with the deployed IM-14A/A.1 work. It does not replace the historical specification retained in the previous development checkout. IM-14A/A.1 was deployed to `main` in `1857057` on 2026-10-23 13:14 IST (UTC+05:30).
 
 ## Publication listings
 

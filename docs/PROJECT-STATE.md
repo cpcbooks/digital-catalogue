@@ -162,6 +162,6 @@ For meaningful changes: **Inspect current Git → read relevant docs → impleme
 
 Do not claim a feature is complete solely because code was written.
 
-## 2026-10-23 — IM-14A development refinement
+## 2026-10-23 13:14 IST (UTC+05:30) — IM-14A/A.1 deployed
 
-The clean `codex/development-im13` worktree contains uncommitted IM-14A development-only listing refinements: shared vertical cards, preserved cover proportions, and a blank portrait fallback for missing or failed covers. IM-12C remains the approved production baseline; no deployment, Supabase update or homepage redesign has occurred.
+IM-14A/A.1 deployed to `main` in `1857057`: shared vertical cards, preserved cover proportions, compact media areas, and a blank portrait fallback for missing or failed covers. Production smoke testing passed. No Supabase update or homepage redesign occurred.

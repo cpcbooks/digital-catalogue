@@ -149,10 +149,10 @@ See `request-backend-architecture.md` for details.
 
 ---
 
-## 2026-10-23 — Shared vertical publication cards in development
+## 2026-10-23 13:14 IST (UTC+05:30) — Shared vertical publication cards
 
 **Decision:** IM-14A uses one shared card renderer for All Books and category listings, with a responsive vertical grid.
 
 **Reason:** the previous All Books horizontal rows and separately assembled category cards drifted in placement, cover handling and action alignment.
 
-**Constraints:** real covers remain contained at their natural aspect ratio; missing and failed covers use a blank portrait placeholder. This is development work only and does not alter catalogue data, Supabase, or the deferred homepage.
+**Constraints:** real covers remain contained at their natural aspect ratio; missing and failed covers use a blank portrait placeholder. This does not alter catalogue data, Supabase, or the deferred homepage. Deployed to `main` in `1857057`.
