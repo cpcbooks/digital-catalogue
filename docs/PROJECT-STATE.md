@@ -161,3 +161,7 @@ Do not rebuild the already-complete request/customer journey. Continue catalogue
 For meaningful changes: **Inspect current Git → read relevant docs → implement smallest coherent change → test affected flows → verify → update docs → commit.**
 
 Do not claim a feature is complete solely because code was written.
+
+## 2026-10-23 — IM-14A development refinement
+
+The clean `codex/development-im13` worktree contains uncommitted IM-14A development-only listing refinements: shared vertical cards, preserved cover proportions, and a blank portrait fallback for missing or failed covers. IM-12C remains the approved production baseline; no deployment, Supabase update or homepage redesign has occurred.

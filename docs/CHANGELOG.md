@@ -78,3 +78,12 @@ This is a concise functional changelog, not a commit-by-commit transcript.
 - Recorded decision to use `class` rather than parallel `level` + `class` for Nursery–10.
 - Recorded that subject and medium are independent.
 - Prioritized Higher Education + Competitive Exams before universal Browse/Search, then product mapping/staff workflow.
+
+## Unreleased — IM-14A development UI refinement
+
+- Made the shared vertical publication-card grid the default for All Books and category listings.
+- Centralized card layout and image fallback behaviour in the shared selection module.
+- Preserved real cover aspect ratios with contained rendering and made missing/failed covers blank portrait placeholders.
+- Kept Book Details optional-metadata safeguards and removed its missing-cover caption.
+- Added lightweight regression checks for the shared card, cover and Book Details contracts.
+- Homepage refinement remains deferred; this entry is not a production deployment.

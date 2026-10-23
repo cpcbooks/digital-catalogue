@@ -170,26 +170,13 @@
         results.appendChild(empty);
         return;
       }
+      const selection = window.CambridgeSelection;
+      const grid = document.createElement("div");
+      grid.className = "publication-grid";
       matched.forEach(book => {
-        const row = document.createElement("article"), cover = document.createElement("div"), info = document.createElement("div"), heading = document.createElement("h2"), meta = document.createElement("p");
-        row.className = "browse-book";
-        cover.className = "browse-cover";
-        const placeholder = () => { cover.replaceChildren(); cover.classList.add("browse-cover--placeholder"); cover.textContent = "Cover image coming soon"; };
-        if (book.cover) { const image = document.createElement("img"); image.src = book.cover; image.alt = "Cover of " + book.title; image.loading = "lazy"; image.onerror = placeholder; cover.appendChild(image); }
-        else placeholder();
-        heading.textContent = book.title;
-        meta.textContent = [categoryNames[book.category] || book.category, query.classValues(book).join(", "), book.series, book.displaySubject || book.subject, book.type || book.bookType].filter(Boolean).join(" · ");
-        info.append(heading, meta);
-        const mrp = Number(book.mrp);
-        if (Number.isFinite(mrp) && mrp > 0) { const price = document.createElement("p"); price.className = "browse-mrp"; price.textContent = "₹" + mrp; info.appendChild(price); }
-        const selection = window.CambridgeSelection;
-        if (selection) {
-          const actions = selection.actionNode(book);
-          actions.classList.add("browse-actions");
-          row.append(cover, info, actions);
-        }
-        results.appendChild(row);
+        if (selection && selection.cardNode) grid.appendChild(selection.cardNode(book, [categoryNames[book.category] || book.category, query.classValues(book).join(", "), book.series, book.displaySubject || book.subject, book.type || book.bookType, book.sku ? "SKU: " + book.sku : "", book.isbn ? "ISBN: " + book.isbn : ""]));
       });
+      results.appendChild(grid);
     }
     function render(mode) {
       let current = filters();

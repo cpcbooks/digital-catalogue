@@ -120,7 +120,7 @@
     if(!images.length) {
       frame.classList.add("gallery-frame--placeholder");
       frame.textContent="";
-      label.textContent="Cover image coming soon";
+      label.textContent="";
       help.textContent=""
     }
     else {
@@ -132,7 +132,7 @@
         frame.innerHTML="";
         frame.classList.add("gallery-frame--placeholder");
         frame.textContent="";
-        label.textContent="Cover image unavailable";
+        label.textContent="";
         help.textContent=""
       };
       frame.appendChild(img);

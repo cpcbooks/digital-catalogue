@@ -561,7 +561,7 @@
   function coverNode(book) {
     const wrapper = document.createElement("div");
     wrapper.className = "book-cover";
-    const placeholder = () => { wrapper.innerHTML = ""; wrapper.classList.add("book-cover--placeholder"); wrapper.textContent = "Cover image coming soon"; };
+    const placeholder = () => { wrapper.innerHTML = ""; wrapper.classList.add("book-cover--placeholder"); wrapper.setAttribute("role", "img"); wrapper.setAttribute("aria-label", "Cover unavailable"); const blank = document.createElement("span"); blank.className = "book-cover-placeholder"; blank.setAttribute("aria-hidden", "true"); wrapper.appendChild(blank); };
     if (!book.cover) { placeholder(); return wrapper; }
     const image = document.createElement("img");
     image.src = book.cover;
@@ -570,6 +570,36 @@
     image.onerror = placeholder;
     wrapper.appendChild(image);
     return wrapper;
+  }
+
+  function cardNode(book, metadata) {
+    const card = document.createElement("article");
+    card.className = "publication-card";
+    const body = document.createElement("div");
+    body.className = "publication-card-body";
+    const info = document.createElement("div");
+    info.className = "book-info";
+    const title = document.createElement("h3");
+    title.textContent = book.title || "Untitled Book";
+    const meta = document.createElement("div");
+    meta.className = "book-meta";
+    const values = Array.isArray(metadata) ? metadata : [book.series || book.family, book.displaySubject || book.subject, book.medium ? book.medium + " Medium" : "", book.sku ? "SKU: " + book.sku : "", book.isbn ? "ISBN: " + book.isbn : ""];
+    values.filter(value => value !== null && value !== undefined && String(value).trim() !== "").forEach(value => {
+      const item = document.createElement("span");
+      item.textContent = value;
+      meta.appendChild(item);
+    });
+    info.append(title, meta);
+    body.appendChild(info);
+    if (book.mrp !== null && book.mrp !== undefined && String(book.mrp).trim() !== "" && Number.isFinite(Number(book.mrp))) {
+      const price = document.createElement("p");
+      price.className = "book-price";
+      price.textContent = "MRP ₹" + Number(book.mrp);
+      body.appendChild(price);
+    }
+    body.appendChild(actionNode(book));
+    card.append(coverNode(book), body);
+    return card;
   }
 
   function actionNode(book) {
@@ -659,6 +689,6 @@
     ORDER_KEY, MAX_QUANTITY, CHANGE_EVENT, CHECKLIST_RETURN_KEY,
     validQty, readOrder, saveOrder, reconcileCatalogue, itemKey, indexOfBook, selectedItem, selectedItems,
     selectedCount, selectedQuantityTotal, floatingSelectionSummary, floatingSelectionLabels, isFloatingSelectionPage, updateBar, updateFloatingBar, add, remove, setQty,
-    detailsUrl, coverNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
+    detailsUrl, coverNode, cardNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
   });
 })();
