@@ -3,11 +3,11 @@
    Nursery/LKG/UKG and Classes 1–10 use the same field. */
 (function (global) {
   "use strict";
-
   function normalizeClass(value) {
     if (value === null || value === undefined || value === "") return "";
     const raw = String(value).trim();
     const upper = raw.toUpperCase();
+    if (upper === "PLAYGROUP") return "Playgroup";
     if (upper === "NURSERY" || upper === "NUR") return "Nursery";
     if (upper === "LKG") return "LKG";
     if (upper === "UKG") return "UKG";
@@ -39,7 +39,20 @@
   }
 
   function byCategoryAndClass(category, classValue) {
-    return byCategory(category).filter(book => matchesClass(book, classValue));
+    const books = byCategory(category).filter(book => matchesClass(book, classValue));
+    return books.map(book => category === "early-learning" && !book.subject ? { ...book, subject: "Other" } : book);
+  }
+
+  function isExamPreparation(book) {
+    return book && book.category === "exam";
+  }
+
+  function byExamPreparationAndClass(classValue) {
+    return byCategoryAndClass("exam", classValue);
+  }
+
+  function bySchoolBooksAndClass(classValue) {
+    return byCategoryAndClass("school", classValue);
   }
 
   function byId(id) {
@@ -58,6 +71,30 @@
     return [...new Set(values)];
   }
 
+  function browseValues(book, field) {
+    if (field === "class") return classValues(book);
+    const value = field === "type" ? book.type || book.bookType : book[field];
+    return value ? [String(value)] : [];
+  }
+
+  function classOrder(value) {
+    const early = { Playgroup: -4, Nursery: -3, LKG: -2, UKG: -1 };
+    return Object.prototype.hasOwnProperty.call(early, value) ? early[value] : Number(value) || 999;
+  }
+
+  function browseMatches(books, filters, search, categoryNames) {
+    const activeFilters = filters || {};
+    const names = categoryNames || {};
+    const terms = String(search || "").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    return (books || []).filter(book => {
+      if (Object.entries(activeFilters).some(([field, value]) => value && !browseValues(book, field).includes(value))) return false;
+      if (!terms.length) return true;
+      const classes = classValues(book);
+      const searchable = [book.title, book.sku, book.isbn, book.series, book.family, book.subject, book.displaySubject, book.type, book.bookType, book.medium, names[book.category], ...classes, ...classes.map(value => "Class " + value)].filter(Boolean).join(" ").toLocaleLowerCase();
+      return terms.every(term => searchable.includes(term));
+    });
+  }
+
   global.CambridgeCatalogueQuery = Object.freeze({
     all,
     active,
@@ -66,7 +103,13 @@
     matchesClass,
     byCategory,
     byCategoryAndClass,
+    isExamPreparation,
+    byExamPreparationAndClass,
+    bySchoolBooksAndClass,
     byId,
-    uniqueValues
+    uniqueValues,
+    browseValues,
+    classOrder,
+    browseMatches
   });
 })(window);
