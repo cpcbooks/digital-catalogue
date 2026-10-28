@@ -2,9 +2,20 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
+const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
 const read = file => fs.readFileSync(path.join(root, file), "utf8");
+
+function localReturnHref(location) {
+  const window = {
+    location: new URL(location),
+    history: { replaceState() {} },
+    sessionStorage: { getItem() { return null; }, removeItem() {} }
+  };
+  vm.runInNewContext(read("js/catalogue-bootstrap.js"), { URL, URLSearchParams, window });
+  return window.CambridgeCatalogueBootstrap.localReturnHref.bind(window.CambridgeCatalogueBootstrap);
+}
 
 test("shared card renderer keeps cover placeholders blank and accessible", () => {
   const source = read("js/catalogue-selection.js");
@@ -34,6 +45,20 @@ test("listing cards do not expose ISBN metadata", () => {
   assert.doesNotMatch(cards, /book\.isbn \? "ISBN: " \+ book\.isbn/);
   assert.doesNotMatch(browse, /book\.isbn \? "ISBN: " \+ book\.isbn/);
   assert.match(read("js/book-details.js"), /\["ISBN",optionalText\(book\.isbn\)\]/);
+});
+
+test("Book Details accepts safe New Arrivals return context on GitHub Pages", () => {
+  const returnHref = localReturnHref("https://cpcbooks.github.io/digital-catalogue/book-details.html?id=CPC00252");
+  const encoded = new URLSearchParams("returnTo=%2Fbrowse.html%3Fview%3Dnew-arrivals").get("returnTo");
+  const decoded = new URLSearchParams("returnTo=/browse.html?view=new-arrivals").get("returnTo");
+  assert.equal(returnHref(encoded), "browse.html?view=new-arrivals");
+  assert.equal(returnHref(decoded), "browse.html?view=new-arrivals");
+  assert.equal(returnHref("browse.html?view=all&q=Wondera"), "browse.html?view=all&q=Wondera");
+  assert.equal(returnHref("/school-books.html?class=1"), "school-books.html?class=1");
+  assert.equal(returnHref("https://example.com/browse.html?view=new-arrivals"), null);
+  assert.equal(returnHref("//example.com/browse.html?view=new-arrivals"), null);
+  const details = read("js/book-details.js");
+  assert.match(details, /target\.pathname\.endsWith\("\/browse\.html"\)&&target\.searchParams\.get\("view"\)==="new-arrivals"\?"← Back to New Arrivals"/);
 });
 
 test("Browse uses the shared breadcrumb and contextual-return row", () => {

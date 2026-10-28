@@ -110,9 +110,14 @@
   function localReturnHref(href) {
     try {
       const current = new URL(global.location.href);
-      const target = new URL(href, current);
+      let target = new URL(href, current);
       const directory = current.pathname.slice(0, current.pathname.lastIndexOf("/") + 1);
-      const targetDirectory = target.pathname.slice(0, target.pathname.lastIndexOf("/") + 1);
+      let targetDirectory = target.pathname.slice(0, target.pathname.lastIndexOf("/") + 1);
+      // Accept a root-style local catalogue route when GitHub Pages serves this app from a subdirectory.
+      if (target.origin === current.origin && directory !== "/" && targetDirectory === "/" && href.startsWith("/") && !href.startsWith("//")) {
+        target = new URL(target.pathname.slice(1) + target.search + target.hash, current);
+        targetDirectory = target.pathname.slice(0, target.pathname.lastIndexOf("/") + 1);
+      }
       const filename = target.pathname.split("/").pop() || "index";
       const page = filename.replace(/\.html$/i, "");
       if (target.origin !== current.origin || targetDirectory !== directory || !LOCAL_CATALOGUE_PAGES.has(page)) return null;

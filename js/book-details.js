@@ -60,7 +60,11 @@
     return withSource("index.html")
   }
   function backLabel(book) {
-    if(safeReturnTo())return"← Back to Results";
+    const returnTo=safeReturnTo();
+    if(returnTo) {
+      const target=new URL(returnTo,location.href);
+      return target.pathname.endsWith("/browse.html")&&target.searchParams.get("view")==="new-arrivals"?"← Back to New Arrivals":"← Back to Results"
+    }
     const classes=Query.classValues(book);
     if(book.category==="exam")return"← Class "+(classes[0]||"")+" Exam Preparation";
     if(book.category==="school")return"← Class "+(classes[0]||"")+" School Books";
