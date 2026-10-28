@@ -85,12 +85,16 @@
   function browseMatches(books, filters, search, categoryNames) {
     const activeFilters = filters || {};
     const names = categoryNames || {};
-    const terms = String(search || "").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const rawSearch = String(search || "").trim();
+    const terms = rawSearch.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    const skuQuery = rawSearch.toUpperCase();
+    const skuLike = /^(?:CPC)?\d+$/i.test(rawSearch);
     return (books || []).filter(book => {
       if (Object.entries(activeFilters).some(([field, value]) => value && !browseValues(book, field).includes(value))) return false;
       if (!terms.length) return true;
       const classes = classValues(book);
-      const searchable = [book.title, book.sku, book.isbn, book.series, book.family, book.subject, book.displaySubject, book.type, book.bookType, book.medium, names[book.category], ...classes, ...classes.map(value => "Class " + value)].filter(Boolean).join(" ").toLocaleLowerCase();
+      if (skuLike) return String(book.sku || "").toUpperCase() === skuQuery;
+      const searchable = [book.title, book.isbn, book.series, book.family, book.subject, book.displaySubject, book.type, book.bookType, book.medium, names[book.category], ...classes, ...classes.map(value => "Class " + value)].filter(Boolean).join(" ").toLocaleLowerCase();
       return terms.every(term => searchable.includes(term));
     });
   }
