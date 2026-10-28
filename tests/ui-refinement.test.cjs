@@ -44,6 +44,14 @@ test("listing cards do not expose ISBN metadata", () => {
   const browse = read("js/catalogue-browse.js");
   assert.doesNotMatch(cards, /book\.isbn \? "ISBN: " \+ book\.isbn/);
   assert.doesNotMatch(browse, /book\.isbn \? "ISBN: " \+ book\.isbn/);
+  ["early-learning-books.html", "school-books.html", "exam-preparation.html", "college-books.html", "competitive-exam-books.html"].forEach(file => {
+    const page = read(file);
+    assert.doesNotMatch(page, /(?:book|b)\.isbn\?"ISBN: "\+(?:book|b)\.isbn:""/, file);
+    assert.match(page, /(?:book|b)\.sku\?"SKU: "\+(?:book|b)\.sku:""/, file);
+  });
+  assert.match(cards, /price\.textContent = "MRP ₹" \+ Number\(book\.mrp\)/);
+  assert.match(cards, /view\.textContent = "View Book →"/);
+  assert.match(cards, /addButton\.textContent = "\+ Add to Selection"/);
   assert.match(read("js/book-details.js"), /\["ISBN",optionalText\(book\.isbn\)\]/);
 });
 
