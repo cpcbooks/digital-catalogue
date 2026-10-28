@@ -2,6 +2,7 @@
   "use strict";
 
   const DISCOVERY_FIELDS = ["series", "subject", "type"];
+  const NEW_ARRIVALS_VIEW = "new-arrivals";
   const VIEW_FIELDS = { series: "series", subject: "subject", type: "type" };
   const MEDIUM_TYPES = new Set(["Assessment Book", "Combined Guide", "Guide", "Question Bank"]);
   const VIEW_COPY = {
@@ -25,11 +26,28 @@
 
     const query = window.CambridgeCatalogueQuery;
     const books = query ? query.active() : [];
+    const configuredSkus = (window.CambridgeNewArrivals && Array.isArray(window.CambridgeNewArrivals.skus) ? window.CambridgeNewArrivals.skus : [])
+      .map(sku => String(sku || "").trim().toUpperCase()).filter(Boolean);
+    const newArrivals = configuredSkus.map(sku => books.find(book => String(book.sku || "").trim().toUpperCase() === sku)).filter(Boolean);
     const fields = Object.fromEntries(["category", "class", "series", "subject", "type", "medium"].map(key => [key, document.getElementById(key)]));
-    const search = document.getElementById("browseSearch"), summary = document.getElementById("browseSummary"), results = document.getElementById("browseResults"), active = document.getElementById("browseActive"), discovery = document.getElementById("browseDiscovery"), refine = document.getElementById("browseRefine"), refineStatus = document.getElementById("browseRefineStatus"), mediumField = document.getElementById("mediumField"), tabs = [...document.querySelectorAll(".browse-tab")];
+    const search = document.getElementById("browseSearch"), summary = document.getElementById("browseSummary"), results = document.getElementById("browseResults"), active = document.getElementById("browseActive"), discovery = document.getElementById("browseDiscovery"), refine = document.getElementById("browseRefine"), refineStatus = document.getElementById("browseRefineStatus"), mediumField = document.getElementById("mediumField"), title = document.getElementById("browseTitle"), eyebrow = document.getElementById("browseEyebrow"), backLink = document.getElementById("browseBackLink"), intro = document.querySelector(".browse-intro"), allLink = document.getElementById("browseAllLink"), tabs = [...document.querySelectorAll(".browse-tab")];
     const categoryNames = { "early-learning": "Early Learning", school: "School Books", exam: "Exam Preparation", "college-university": "College and University", "higher-education": "College and University", "competitive-exams": "Competitive Exams" };
-    let view = "all";
+    let view = "all", newArrivalsMode = false;
 
+    function visibleBooks() { return newArrivalsMode ? newArrivals : books; }
+    function updateHeading() {
+      document.body.classList.toggle("new-arrivals-mode", newArrivalsMode);
+      if (backLink) backLink.textContent = newArrivalsMode ? "← Back to Home" : "← Digital Catalogue";
+      title.textContent = newArrivalsMode ? "New Arrivals" : "Browse Publications";
+      intro.textContent = newArrivalsMode ? "Discover the latest additions to our collection of educational publications." : "Discover Cambridge publications in the way that works for you.";
+      allLink.hidden = !newArrivalsMode;
+      allLink.href = bootstrap ? bootstrap.withSource("browse.html?view=all") : "browse.html?view=all";
+      eyebrow.hidden = newArrivalsMode;
+      document.querySelector(".browse-tabs").hidden = newArrivalsMode;
+      search.parentElement.hidden = newArrivalsMode;
+      refine.hidden = newArrivalsMode;
+      active.hidden = newArrivalsMode;
+    }
     function textFor(field, value) { return field === "category" ? categoryNames[value] || value : value; }
     function sortValues(field, values) { return [...values].sort((a, b) => field === "class" ? query.classOrder(a) - query.classOrder(b) || a.localeCompare(b) : a.localeCompare(b)); }
     function setOptions(field, values, label) {
@@ -39,7 +57,7 @@
       if (selected && ![...select.options].some(option => option.value === selected)) select.add(new Option(textFor(field, selected), selected));
       select.value = selected;
     }
-    function allValues(field) { return [...new Set(books.flatMap(book => query.browseValues(book, field)))]; }
+    function allValues(field) { return [...new Set(visibleBooks().flatMap(book => query.browseValues(book, field)))]; }
     function filters() { return Object.fromEntries(Object.entries(fields).map(([field, select]) => [field, select.value])); }
     function currentBrowseUrl() { const params = new URLSearchParams(location.search); params.delete("returnTo"); const text = params.toString(); return location.pathname.split("/").pop() + (text ? "?" + text : ""); }
     function hasActive(current) { return Boolean(search.value.trim() || Object.values(current).some(Boolean)); }
@@ -53,7 +71,7 @@
     function matching(current, ignored) {
       const next = { ...current };
       (ignored || []).forEach(field => { next[field] = ""; });
-      return query.browseMatches(books, next, search.value, categoryNames);
+      return query.browseMatches(visibleBooks(), next, search.value, categoryNames);
     }
     function discoveryValues(field, current) { return [...new Set(matching(current, [field]).flatMap(book => query.browseValues(book, field)))]; }
     function mediumValues(current) {
@@ -72,20 +90,23 @@
     }
     function writeUrl(current, mode) {
       const next = new URLSearchParams(location.search);
-      ["view", "q", ...Object.keys(fields)].forEach(key => next.delete(key));
-      next.set("view", view);
+      ["view", "discover", "q", ...Object.keys(fields)].forEach(key => next.delete(key));
+      next.set("view", newArrivalsMode ? NEW_ARRIVALS_VIEW : view);
+      if (newArrivalsMode && view !== "all") next.set("discover", view);
       if (search.value.trim()) next.set("q", search.value.trim());
       Object.entries(current).forEach(([field, value]) => { if (value) next.set(field, value); });
       history[mode === "push" ? "pushState" : "replaceState"](null, "", location.pathname + "?" + next.toString() + location.hash);
     }
     function restoreState() {
       const params = new URLSearchParams(location.search);
-      view = requestedView(params);
-      search.value = params.get("q") || "";
+      newArrivalsMode = params.get("view") === NEW_ARRIVALS_VIEW;
+      view = newArrivalsMode ? "all" : requestedView(params);
+      search.value = newArrivalsMode ? "" : params.get("q") || "";
       Object.entries(fields).forEach(([field, select]) => {
         const requested = params.get(field);
-        select.value = requested && [...select.options].some(option => option.value === requested) ? requested : "";
+        select.value = !newArrivalsMode && requested && [...select.options].some(option => option.value === requested) ? requested : "";
       });
+      updateHeading();
     }
     function renderTabs() {
       tabs.forEach(tab => {
@@ -154,19 +175,21 @@
       active.appendChild(button);
     }
     function renderResults(current) {
-      const matched = query.browseMatches(books, current, search.value, categoryNames);
+      const matched = matching(current);
       summary.textContent = `${matched.length} publication${matched.length === 1 ? "" : "s"} found`;
       results.replaceChildren();
       if (!matched.length) {
         const empty = document.createElement("div"), heading = document.createElement("h2"), help = document.createElement("p"), reset = document.createElement("button");
         empty.className = "browse-empty";
-        heading.textContent = "No matching publications";
-        help.textContent = "Try another search term or clear a filter.";
+        const waitingForCuratedList = newArrivalsMode && !newArrivals.length;
+        heading.textContent = waitingForCuratedList ? "New Arrivals are coming soon" : "No matching publications";
+        help.textContent = waitingForCuratedList ? "New arrivals will appear here once the curated list is available." : "Try another search term or clear a filter.";
         reset.className = "browse-reset";
         reset.type = "button";
         reset.textContent = "Clear filters";
         reset.addEventListener("click", clear);
-        empty.append(heading, help, reset);
+        empty.append(heading, help);
+        if (!waitingForCuratedList) empty.appendChild(reset);
         results.appendChild(empty);
         return;
       }

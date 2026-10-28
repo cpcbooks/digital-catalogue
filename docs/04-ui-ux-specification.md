@@ -19,4 +19,13 @@ This focused document reconciles the accepted IM-12C production behaviour with t
 
 ## Scope boundary
 
-Homepage refinement is deferred. My Selection retains its existing selection-specific controls and workflow.
+## Homepage — IM-15 Development
+
+- The owner-approved homepage composition uses a left-aligned serif hero, functional search, four category cards, a New Arrivals structure, and the footer. The Complete Cambridge Collection panel is absent.
+- The shared logo route, My Selection control, source-aware search and Privacy Notice remain provided by the existing shared scripts. Every category destination and direct stage/class shortcut remains a real link.
+- Category cards stack on mobile without hiding shortcuts. IM-14A/A.1 publication-card presentation is unchanged.
+- New Arrivals is curated-only at `browse.html?view=new-arrivals`, using the existing Browse page and shared publication cards. The current approved Class 1–8 Wondera Computational Thinking & AI list is configured by the permanent CPC SKUs `CPC00252`–`CPC00259`; it must not infer newness from timestamps or identifiers.
+- In New Arrivals mode, the existing breadcrumb and Back to Home / View All Publications row remain available, while Browse tabs, search, filters and sorting controls are absent. It is not a separate page and adds no ordering or checkout flow.
+- Wondera CT & AI cover assets are deferred for this release. The existing shared blank portrait fallback remains the approved presentation until original covers are supplied.
+- IM-15 uses owner-supplied PNG assets under `assets/im15/` for the hero, each category card, and New Arrivals. Images are contained by fixed media regions with responsive `object-fit: cover` cropping; headings, controls and links remain HTML.
+- The hero and New Arrivals media use responsive CSS masks to blend into their cream backgrounds. Mobile uses a compact stacked hero while retaining the same source image and search behavior.

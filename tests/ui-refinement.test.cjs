@@ -47,3 +47,17 @@ test("Book Details retains safe optional metadata handling and a blank missing-c
   assert.match(source, /label\.textContent=""/);
   assert.doesNotMatch(source, /Cover image coming soon/);
 });
+
+test("New Arrivals stays within the curated Browse mode", () => {
+  assert.match(read("index.html"), /href="browse\.html\?view=new-arrivals"/);
+  assert.match(read("index.html"), /homeNewArrivalsRouting/);
+  assert.match(read("browse.html"), /catalogue-new-arrivals\.js/);
+  const source = read("js/catalogue-browse.js");
+  assert.match(source, /const NEW_ARRIVALS_VIEW = "new-arrivals"/);
+  assert.match(source, /function visibleBooks\(\) \{ return newArrivalsMode \? newArrivals : books; \}/);
+  assert.match(source, /document\.body\.classList\.toggle\("new-arrivals-mode", newArrivalsMode\)/);
+  assert.match(source, /document\.querySelector\("\.browse-tabs"\)\.hidden = newArrivalsMode/);
+  assert.match(source, /selection\.cardNode\(book/);
+  assert.deepEqual(read("js/catalogue-new-arrivals.js").match(/CPC\d{5}/g), ["CPC00252", "CPC00253", "CPC00254", "CPC00255", "CPC00256", "CPC00257", "CPC00258", "CPC00259"]);
+  assert.doesNotMatch(read("js/catalogue-new-arrivals.js"), /date|timestamp/i);
+});

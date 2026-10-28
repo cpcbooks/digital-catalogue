@@ -2,6 +2,13 @@
 
 This is a concise functional changelog, not a commit-by-commit transcript.
 
+## Unreleased — IM-15 Development
+
+- Refined the homepage to the owner-approved hero, category-card and New Arrivals composition while retaining existing navigation and selection integration.
+- Added New Arrivals as a curated mode of the existing Browse page, displaying Wondera Computational Thinking & AI Classes 1–8 in CPC SKU order `CPC00252`–`CPC00259`. It preserves the shared header, card renderer and footer, hides normal Browse discovery controls only in this mode, and uses the existing missing-cover fallback until original covers arrive; no Supabase or publication-data change.
+- Added the owner-supplied hero, category and New Arrivals assets as local homepage media.
+- Refined IM-15 media masks, responsive hero proportions, category crop positions and footer-link contrast without changing catalogue behavior.
+
 ## 2026-09-20
 
 ### Navigation + publication-browser consistency audit

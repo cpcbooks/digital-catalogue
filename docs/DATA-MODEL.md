@@ -183,6 +183,8 @@ Parked. The field may remain blank while CPC decides its permanent SKU conventio
 
 Do not generate arbitrary SKUs solely to satisfy the catalogue. SKU becomes important before repeated production Excel → Supabase update cycles, but it is not required to replace the current pilot dataset with one clean approved full-master import.
 
+Curated homepage/Browse features may use only verified existing `publications.sku` values. The IM-15 New Arrivals list is a browser configuration (`js/catalogue-new-arrivals.js`) for the approved Wondera CT & AI SKUs `CPC00252`–`CPC00259`; it does not add a table, column or database-maintained “new arrival” flag, and does not establish a SKU convention for future blank records.
+
 ## Status
 
 Required. Current controlled values:

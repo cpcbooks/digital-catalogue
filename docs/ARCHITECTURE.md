@@ -117,6 +117,12 @@ The Supabase-backed discovery layer should query the same canonical publication 
 
 Do not build separate product taxonomies for different pages.
 
+## Curated discovery modes
+
+New Arrivals is a route mode of the shared Browse page: `browse.html?view=new-arrivals`. `js/catalogue-new-arrivals.js` contains an ordered allow-list of verified permanent CPC SKUs, and `js/catalogue-browse.js` resolves that list against the active catalogue source before passing the resulting records to the existing card renderer and selection actions.
+
+The initial list is Wondera Computational Thinking & AI Classes 1–8 (`CPC00252`–`CPC00259`). It creates no publication records, tables, schema fields or independent page layout. Browse discovery controls are suppressed only in this route mode; normal Browse remains the shared search/filter experience. Curated mode is catalogue browsing, not ordering or checkout.
+
 ## Selection architecture
 
 Selections remain shared across catalogue sections through the existing `cambridgeOrder` contract.

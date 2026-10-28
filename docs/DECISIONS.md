@@ -156,3 +156,9 @@ See `request-backend-architecture.md` for details.
 **Reason:** the previous All Books horizontal rows and separately assembled category cards drifted in placement, cover handling and action alignment.
 
 **Constraints:** real covers remain contained at their natural aspect ratio; missing and failed covers use a blank portrait placeholder. This does not alter catalogue data, Supabase, or the deferred homepage. Deployed to `main` in `1857057`.
+
+---
+
+## 2026-10-23 00:00 IST (UTC+05:30) — IM-15 homepage direction
+
+**Decision:** implement the owner-approved homepage composition in Development without changing catalogue data, Supabase, selection, or IM-14A/A.1 publication cards. New Arrivals is a curated mode of the existing Browse page and uses stable publication identifiers only. Its initial approved list is Wondera Computational Thinking & AI Classes 1–8, ordered by permanent SKUs `CPC00252`–`CPC00259`; it adds no database-maintained arrival flag, separate page, ordering flow or cover substitute.
