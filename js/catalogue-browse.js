@@ -197,7 +197,7 @@
       const grid = document.createElement("div");
       grid.className = "publication-grid";
       matched.forEach(book => {
-        if (selection && selection.cardNode) grid.appendChild(selection.cardNode(book, [categoryNames[book.category] || book.category, query.classValues(book).join(", "), book.series, book.displaySubject || book.subject, book.type || book.bookType, book.sku ? "SKU: " + book.sku : "", book.isbn ? "ISBN: " + book.isbn : ""]));
+        if (selection && selection.cardNode) grid.appendChild(selection.cardNode(book, [categoryNames[book.category] || book.category, query.classValues(book).join(", "), book.series, book.displaySubject || book.subject, book.type || book.bookType, book.sku ? "SKU: " + book.sku : ""]));
       });
       results.appendChild(grid);
     }

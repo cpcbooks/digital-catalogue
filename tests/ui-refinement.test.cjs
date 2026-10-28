@@ -28,6 +28,23 @@ test("publication cards share a vertical renderer and preserve MRP/SKU metadata"
   });
 });
 
+test("listing cards do not expose ISBN metadata", () => {
+  const cards = read("js/catalogue-selection.js");
+  const browse = read("js/catalogue-browse.js");
+  assert.doesNotMatch(cards, /book\.isbn \? "ISBN: " \+ book\.isbn/);
+  assert.doesNotMatch(browse, /book\.isbn \? "ISBN: " \+ book\.isbn/);
+  assert.match(read("js/book-details.js"), /\["ISBN",optionalText\(book\.isbn\)\]/);
+});
+
+test("Browse uses the shared breadcrumb and contextual-return row", () => {
+  const page = read("browse.html");
+  assert.match(page, /\.browse-heading-row\{display:grid;grid-template-columns:minmax\(0,1fr\) auto/);
+  assert.match(page, /\.browse-heading-row \.catalogue-breadcrumbs\{grid-column:1\/-1;grid-row:1\}/);
+  assert.match(page, /\.browse-heading-row \.catalogue-context-action\{grid-column:1;grid-row:2;justify-self:start;margin:0\}/);
+  assert.match(page, /\.browse-heading-row #browseAllLink\{grid-column:2;grid-row:2\}/);
+  assert.match(page, /\.browse-all-link\[hidden\]\{display:none\}/);
+});
+
 test("media CSS preserves real-image ratios and uses a blank portrait fallback", () => {
   const source = read("css/publication-browser.css");
   assert.match(source, /object-fit:contain/);

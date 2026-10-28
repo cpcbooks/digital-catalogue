@@ -10,6 +10,13 @@ This focused document reconciles the accepted IM-12C production behaviour with t
 - A card places its cover, title, metadata, MRP, View Book action and Selection action in that order. Text is left aligned; covers are centred.
 - The grid uses four columns where the content width supports it, three at medium desktop widths, two through 390px mobile widths, and one at 359px and below. Cards keep actions at their bottom without clipping content.
 - Existing search, filters, subject grouping, URL state, selection state and return behaviour remain unchanged.
+- Listing-card metadata remains compact: category/class, series where applicable, subject/book type, permanent SKU and MRP. ISBN is displayed on Book Details, not on listing cards.
+
+## Inner-page navigation
+
+- Breadcrumbs stay at the top-left of the existing inner-page content container and retain the shared breadcrumb styling.
+- The contextual Back/return link sits immediately below the breadcrumb at left. Where an existing secondary link is useful, it shares that row at right; New Arrivals retains `View All Publications` there.
+- Contextual destinations take precedence over an unconditional Home route. Page-specific heading alignment is unchanged: the School Learning category landing page remains centred, while class-specific publication listings remain left-aligned.
 
 ## Cover presentation
 

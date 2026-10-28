@@ -583,7 +583,7 @@
     title.textContent = book.title || "Untitled Book";
     const meta = document.createElement("div");
     meta.className = "book-meta";
-    const values = Array.isArray(metadata) ? metadata : [book.series || book.family, book.displaySubject || book.subject, book.medium ? book.medium + " Medium" : "", book.sku ? "SKU: " + book.sku : "", book.isbn ? "ISBN: " + book.isbn : ""];
+    const values = Array.isArray(metadata) ? metadata : [book.series || book.family, book.displaySubject || book.subject, book.medium ? book.medium + " Medium" : "", book.sku ? "SKU: " + book.sku : ""];
     values.filter(value => value !== null && value !== undefined && String(value).trim() !== "").forEach(value => {
       const item = document.createElement("span");
       item.textContent = value;

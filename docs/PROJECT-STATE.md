@@ -166,8 +166,8 @@ Do not claim a feature is complete solely because code was written.
 
 IM-14A/A.1 deployed to `main` in `1857057`: shared vertical cards, preserved cover proportions, compact media areas, and a blank portrait fallback for missing or failed covers. Production smoke testing passed. No Supabase update or homepage redesign occurred.
 
-## 2026-10-23 00:00 IST (UTC+05:30) — IM-15 Development
+## IM-15 deployed — `108c205421ffd0bd49a48cd60a2829755fb45505`
 
-IM-15 homepage refinement is implemented in Development only against verified `origin/main` baseline `28df409`. Existing source-aware navigation and direct shortcuts remain intact. New Arrivals opens the shared Browse page in curated mode at `browse.html?view=new-arrivals`, currently displaying the approved Wondera Computational Thinking & AI Classes 1–8 SKUs `CPC00252`–`CPC00259`; tabs, search, filters and sorting are hidden only in that mode. No data or schema change has been made.
+IM-15 homepage refinement is deployed in production at `108c205421ffd0bd49a48cd60a2829755fb45505`. Existing source-aware navigation and direct shortcuts remain intact. New Arrivals opens the shared Browse page in curated mode at `browse.html?view=new-arrivals`, currently displaying the approved Wondera Computational Thinking & AI Classes 1–8 SKUs `CPC00252`–`CPC00259`; tabs, search, filters and sorting are hidden only in that mode. No data or schema change was made.
 
 The approved IM-15 visual assets are stored locally in `assets/im15/` and rendered only on the homepage. Wondera front covers remain deferred and use the established blank portrait fallback. No publication data, Supabase configuration or catalogue runtime was changed.
