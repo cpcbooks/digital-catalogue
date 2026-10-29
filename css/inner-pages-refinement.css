@@ -2,6 +2,7 @@
 .catalogue-inner-page{--inner-accent:#183b63;--inner-wash:#f2f6fa;--inner-border:#dbe5ef;--inner-shadow:0 14px 34px rgba(24,59,99,.08)}
 .catalogue-inner-page[data-catalogue-tone="early"]{--inner-accent:#d88936;--inner-wash:#fff7ed;--inner-border:#f0d9bf;--inner-shadow:0 14px 34px rgba(216,137,54,.12)}
 .catalogue-inner-page[data-catalogue-tone="school"]{--inner-accent:#2878b5;--inner-wash:#eef7fc;--inner-border:#cce1f0;--inner-shadow:0 14px 34px rgba(40,120,181,.11)}
+.catalogue-inner-page[data-catalogue-tone="exam"]{--inner-accent:#7853a6;--inner-wash:#f6f1fb;--inner-border:#dfd1ee;--inner-shadow:0 14px 34px rgba(120,83,166,.11)}
 .catalogue-inner-page[data-catalogue-tone="college"]{--inner-accent:#198a7c;--inner-wash:#eef9f7;--inner-border:#c9e7e1;--inner-shadow:0 14px 34px rgba(25,138,124,.11)}
 .catalogue-inner-page[data-catalogue-tone="competitive"]{--inner-accent:#a66b42;--inner-wash:#fcf4ed;--inner-border:#ead5c4;--inner-shadow:0 14px 34px rgba(166,107,66,.11)}
 

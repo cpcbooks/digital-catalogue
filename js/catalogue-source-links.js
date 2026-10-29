@@ -37,7 +37,8 @@
     const pathname = location.pathname;
     if (/(?:^|\/)index\.html$/.test(pathname)) return;
     const tone = /early-learning|kit-/.test(pathname) ? "early"
-      : /school-|exam-preparation|competitive-exam-books/.test(pathname) ? "school"
+      : /exam-preparation|competitive-exam-books/.test(pathname) ? "exam"
+        : /school-/.test(pathname) ? "school"
         : /college-/.test(pathname) ? "college"
           : /competitive-exams/.test(pathname) ? "competitive" : "catalogue";
     document.body.classList.add("catalogue-inner-page");

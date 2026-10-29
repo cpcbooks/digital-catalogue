@@ -104,3 +104,19 @@ test("Option C+ promotes category names without changing stage-level titles", ()
   assert.match(competitive, /<h1>Competitive Exams<\/h1>/);
   assert.doesNotMatch(competitive, /<h1>Prepare with purpose\.<\/h1>/);
 });
+
+test("inner-page presentation layer is scoped, colour-coded, and preserves motion preferences", () => {
+  const links = read("js/catalogue-source-links.js");
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(links, /css\/inner-pages-refinement\.css/);
+  assert.match(links, /document\.body\.classList\.add\("catalogue-inner-page"\)/);
+  assert.match(links, /"early"/);
+  assert.match(links, /"school"/);
+  assert.match(links, /"exam"/);
+  assert.match(links, /"college"/);
+  assert.match(links, /"competitive"/);
+  assert.match(css, /data-catalogue-tone="early"/);
+  assert.match(css, /data-catalogue-tone="exam"/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.doesNotMatch(css, /\.homepage/);
+});

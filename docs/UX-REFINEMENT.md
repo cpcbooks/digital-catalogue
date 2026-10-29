@@ -12,3 +12,7 @@ The `codex/catalogue-ux-refinement` branch applies the approved catalogue-first 
 - The Early Learning Custom Kit still uses `CambridgeEarlyLearningKitConfig` and `CambridgeCustomKitState`. All four configured stages currently have an eight-title minimum, while the builder presents their eligible titles as one continuous grid.
 
 No publication master data, identifiers, Supabase schema, RLS, storage, Edge Functions, or deployment configuration are changed by this refinement.
+
+## Inner-page visual layer — 2026-10-29 18:20 IST (UTC+05:30)
+
+`css/inner-pages-refinement.css` is a scoped presentation layer for catalogue inner pages. It keeps the homepage and all catalogue behaviour unchanged while applying restrained banner washes, card borders, active navigation, focus states and category accents: Early Learning (`#D88936`), School Books (`#2878B5`), Exam Preparation (`#7853A6`), College & University (`#198A7C`) and Competitive Exams (`#A66B42`). The shared loader adds the layer only after the normal UX refinement stylesheet, and `catalogue-source-links.js` supplies page tone through a body data attribute. Publication card metadata, search/filter URL state, Selection, Custom Kit and requirement behaviour remain untouched.
