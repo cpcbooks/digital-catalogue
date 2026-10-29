@@ -29,7 +29,7 @@
     const inner = document.createElement("link");
     inner.id = "catalogue-inner-pages-refinement";
     inner.rel = "stylesheet";
-    inner.href = "css/inner-pages-refinement.css?v=inner1";
+    inner.href = "css/inner-pages-refinement.css?v=inner2";
     document.head.appendChild(inner);
   }
 
@@ -121,8 +121,47 @@
         centre.prepend(group);
       }
     }
-    if (/\/(early-learning-level|school-learning|college-books)\.html$/.test(pathname)) {
+    if (/\/(early-learning-level|early-learning-books|school-learning|school-books|exam-preparation|college-books)\.html$/.test(pathname)) {
       document.documentElement.classList.add("stage-level-page");
+    }
+  }
+  const cardIcons = {
+    shapes: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="3"></circle><rect x="12" y="4" width="7" height="7" rx="1"></rect><path d="m7 14 4 6H3z"></path></svg>',
+    blocks: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h7v7H4zM13 4h7v7h-7zM13 13h7v7h-7z"></path></svg>',
+    book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 5H12v14H7.5A3.5 3.5 0 0 0 4 22zM20 5.5A3.5 3.5 0 0 0 16.5 5H12v14h4.5a3.5 3.5 0 0 1 3.5 3z"></path></svg>',
+    cap: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-5 9 5-9 5zM7 12v4.5c2.8 1.9 7.2 1.9 10 0V12M21 10v5"></path></svg>',
+    library: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15m1 0V3h4v17m1 0V7h4v13"></path></svg>',
+    package: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"></path></svg>'
+  };
+  function setCardIcon(card, name) {
+    if (!card) return;
+    const icon = document.createElement("span");
+    icon.className = "catalogue-card-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = cardIcons[name] || cardIcons.book;
+    const marker = card.querySelector(".stage-number,.level-number,.catalogue-card-icon");
+    if (marker) marker.replaceWith(icon);
+    else card.prepend(icon);
+  }
+  function refineLandingCards() {
+    const pathname = location.pathname;
+    if (pathname.endsWith("/early-learning.html")) {
+      const descriptions = ["A playful start to learning.", "Discover, explore and grow.", "Building strong learning foundations.", "Growing confident, school-ready learners."];
+      const icons = ["shapes", "blocks", "book", "cap"];
+      document.querySelectorAll(".stage-grid .stage-card").forEach((card, index) => { setCardIcon(card, icons[index]); const text = card.querySelector("p"); if (text) text.textContent = descriptions[index]; });
+    }
+    if (pathname.endsWith("/school-education.html")) {
+      document.querySelectorAll(".stage-grid .stage-card").forEach(card => { setCardIcon(card, "book"); card.querySelector("p")?.remove(); });
+    }
+    if (pathname.endsWith("/college-university.html")) {
+      ["book", "library", "cap"].forEach((name, index) => setCardIcon(document.querySelectorAll(".stage-grid .stage-card")[index], name));
+      document.querySelector(".notice")?.remove();
+    }
+    if (pathname.endsWith("/early-learning-level.html")) {
+      document.querySelectorAll(".choice-card").forEach(card => setCardIcon(card, card.classList.contains("custom-kit") ? "blocks" : card.textContent.includes("Individual") ? "book" : "package"));
+    }
+    if (pathname.endsWith("/school-learning.html")) {
+      document.querySelectorAll(".category-card").forEach(card => setCardIcon(card, card.classList.contains("exam-card") ? "package" : "book"));
     }
   }
   function apply() {
@@ -132,6 +171,7 @@
     addBrandLink(bootstrap);
     addPrivacyLink(bootstrap);
     refineOptionCHeaders();
+    refineLandingCards();
     refineCompetitiveExamsLink(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
     if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");

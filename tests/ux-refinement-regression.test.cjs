@@ -131,3 +131,27 @@ test("Early Learning keeps unavailable Standard Kits non-actionable while preser
   assert.match(source, /Build My Kit →/);
   assert.match(css, /\.choice-card\.custom-kit\{background:#fff/);
 });
+
+test("School listing back controls retain their valid class context", () => {
+  const selection = read("js/catalogue-selection.js");
+  ["1", "5", "7", "10"].forEach(classId => {
+    assert.match(selection, /page === "school-books"\) return className \? \{ label: "← Back to " \+ className, href: "school-learning\.html\?class=" \+ encodeURIComponent\(params\.get\("class"\)\)/);
+    assert.match(read("school-books.html"), /school-learning\.html\?class="\+encodeURIComponent\(normalized\)/);
+    assert.match(read("exam-preparation.html"), /school-learning\.html\?class="\+encodeURIComponent\(c\)/);
+    assert.match(read("school-books.html"), /Class "\+normalized/);
+    assert.match(read("exam-preparation.html"), /Class "\+c/);
+  });
+  assert.match(selection, /page === "school-books"\).*Back to School Learning/s);
+});
+
+test("final consistency layer uses visible SVG card icons and approved contextual accents", () => {
+  const links = read("js/catalogue-source-links.js");
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(links, /function refineLandingCards/);
+  assert.match(links, /<svg viewBox/);
+  assert.match(links, /A playful start to learning\./);
+  assert.match(links, /document\.querySelector\("\.notice"\)\?\.remove\(\)/);
+  assert.match(css, /\.catalogue-card-icon\{display:grid/);
+  assert.match(css, /\.category-card\.exam-card\{background:#fff/);
+  assert.match(css, /data-catalogue-tone="early"\] \.progress-fill\{background:#d88936/);
+});

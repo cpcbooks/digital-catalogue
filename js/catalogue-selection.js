@@ -362,7 +362,8 @@
     const className = classLabel(params.get("class"));
     if (["early-learning", "school-education", "college-university", "competitive-exams", "browse"].includes(page)) return home;
     if (["early-learning-level", "early-learning-books"].includes(page)) return { label: "← Back to Early Learning", href: "early-learning.html" };
-    if (["school-learning", "school-books"].includes(page)) return { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "school-learning") return { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "school-books") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "exam-preparation") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "college-books") return { label: "← Back to College & University", href: "college-university.html" };
     if (page === "competitive-exam-books") return { label: "← Back to Competitive Exams", href: "competitive-exams.html" };

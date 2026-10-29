@@ -16,3 +16,7 @@ No publication master data, identifiers, Supabase schema, RLS, storage, Edge Fun
 ## Inner-page visual layer — 2026-10-29 18:20 IST (UTC+05:30)
 
 `css/inner-pages-refinement.css` is a scoped presentation layer for catalogue inner pages. It keeps the homepage and all catalogue behaviour unchanged while applying restrained banner washes, card borders, active navigation, focus states and category accents: Early Learning (`#D88936`), School Books (`#2878B5`), Exam Preparation (`#7853A6`), College & University (`#198A7C`) and Competitive Exams (`#A66B42`). The shared loader adds the layer only after the normal UX refinement stylesheet, and `catalogue-source-links.js` supplies page tone through a body data attribute. Publication card metadata, search/filter URL state, Selection, Custom Kit and requirement behaviour remain untouched.
+
+## Consistency correction — 2026-10-29 21:09 IST (UTC+05:30)
+
+Landing and selection cards use lightweight inline SVG icons through the shared source-link enhancement, with category-coloured icon containers rather than numeric labels or empty circles. Headings remain CPC navy; title accents and eyebrows use the page category tone. School Books now preserves a valid class parameter in its generated contextual Back control, matching Exam Preparation. Unconfigured Standard Kits remain non-actionable Coming Soon cards, Custom Kit progress is Early Learning orange, and the obsolete College & University development notice is removed at presentation time. No catalogue, selection, kit, Supabase or request contracts changed.
