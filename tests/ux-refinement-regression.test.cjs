@@ -155,3 +155,17 @@ test("final consistency layer uses visible SVG card icons and approved contextua
   assert.match(css, /\.category-card\.exam-card\{background:#fff/);
   assert.match(css, /data-catalogue-tone="early"\] \.progress-fill\{background:#d88936/);
 });
+
+test("mobile choice cards and image-free details retain honest, accessible fallbacks", () => {
+  const links = read("js/catalogue-source-links.js");
+  const details = read("js/book-details.js");
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(links, /function activateCard/);
+  assert.match(links, /Choose at least 8 titles/);
+  assert.match(links, /No publications available yet/);
+  assert.match(details, /Cover not yet available/);
+  assert.match(details, /caption\.hidden=true/);
+  assert.match(details, /nav\.hidden=true/);
+  assert.match(css, /\.card-link>a\{display:block;position:absolute;inset:0/);
+  assert.match(css, /\.gallery-nav\[hidden\]\{display:none\}/);
+});

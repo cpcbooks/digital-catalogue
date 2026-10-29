@@ -120,15 +120,20 @@
   }
   function gallery() {
     const frame=document.getElementById("frame"),count=document.getElementById("galleryCount"),label=document.getElementById("galleryLabel"),help=document.getElementById("galleryHelp"),prev=document.getElementById("prev"),next=document.getElementById("next");
+    const galleryNode=frame.closest(".gallery"),caption=frame.nextElementSibling,nav=frame.parentElement.querySelector(".gallery-nav");
     frame.innerHTML="";
     if(!images.length) {
       frame.classList.add("gallery-frame--placeholder");
-      frame.textContent="";
+      galleryNode.classList.add("gallery--placeholder");
+      frame.textContent="Cover not yet available";
       label.textContent="";
-      help.textContent=""
+      help.textContent="";
+      caption.hidden=true;
+      nav.hidden=true
     }
     else {
       frame.classList.remove("gallery-frame--placeholder");
+      galleryNode.classList.remove("gallery--placeholder");
       const item=images[imageIndex],img=document.createElement("img");
       img.src=item.src;
       img.alt=(current.title||"Book")+" — "+item.label;
@@ -141,9 +146,11 @@
       };
       frame.appendChild(img);
       label.textContent=item.label;
-      help.textContent=images.length>1?"Swipe or use arrows to view more":""
+      help.textContent=images.length>1?"Swipe or use arrows to view more":"";
+      caption.hidden=false;
+      nav.hidden=images.length<2
     }
-    count.textContent=images.length?(imageIndex+1)+" / "+images.length:"0 / 0";
+    count.textContent=images.length?(imageIndex+1)+" / "+images.length:"";
     prev.disabled=images.length<2;
     next.disabled=images.length<2
   }

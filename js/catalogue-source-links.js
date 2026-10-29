@@ -143,6 +143,11 @@
     if (marker) marker.replaceWith(icon);
     else card.prepend(icon);
   }
+  function activateCard(card) {
+    const link = card && card.querySelector("a[href]");
+    if (!link || card.classList.contains("card-link")) return;
+    card.classList.add("card-link");
+  }
   function refineLandingCards() {
     const pathname = location.pathname;
     if (pathname.endsWith("/early-learning.html")) {
@@ -158,11 +163,42 @@
       document.querySelector(".notice")?.remove();
     }
     if (pathname.endsWith("/early-learning-level.html")) {
-      document.querySelectorAll(".choice-card").forEach(card => setCardIcon(card, card.classList.contains("custom-kit") ? "blocks" : card.textContent.includes("Individual") ? "book" : "package"));
+      document.querySelectorAll(".choice-card").forEach(card => {
+        setCardIcon(card, card.classList.contains("custom-kit") ? "blocks" : card.textContent.includes("Individual") ? "book" : "package");
+        const text = card.querySelector("p");
+        if (text) text.textContent = card.classList.contains("custom-kit") ? "Choose at least 8 titles." : card.textContent.includes("Individual") ? "Browse and select publications." : "Ready-made book collection.";
+        activateCard(card);
+      });
     }
     if (pathname.endsWith("/school-learning.html")) {
-      document.querySelectorAll(".category-card").forEach(card => setCardIcon(card, card.classList.contains("exam-card") ? "package" : "book"));
+      document.querySelectorAll(".category-card").forEach(card => {
+        setCardIcon(card, card.classList.contains("exam-card") ? "package" : "book");
+        const text = card.querySelector("p");
+        if (text) text.textContent = card.classList.contains("exam-card") ? "Guides, workbooks and assessments." : "Textbooks and subject books.";
+        activateCard(card);
+      });
     }
+  }
+  function refineListingEmptyStates() {
+    const results = document.getElementById("results");
+    if (!results || results.dataset.emptyStateRefined) return;
+    results.dataset.emptyStateRefined = "true";
+    const update = () => results.querySelectorAll(".empty").forEach(box => {
+      const heading = box.querySelector("h2"), copy = box.querySelector("p");
+      if (!heading || !copy) return;
+      if (/^Titles will be added here$/i.test(heading.textContent.trim())) {
+        const label = (document.getElementById("title")?.textContent || "").replace(/ Publications$/i, "").trim() || "Catalogue";
+        heading.textContent = "No publications available yet";
+        copy.textContent = label + " publications will appear here as they become available in our catalogue.";
+      }
+      if (/^Catalogue unavailable$/i.test(heading.textContent.trim())) {
+        heading.textContent = "Unable to load publications";
+        copy.textContent = "Please try again.";
+      }
+      if (/^No matching publications$/i.test(heading.textContent.trim())) heading.textContent = "No publications match your search.";
+    });
+    new MutationObserver(update).observe(results, { childList: true, subtree: true });
+    update();
   }
   function apply() {
     const bootstrap = global.CambridgeCatalogueBootstrap;
@@ -172,6 +208,7 @@
     addPrivacyLink(bootstrap);
     refineOptionCHeaders();
     refineLandingCards();
+    refineListingEmptyStates();
     refineCompetitiveExamsLink(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
     if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");
@@ -185,6 +222,7 @@
       });
     }
   }
+  global.CambridgeInnerPageRefinement = { activateCard };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", apply);
   else apply();
 })(window);

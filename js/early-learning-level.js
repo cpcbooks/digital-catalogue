@@ -24,7 +24,7 @@
     const [catalogue, definitions] = await Promise.all([Bootstrap.ready(), Bootstrap.standardKitDefinitions()]);
     const provider = Bootstrap.requestedSource === "supabase" ? StandardKitConfig.createProvider(Object.fromEntries(definitions.map(definition => [definition.stageCode, definition]))) : StandardKitConfig;
     const available = StandardKitConfig.resolve(provider.get(level), catalogue.books).available;
-    if (available) standard.querySelector(".standard-unavailable").replaceWith(Object.assign(document.createElement("a"), { href: standardUrl, textContent: "View Standard Kit →" }));
+    if (available) { standard.querySelector(".standard-unavailable").replaceWith(Object.assign(document.createElement("a"), { href: standardUrl, textContent: "View Standard Kit →" })); window.CambridgeInnerPageRefinement?.activateCard(standard); }
     else { standard.classList.add("is-unavailable"); standard.querySelector(".choice-label").textContent = "COMING SOON"; standard.querySelector("p").textContent = "A Cambridge Standard Kit is not available for this stage yet."; standard.querySelector(".standard-unavailable").textContent = "Coming Soon"; }
   } catch (_) {
     standard.classList.add("is-unavailable"); standard.querySelector(".choice-label").textContent = "AVAILABILITY PENDING"; standard.querySelector(".standard-unavailable").textContent = "Check again shortly";
