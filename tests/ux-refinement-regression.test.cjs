@@ -120,3 +120,14 @@ test("inner-page presentation layer is scoped, colour-coded, and preserves motio
   assert.match(css, /prefers-reduced-motion:reduce/);
   assert.doesNotMatch(css, /\.homepage/);
 });
+
+test("Early Learning keeps unavailable Standard Kits non-actionable while preserving Custom Kit access", () => {
+  const source = read("js/early-learning-level.js");
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(source, /Bootstrap\.standardKitDefinitions\(\)/);
+  assert.match(source, /StandardKitConfig\.resolve/);
+  assert.match(source, /COMING SOON/);
+  assert.match(source, /standard\.classList\.add\("is-unavailable"\)/);
+  assert.match(source, /Build My Kit →/);
+  assert.match(css, /\.choice-card\.custom-kit\{background:#fff/);
+});
