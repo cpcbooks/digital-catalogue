@@ -79,14 +79,17 @@ test("Competitive Exams selects only its future category records for the shared 
   assert.match(read("js/competitive-exams-refinement.js"), /selection\.cardNode/);
 });
 
-test("shared cards render ordered labelled metadata and separate SKU", () => {
+test("shared cards render approved metadata rows and a shared bottom group", () => {
   const source = read("js/catalogue-selection.js");
-  ["Category", "Class / level", "Series", "Subject", "Book type"].forEach(label => assert.match(source, new RegExp('"' + label.replace("/", "\\/") + '"')));
-  assert.match(source, /item\.className = "book-meta-item"/);
-  assert.match(source, /item\.dataset\.label = label/);
-  assert.match(source, /sku\.className = "book-sku"/);
+  assert.match(source, /const values = \[\["Class \/ level", classes\.join\(", "\)\], \["Series", book\.series \|\| book\.family\], \["Book type", book\.type \|\| book\.bookType\]\]/);
+  assert.doesNotMatch(source, /const values = .*\["Category"/);
+  assert.doesNotMatch(source, /const values = .*\["Subject"/);
+  assert.match(source, /name\.className = "book-meta-label"/);
+  assert.match(source, /text\.className = "book-meta-value"/);
+  assert.match(source, /bottom\.className = "book-card-bottom"/);
   const css = read("css/ux-refinement.css");
   assert.match(css, /\.publication-card \.book-meta\{display:grid/);
+  assert.match(css, /\.publication-card \.book-card-bottom\{margin-top:auto/);
   assert.doesNotMatch(css, /\.homepage \.footer-links/);
 });
 
