@@ -24,12 +24,12 @@
     const style = document.createElement("link");
     style.id = "catalogue-ux-refinement";
     style.rel = "stylesheet";
-    style.href = "css/ux-refinement.css?v=ux2";
+    style.href = "css/ux-refinement.css?v=ux4";
     document.head.appendChild(style);
     const inner = document.createElement("link");
     inner.id = "catalogue-inner-pages-refinement";
     inner.rel = "stylesheet";
-    inner.href = "css/inner-pages-refinement.css?v=inner2";
+    inner.href = "css/inner-pages-refinement.css?v=inner7";
     document.head.appendChild(inner);
   }
 
