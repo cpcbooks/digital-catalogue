@@ -5,7 +5,7 @@
   "use strict";
 
   const STAGES = Object.freeze({
-    playgroup: Object.freeze({ stageCode: "playgroup", displayName: "Playgroup", enabled: true, minimumDistinctTitles: null, completionEnabled: false }),
+    playgroup: Object.freeze({ stageCode: "playgroup", displayName: "Playgroup", enabled: true, minimumDistinctTitles: 8, completionEnabled: true }),
     nursery: Object.freeze({ stageCode: "nursery", displayName: "Nursery", enabled: true, minimumDistinctTitles: 8, completionEnabled: true }),
     lkg: Object.freeze({ stageCode: "lkg", displayName: "LKG", enabled: true, minimumDistinctTitles: 8, completionEnabled: true }),
     ukg: Object.freeze({ stageCode: "ukg", displayName: "UKG", enabled: true, minimumDistinctTitles: 8, completionEnabled: true })
@@ -26,17 +26,9 @@
     return belongsToStage(book, stage) && book.customKitEligible !== false;
   }
 
-  function groupBooksForDisplay(books, categories) {
-    const available = Array.isArray(books) ? books : [];
-    const knownCategories = categories && typeof categories === "object" ? categories : {};
-    const groups = Object.keys(knownCategories).map(subject => ({
-      title: subject,
-      description: knownCategories[subject],
-      books: available.filter(book => book && book.subject === subject)
-    })).filter(group => group.books.length);
-    const otherBooks = available.filter(book => book && !Object.prototype.hasOwnProperty.call(knownCategories, book.subject));
-    if (otherBooks.length) groups.push({ title: "Other", description: "Additional Early Learning books.", books: otherBooks });
-    return groups;
+  function groupBooksForDisplay(books) {
+    const available = Array.isArray(books) ? books.filter(Boolean) : [];
+    return available.length ? [{ title: "Choose Books", description: "", books: available }] : [];
   }
 
   function createProvider(stageConfigs) {

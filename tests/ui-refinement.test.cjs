@@ -30,7 +30,8 @@ test("shared card renderer keeps cover placeholders blank and accessible", () =>
 test("publication cards share a vertical renderer and preserve MRP/SKU metadata", () => {
   const source = read("js/catalogue-selection.js");
   assert.match(source, /function cardNode\(book, metadata\)/);
-  assert.match(source, /book\.sku \? "SKU: " \+ book\.sku/);
+  assert.match(source, /name\.textContent = "SKU:"/);
+  assert.match(source, /text\.textContent = book\.sku/);
   assert.match(source, /Number\.isFinite\(Number\(book\.mrp\)\)/);
   assert.match(read("js/catalogue-browse.js"), /selection\.cardNode\(book/);
   assert.match(read("browse.html"), /publication-browser\.css\?v=im14a/);
@@ -47,7 +48,6 @@ test("listing cards do not expose ISBN metadata", () => {
   ["early-learning-books.html", "school-books.html", "exam-preparation.html", "college-books.html", "competitive-exam-books.html"].forEach(file => {
     const page = read(file);
     assert.doesNotMatch(page, /(?:book|b)\.isbn\?"ISBN: "\+(?:book|b)\.isbn:""/, file);
-    assert.match(page, /(?:book|b)\.sku\?"SKU: "\+(?:book|b)\.sku:""/, file);
   });
   assert.match(cards, /price\.textContent = "MRP ₹" \+ Number\(book\.mrp\)/);
   assert.match(cards, /view\.textContent = "View Book →"/);

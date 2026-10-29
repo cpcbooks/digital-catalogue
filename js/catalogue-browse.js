@@ -104,7 +104,8 @@
       search.value = newArrivalsMode ? "" : params.get("q") || "";
       Object.entries(fields).forEach(([field, select]) => {
         const requested = params.get(field);
-        select.value = !newArrivalsMode && requested && [...select.options].some(option => option.value === requested) ? requested : "";
+        if (!newArrivalsMode && requested && ![...select.options].some(option => option.value === requested)) select.add(new Option(textFor(field, requested), requested));
+        select.value = !newArrivalsMode && requested ? requested : "";
       });
       updateHeading();
     }

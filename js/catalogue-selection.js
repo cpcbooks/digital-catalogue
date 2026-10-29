@@ -583,21 +583,45 @@
     title.textContent = book.title || "Untitled Book";
     const meta = document.createElement("div");
     meta.className = "book-meta";
-    const values = Array.isArray(metadata) ? metadata : [book.series || book.family, book.displaySubject || book.subject, book.medium ? book.medium + " Medium" : "", book.sku ? "SKU: " + book.sku : ""];
-    values.filter(value => value !== null && value !== undefined && String(value).trim() !== "").forEach(value => {
-      const item = document.createElement("span");
-      item.textContent = value;
+    const query = window.CambridgeCatalogueQuery;
+    const classes = query && query.classValues ? query.classValues(book) : Array.isArray(book.class) ? book.class : [];
+    const values = [["Class / level", classes.join(", ")], ["Series", book.series || book.family], ["Book type", book.type || book.bookType]];
+    values.filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== "").forEach(([label, value]) => {
+      const item = document.createElement("p");
+      item.className = "book-meta-item";
+      const name = document.createElement("span");
+      const text = document.createElement("span");
+      name.className = "book-meta-label";
+      text.className = "book-meta-value";
+      name.textContent = label + ":";
+      text.textContent = value;
+      item.append(name, text);
       meta.appendChild(item);
     });
+    if (book.sku) {
+      const sku = document.createElement("p");
+      const name = document.createElement("span");
+      const text = document.createElement("span");
+      sku.className = "book-meta-item book-sku";
+      name.className = "book-meta-label";
+      text.className = "book-meta-value";
+      name.textContent = "SKU:";
+      text.textContent = book.sku;
+      sku.append(name, text);
+      meta.appendChild(sku);
+    }
     info.append(title, meta);
     body.appendChild(info);
+    const bottom = document.createElement("div");
+    bottom.className = "book-card-bottom";
     if (book.mrp !== null && book.mrp !== undefined && String(book.mrp).trim() !== "" && Number.isFinite(Number(book.mrp))) {
       const price = document.createElement("p");
       price.className = "book-price";
       price.textContent = "MRP ₹" + Number(book.mrp);
-      body.appendChild(price);
+      bottom.appendChild(price);
     }
-    body.appendChild(actionNode(book));
+    bottom.appendChild(actionNode(book));
+    body.appendChild(bottom);
     card.append(coverNode(book), body);
     return card;
   }
