@@ -1,0 +1,46 @@
+/* Shared visual layer for catalogue inner pages. Homepage composition is intentionally excluded. */
+.catalogue-inner-page{--inner-accent:#183b63;--inner-wash:#f2f6fa;--inner-border:#dbe5ef;--inner-shadow:0 14px 34px rgba(24,59,99,.08)}
+.catalogue-inner-page[data-catalogue-tone="early"]{--inner-accent:#d88936;--inner-wash:#fff7ed;--inner-border:#f0d9bf;--inner-shadow:0 14px 34px rgba(216,137,54,.12)}
+.catalogue-inner-page[data-catalogue-tone="school"]{--inner-accent:#2878b5;--inner-wash:#eef7fc;--inner-border:#cce1f0;--inner-shadow:0 14px 34px rgba(40,120,181,.11)}
+.catalogue-inner-page[data-catalogue-tone="college"]{--inner-accent:#198a7c;--inner-wash:#eef9f7;--inner-border:#c9e7e1;--inner-shadow:0 14px 34px rgba(25,138,124,.11)}
+.catalogue-inner-page[data-catalogue-tone="competitive"]{--inner-accent:#a66b42;--inner-wash:#fcf4ed;--inner-border:#ead5c4;--inner-shadow:0 14px 34px rgba(166,107,66,.11)}
+
+.catalogue-inner-page :is(.page-hero,.stage-hero,.browse-hero){position:relative;overflow:hidden;background:linear-gradient(135deg,var(--inner-wash),#fff 72%);border-bottom:1px solid var(--inner-border)}
+.catalogue-inner-page :is(.page-hero,.stage-hero,.browse-hero)::after{content:"";position:absolute;inset:auto 6% 0;display:block;height:3px;background:var(--inner-accent);border-radius:3px 3px 0 0;opacity:.8}
+.catalogue-inner-page :is(.page-hero,.stage-hero,.browse-hero) h1{color:var(--navy)}
+.catalogue-inner-page .category-heading-group .heading-accent,.catalogue-inner-page .stage-level-page .page-hero .eyebrow+h1::before{background:var(--inner-accent)}
+.catalogue-inner-page .category-tagline,.catalogue-inner-page .eyebrow{color:var(--inner-accent)}
+.catalogue-inner-page .catalogue-context-action{border-color:var(--inner-border)}
+.catalogue-inner-page .catalogue-context-action:hover{border-color:var(--inner-accent);color:var(--inner-accent)}
+.catalogue-inner-page :is(a,button,input,select,summary):focus-visible{outline:3px solid color-mix(in srgb,var(--inner-accent) 35%,white);outline-offset:3px}
+
+.catalogue-inner-page .stage-card,.catalogue-inner-page .level-card{border-color:var(--inner-border);box-shadow:0 1px 0 rgba(24,59,99,.02)}
+.catalogue-inner-page .stage-card::before,.catalogue-inner-page .level-card::before{content:"";display:block;width:34px;height:3px;margin-bottom:18px;border-radius:3px;background:var(--inner-accent)}
+.catalogue-inner-page .stage-card:hover,.catalogue-inner-page .level-card:hover{border-color:var(--inner-accent);box-shadow:var(--inner-shadow)}
+.catalogue-inner-page .stage-number,.catalogue-inner-page .level-number{color:var(--inner-accent)}
+.catalogue-inner-page .stage-action,.catalogue-inner-page .level-action{color:var(--inner-accent)}
+.catalogue-inner-page :is(.stage-tabs,.class-tabs,.level-tabs){padding:7px;border:1px solid var(--inner-border);border-radius:14px;background:rgba(255,255,255,.72);box-shadow:0 8px 18px rgba(24,59,99,.04)}
+.catalogue-inner-page :is(.stage-tabs,.class-tabs,.level-tabs) a.active,.catalogue-inner-page :is(.stage-tabs,.class-tabs,.level-tabs) a[aria-current="page"]{background:var(--inner-accent);border-color:var(--inner-accent);color:#fff}
+
+.catalogue-inner-page .publication-card{border-color:var(--inner-border);box-shadow:0 1px 0 rgba(24,59,99,.02)}
+.catalogue-inner-page .publication-card:hover{border-color:var(--inner-accent);box-shadow:var(--inner-shadow)}
+.catalogue-inner-page .publication-card .book-cover,.catalogue-inner-page .publication-card-cover{background:linear-gradient(145deg,#fff,var(--inner-wash))}
+.catalogue-inner-page .publication-card .book-cover-placeholder{background:linear-gradient(145deg,#eef1f5,#e4e9ef)}
+.catalogue-inner-page .publication-card .view-book,.catalogue-inner-page .publication-card .view{border-color:var(--inner-accent);background:var(--inner-accent)}
+.catalogue-inner-page .publication-card .add-book{border-color:var(--inner-accent);color:var(--inner-accent)}
+.catalogue-inner-page .publication-card .add-book:hover{background:var(--inner-wash)}
+
+.catalogue-inner-page .browse-tabs,.catalogue-inner-page .browse-discovery,.catalogue-inner-page .browse-refine{border-color:var(--inner-border)}
+.catalogue-inner-page .browse-tab[aria-selected="true"],.catalogue-inner-page .browse-choice[aria-pressed="true"]{border-color:var(--inner-accent);background:var(--inner-accent)}
+.catalogue-inner-page .browse-discovery{background:var(--inner-wash)}
+.catalogue-inner-page .browse-search input:focus,.catalogue-inner-page .browse-refine select:focus{border-color:var(--inner-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--inner-accent) 14%,transparent)}
+.catalogue-inner-page .browse-chip{background:var(--inner-wash);color:var(--inner-accent)}
+
+.catalogue-inner-page :is(.detail-action-wrap,.meta-item,.kit-summary,.form-card,.selection-strip){border-color:var(--inner-border)}
+.catalogue-inner-page .detail-action-wrap{background:var(--inner-wash)}
+.catalogue-inner-page .detail-block h2,.catalogue-inner-page .detail-series{color:var(--inner-accent)}
+.catalogue-inner-page .detail-action .add-book{border-color:var(--inner-accent);background:var(--inner-accent)}
+.catalogue-inner-page .message,.catalogue-inner-page .empty,.catalogue-inner-page .browse-empty,.catalogue-inner-page .competitive-empty{border-color:var(--inner-border);box-shadow:var(--inner-shadow)}
+
+@media (max-width:760px){.catalogue-inner-page :is(.page-hero,.stage-hero,.browse-hero)::after{inset-inline:18px}.catalogue-inner-page :is(.stage-tabs,.class-tabs,.level-tabs){display:flex;max-width:100%;overflow-x:auto;flex-wrap:nowrap;overscroll-behavior-x:contain}.catalogue-inner-page .stage-card::before,.catalogue-inner-page .level-card::before{margin-bottom:13px}.catalogue-inner-page .stage-card{min-height:unset}.catalogue-inner-page .publication-card{border-radius:11px}}
+@media (prefers-reduced-motion:reduce){.catalogue-inner-page *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}

@@ -26,6 +26,22 @@
     style.rel = "stylesheet";
     style.href = "css/ux-refinement.css?v=ux2";
     document.head.appendChild(style);
+    const inner = document.createElement("link");
+    inner.id = "catalogue-inner-pages-refinement";
+    inner.rel = "stylesheet";
+    inner.href = "css/inner-pages-refinement.css?v=inner1";
+    document.head.appendChild(inner);
+  }
+
+  function setInnerPageTone() {
+    const pathname = location.pathname;
+    if (/(?:^|\/)index\.html$/.test(pathname)) return;
+    const tone = /early-learning|kit-/.test(pathname) ? "early"
+      : /school-|exam-preparation|competitive-exam-books/.test(pathname) ? "school"
+        : /college-/.test(pathname) ? "college"
+          : /competitive-exams/.test(pathname) ? "competitive" : "catalogue";
+    document.body.classList.add("catalogue-inner-page");
+    document.body.dataset.catalogueTone = tone;
   }
   function addSearchAssets() {
     if (global.CambridgeCatalogueQuery) {
@@ -111,6 +127,7 @@
   function apply() {
     const bootstrap = global.CambridgeCatalogueBootstrap;
     addRefinementStyles();
+    setInnerPageTone();
     addBrandLink(bootstrap);
     addPrivacyLink(bootstrap);
     refineOptionCHeaders();
