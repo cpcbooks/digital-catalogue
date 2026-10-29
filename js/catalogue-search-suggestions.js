@@ -29,7 +29,15 @@
     input.setAttribute("aria-autocomplete", "list");
     input.setAttribute("aria-controls", list.id);
     form.appendChild(list);
+    if (bootstrap) bootstrap.ready().catch(error => console.error("Catalogue search could not load publications:", error));
     function books() { return query && query.active ? query.active() : []; }
+    async function refresh() {
+      if (bootstrap && !books().length) {
+        try { await bootstrap.ready(); }
+        catch (error) { console.error("Catalogue search could not load publications:", error); }
+      }
+      render();
+    }
     function close() { current = -1; list.hidden = true; list.replaceChildren(); input.removeAttribute("aria-activedescendant"); }
     function render() {
       const matches = suggestionBooks(books(), input.value);
@@ -62,7 +70,7 @@
       input.setAttribute("aria-activedescendant", options[current].id);
       options[current].scrollIntoView({ block: "nearest" });
     }
-    input.addEventListener("input", render);
+    input.addEventListener("input", refresh);
     input.addEventListener("keydown", event => {
       if (event.key === "Escape") { close(); return; }
       if (event.key === "ArrowDown") { if (!list.hidden) { event.preventDefault(); select(current + 1); } return; }

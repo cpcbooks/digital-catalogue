@@ -24,20 +24,26 @@
     const style = document.createElement("link");
     style.id = "catalogue-ux-refinement";
     style.rel = "stylesheet";
-    style.href = "css/ux-refinement.css";
+    style.href = "css/ux-refinement.css?v=ux2";
     document.head.appendChild(style);
   }
   function addSearchAssets() {
     if (global.CambridgeCatalogueQuery) {
-      addRefinementAsset("js/catalogue-search-suggestions.js", "catalogue-search-suggestions");
+      addRefinementAsset("js/catalogue-search-suggestions.js?v=ux2", "catalogue-search-suggestions");
       return;
     }
     if (document.getElementById("catalogue-query-for-search")) return;
     const query = document.createElement("script");
     query.id = "catalogue-query-for-search";
     query.src = "js/catalogue-query.js";
-    query.onload = () => addRefinementAsset("js/catalogue-search-suggestions.js", "catalogue-search-suggestions");
+    query.onload = () => addRefinementAsset("js/catalogue-search-suggestions.js?v=ux2", "catalogue-search-suggestions");
     document.head.appendChild(query);
+  }
+  function refineHomeCategoryLinks(bootstrap) {
+    [["early", "early-learning"], ["school", "school"], ["college", "college-university"], ["exams", "competitive-exams"]].forEach(([className, category]) => {
+      const link = document.querySelector(".home-category." + className + " .category-link");
+      if (link) link.href = bootstrap ? bootstrap.withSource("browse.html?category=" + category) : "browse.html?category=" + category;
+    });
   }
   function structureFooter(bootstrap) {
     const footer = document.querySelector("footer");
@@ -66,9 +72,10 @@
     addRefinementStyles();
     addBrandLink(bootstrap);
     structureFooter(bootstrap);
+    refineHomeCategoryLinks(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
-    if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js", "kit-builder-refinement");
-    if (document.querySelector(".home-category.exams") || document.querySelector(".stage-hero .stage-grid")) addRefinementAsset("js/competitive-exams-refinement.js", "competitive-exams-refinement");
+    if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");
+    if (document.querySelector(".home-category.exams") || location.pathname.endsWith("/competitive-exams.html")) addRefinementAsset("js/competitive-exams-refinement.js?v=ux2", "competitive-exams-refinement");
     if (bootstrap && bootstrap.requestedSource === "supabase") {
       document.querySelectorAll("a[href]").forEach(link => {
         link.setAttribute("href", bootstrap.withSource(link.getAttribute("href")));

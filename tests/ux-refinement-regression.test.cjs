@@ -51,3 +51,24 @@ test("refinement assets retain the approved footer, direct exam route, and conti
   assert.match(search, /ArrowDown/);
   assert.match(search, /Escape/);
 });
+
+test("homepage category routes and search bootstrap preserve real catalogue context", () => {
+  const links = read("js/catalogue-source-links.js");
+  ["early-learning", "school", "college-university", "competitive-exams"].forEach(category => assert.match(links, new RegExp('"' + category + '"')));
+  assert.match(links, /location\.pathname\.endsWith\("\/competitive-exams\.html"\)/);
+  assert.doesNotMatch(links, /document\.querySelector\("\.stage-hero \.stage-grid"\)/);
+  const search = read("js/catalogue-search-suggestions.js");
+  assert.match(search, /await bootstrap\.ready\(\)/);
+  assert.match(search, /bootstrap\.ready\(\)\.catch/);
+});
+
+test("shared cards render ordered labelled metadata and separate SKU", () => {
+  const source = read("js/catalogue-selection.js");
+  ["Category", "Class / level", "Series", "Subject", "Book type"].forEach(label => assert.match(source, new RegExp('"' + label.replace("/", "\\/") + '"')));
+  assert.match(source, /item\.className = "book-meta-item"/);
+  assert.match(source, /item\.dataset\.label = label/);
+  assert.match(source, /sku\.className = "book-sku"/);
+  const css = read("css/ux-refinement.css");
+  assert.match(css, /\.publication-card \.book-meta\{display:grid/);
+  assert.match(css, /\.homepage \.footer-links a\{color:#27486f/);
+});

@@ -583,13 +583,21 @@
     title.textContent = book.title || "Untitled Book";
     const meta = document.createElement("div");
     meta.className = "book-meta";
-    const values = Array.isArray(metadata) ? metadata : [book.series || book.family, book.displaySubject || book.subject, book.medium ? book.medium + " Medium" : "", book.sku ? "SKU: " + book.sku : ""];
-    values.filter(value => value !== null && value !== undefined && String(value).trim() !== "").forEach(value => {
+    const category = { "early-learning": "Early Learning", school: "School Books", exam: "Exam Preparation", "college-university": "College and University", "competitive-exams": "Competitive Exams" }[book.category] || "";
+    const query = window.CambridgeCatalogueQuery;
+    const classes = query && query.classValues ? query.classValues(book) : Array.isArray(book.class) ? book.class : [];
+    const values = [["Category", category], ["Class / level", classes.join(", ")], ["Series", book.series || book.family], ["Subject", book.displaySubject || book.subject], ["Book type", book.type || book.bookType]];
+    values.filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== "").forEach(([label, value]) => {
       const item = document.createElement("span");
+      item.className = "book-meta-item";
+      item.dataset.label = label;
       item.textContent = value;
       meta.appendChild(item);
     });
-    info.append(title, meta);
+    const sku = document.createElement("p");
+    sku.className = "book-sku";
+    sku.textContent = book.sku ? "SKU: " + book.sku : "";
+    info.append(title, meta, sku);
     body.appendChild(info);
     if (book.mrp !== null && book.mrp !== undefined && String(book.mrp).trim() !== "" && Number.isFinite(Number(book.mrp))) {
       const price = document.createElement("p");
