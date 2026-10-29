@@ -71,6 +71,12 @@
       options[current].scrollIntoView({ block: "nearest" });
     }
     input.addEventListener("input", refresh);
+    list.addEventListener("pointerdown", event => {
+      const option = event.target.closest(".search-suggestion");
+      if (!option) return;
+      event.preventDefault();
+      location.assign(option.href);
+    });
     input.addEventListener("keydown", event => {
       if (event.key === "Escape") { close(); return; }
       if (event.key === "ArrowDown") { if (!list.hidden) { event.preventDefault(); select(current + 1); } return; }

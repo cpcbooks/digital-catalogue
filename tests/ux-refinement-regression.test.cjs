@@ -39,9 +39,11 @@ test("all Early Learning Custom Kit stages use the configured eight-title thresh
   });
 });
 
-test("refinement assets retain the approved footer, direct exam route, and continuous kit grid", () => {
+test("refinement assets retain the original footer, direct exam route, and continuous kit grid", () => {
   const footer = read("js/catalogue-source-links.js");
-  ["Browse Publications", "Early Learning", "School Learning", "My Selection", "Privacy Notice", "© 2026 Cambridge Publishing Company Pvt. Ltd.", "Digital Catalogue 2026–27"].forEach(text => assert.match(footer, new RegExp(text.replace(/[.?]/g, "\\$&"))));
+  assert.match(footer, /function addPrivacyLink/);
+  assert.match(footer, /footer-meta/);
+  assert.doesNotMatch(footer, /footer-links/);
   assert.match(read("js/competitive-exams-refinement.js"), /browse\.html\?category=competitive-exams/);
   const kit = read("js/kit-builder-refinement.js");
   assert.match(kit, /Choose Books for Your/);
@@ -52,14 +54,18 @@ test("refinement assets retain the approved footer, direct exam route, and conti
   assert.match(search, /Escape/);
 });
 
-test("homepage category routes and search bootstrap preserve real catalogue context", () => {
+test("homepage retains landing and level routes while only Competitive Exams routes to its filtered listing", () => {
   const links = read("js/catalogue-source-links.js");
-  ["early-learning", "school", "college-university", "competitive-exams"].forEach(category => assert.match(links, new RegExp('"' + category + '"')));
+  assert.match(links, /function refineCompetitiveExamsLink/);
+  assert.match(links, /browse\.html\?category=competitive-exams/);
+  assert.doesNotMatch(links, /function refineHomeCategoryLinks/);
   assert.match(links, /location\.pathname\.endsWith\("\/competitive-exams\.html"\)/);
   assert.doesNotMatch(links, /document\.querySelector\("\.stage-hero \.stage-grid"\)/);
   const search = read("js/catalogue-search-suggestions.js");
   assert.match(search, /await bootstrap\.ready\(\)/);
   assert.match(search, /bootstrap\.ready\(\)\.catch/);
+  assert.match(search, /list\.addEventListener\("pointerdown"/);
+  assert.match(search, /location\.assign\(option\.href\)/);
 });
 
 test("shared cards render ordered labelled metadata and separate SKU", () => {
@@ -70,5 +76,5 @@ test("shared cards render ordered labelled metadata and separate SKU", () => {
   assert.match(source, /sku\.className = "book-sku"/);
   const css = read("css/ux-refinement.css");
   assert.match(css, /\.publication-card \.book-meta\{display:grid/);
-  assert.match(css, /\.homepage \.footer-links a\{color:#27486f/);
+  assert.doesNotMatch(css, /\.homepage \.footer-links/);
 });

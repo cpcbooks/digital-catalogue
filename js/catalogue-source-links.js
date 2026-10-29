@@ -39,40 +39,32 @@
     query.onload = () => addRefinementAsset("js/catalogue-search-suggestions.js?v=ux2", "catalogue-search-suggestions");
     document.head.appendChild(query);
   }
-  function refineHomeCategoryLinks(bootstrap) {
-    [["early", "early-learning"], ["school", "school"], ["college", "college-university"], ["exams", "competitive-exams"]].forEach(([className, category]) => {
-      const link = document.querySelector(".home-category." + className + " .category-link");
-      if (link) link.href = bootstrap ? bootstrap.withSource("browse.html?category=" + category) : "browse.html?category=" + category;
-    });
+  function refineCompetitiveExamsLink(bootstrap) {
+    const link = document.querySelector(".home-category.exams .category-link");
+    if (link) link.href = bootstrap ? bootstrap.withSource("browse.html?category=competitive-exams") : "browse.html?category=competitive-exams";
   }
-  function structureFooter(bootstrap) {
+  function addPrivacyLink(bootstrap) {
     const footer = document.querySelector("footer");
     const note = footer && footer.querySelector(".footer-note");
-    if (!footer || !note || footer.querySelector(".footer-links")) return;
-    const links = document.createElement("nav");
-    links.className = "footer-links";
-    links.setAttribute("aria-label", "Catalogue links");
-    [["Browse Publications", "browse.html"], ["Early Learning", "early-learning.html"], ["School Learning", "school-education.html"], ["My Selection", "order.html"], ["Privacy Notice", "privacy.html"]].forEach(([label, href]) => {
-      const link = document.createElement("a");
-      link.href = bootstrap ? bootstrap.withSource(href) : href;
-      link.textContent = label;
-      links.appendChild(link);
-    });
-    const legal = document.createElement("div");
-    legal.className = "footer-meta";
-    note.textContent = "Digital Catalogue 2026–27";
-    const copyright = document.createElement("p");
-    copyright.className = "footer-copyright";
-    copyright.textContent = "© 2026 Cambridge Publishing Company Pvt. Ltd.";
-    legal.append(copyright, note);
-    footer.append(links, legal);
+    if (!footer || !note || footer.querySelector(".footer-meta")) return;
+    const meta = document.createElement("div");
+    const link = document.createElement("a");
+    const separator = document.createElement("span");
+    meta.className = "footer-meta";
+    link.href = bootstrap ? bootstrap.withSource("privacy.html") : "privacy.html";
+    link.textContent = "Privacy Notice";
+    separator.className = "footer-separator";
+    separator.setAttribute("aria-hidden", "true");
+    separator.textContent = "·";
+    meta.append(link, separator, note);
+    footer.appendChild(meta);
   }
   function apply() {
     const bootstrap = global.CambridgeCatalogueBootstrap;
     addRefinementStyles();
     addBrandLink(bootstrap);
-    structureFooter(bootstrap);
-    refineHomeCategoryLinks(bootstrap);
+    addPrivacyLink(bootstrap);
+    refineCompetitiveExamsLink(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
     if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");
     if (document.querySelector(".home-category.exams") || location.pathname.endsWith("/competitive-exams.html")) addRefinementAsset("js/competitive-exams-refinement.js?v=ux2", "competitive-exams-refinement");
