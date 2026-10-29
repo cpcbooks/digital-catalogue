@@ -39,12 +39,15 @@ test("all Early Learning Custom Kit stages use the configured eight-title thresh
   });
 });
 
-test("refinement assets retain the original footer, direct exam route, and continuous kit grid", () => {
+test("refinement assets retain the original footer, dedicated Competitive Exams page, and continuous kit grid", () => {
   const footer = read("js/catalogue-source-links.js");
   assert.match(footer, /function addPrivacyLink/);
   assert.match(footer, /footer-meta/);
   assert.doesNotMatch(footer, /footer-links/);
-  assert.match(read("js/competitive-exams-refinement.js"), /browse\.html\?category=competitive-exams/);
+  const competitive = read("js/competitive-exams-refinement.js");
+  assert.match(competitive, /EXAM PREPARATION RESOURCES/);
+  assert.match(competitive, /No publications available yet/);
+  assert.doesNotMatch(competitive, /VAO|Land Surveyor|Other Exams|browse\.html\?category=competitive-exams/);
   const kit = read("js/kit-builder-refinement.js");
   assert.match(kit, /Choose Books for Your/);
   assert.doesNotMatch(kit, /Additional Early Learning books/);
@@ -54,10 +57,11 @@ test("refinement assets retain the original footer, direct exam route, and conti
   assert.match(search, /Escape/);
 });
 
-test("homepage retains landing and level routes while only Competitive Exams routes to its filtered listing", () => {
+test("homepage retains landing and level routes while Competitive Exams opens its dedicated page", () => {
   const links = read("js/catalogue-source-links.js");
   assert.match(links, /function refineCompetitiveExamsLink/);
-  assert.match(links, /browse\.html\?category=competitive-exams/);
+  assert.match(links, /function addCompetitiveExamsAssets/);
+  assert.match(links, /competitive-exams\.html/);
   assert.doesNotMatch(links, /function refineHomeCategoryLinks/);
   assert.match(links, /location\.pathname\.endsWith\("\/competitive-exams\.html"\)/);
   assert.doesNotMatch(links, /document\.querySelector\("\.stage-hero \.stage-grid"\)/);
@@ -66,6 +70,13 @@ test("homepage retains landing and level routes while only Competitive Exams rou
   assert.match(search, /bootstrap\.ready\(\)\.catch/);
   assert.match(search, /list\.addEventListener\("pointerdown"/);
   assert.match(search, /location\.assign\(option\.href\)/);
+});
+
+test("Competitive Exams selects only its future category records for the shared card grid", () => {
+  const books = [{ id: "exam", category: "competitive-exams", title: "Exam Guide" }, { id: "school", category: "school", title: "School Guide" }];
+  const window = browserModule("js/competitive-exams-refinement.js");
+  assert.deepEqual(window.CambridgeCompetitiveExams.competitiveBooks(books).map(book => book.id), ["exam"]);
+  assert.match(read("js/competitive-exams-refinement.js"), /selection\.cardNode/);
 });
 
 test("shared cards render ordered labelled metadata and separate SKU", () => {

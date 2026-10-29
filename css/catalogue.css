@@ -1122,6 +1122,8 @@ footer p {
 
         flex-direction: column;
 
+        gap: 12px;
+
     }
 
 
@@ -1137,6 +1139,26 @@ footer p {
         justify-content: flex-start;
 
         flex-wrap: wrap;
+
+    }
+
+    .footer-meta {
+
+        display: grid;
+
+        gap: 5px;
+
+    }
+
+    .footer-meta .footer-separator {
+
+        display: none;
+
+    }
+
+    .footer-meta .footer-note {
+
+        text-align: left;
 
     }
 

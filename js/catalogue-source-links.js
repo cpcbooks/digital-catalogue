@@ -39,9 +39,23 @@
     query.onload = () => addRefinementAsset("js/catalogue-search-suggestions.js?v=ux2", "catalogue-search-suggestions");
     document.head.appendChild(query);
   }
+  function addCompetitiveExamsAssets() {
+    const addPage = () => addRefinementAsset("js/competitive-exams-refinement.js?v=ux3", "competitive-exams-refinement");
+    if (global.CambridgeCatalogueQuery) { addPage(); return; }
+    if (document.getElementById("catalogue-query-for-competitive-exams")) return;
+    const query = document.createElement("script");
+    query.id = "catalogue-query-for-competitive-exams";
+    query.src = "js/catalogue-query.js";
+    query.onload = addPage;
+    document.head.appendChild(query);
+  }
   function refineCompetitiveExamsLink(bootstrap) {
-    const link = document.querySelector(".home-category.exams .category-link");
-    if (link) link.href = bootstrap ? bootstrap.withSource("browse.html?category=competitive-exams") : "browse.html?category=competitive-exams";
+    const home = document.querySelector(".home-category.exams");
+    if (!home) return;
+    const shortcuts = home.querySelector(".home-shortcuts");
+    if (shortcuts) shortcuts.remove();
+    const link = home.querySelector(".category-link");
+    if (link) link.href = bootstrap ? bootstrap.withSource("competitive-exams.html") : "competitive-exams.html";
   }
   function addPrivacyLink(bootstrap) {
     const footer = document.querySelector("footer");
@@ -67,7 +81,7 @@
     refineCompetitiveExamsLink(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
     if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");
-    if (document.querySelector(".home-category.exams") || location.pathname.endsWith("/competitive-exams.html")) addRefinementAsset("js/competitive-exams-refinement.js?v=ux2", "competitive-exams-refinement");
+    if (location.pathname.endsWith("/competitive-exams.html")) addCompetitiveExamsAssets();
     if (bootstrap && bootstrap.requestedSource === "supabase") {
       document.querySelectorAll("a[href]").forEach(link => {
         link.setAttribute("href", bootstrap.withSource(link.getAttribute("href")));
