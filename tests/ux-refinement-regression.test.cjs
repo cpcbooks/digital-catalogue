@@ -45,7 +45,7 @@ test("refinement assets retain the original footer, dedicated Competitive Exams 
   assert.match(footer, /footer-meta/);
   assert.doesNotMatch(footer, /footer-links/);
   const competitive = read("js/competitive-exams-refinement.js");
-  assert.match(competitive, /EXAM PREPARATION RESOURCES/);
+  assert.match(competitive, /<h1>Competitive Exams<\/h1>/);
   assert.match(competitive, /No publications available yet/);
   assert.doesNotMatch(competitive, /VAO|Land Surveyor|Other Exams|browse\.html\?category=competitive-exams/);
   const kit = read("js/kit-builder-refinement.js");
@@ -88,4 +88,16 @@ test("shared cards render ordered labelled metadata and separate SKU", () => {
   const css = read("css/ux-refinement.css");
   assert.match(css, /\.publication-card \.book-meta\{display:grid/);
   assert.doesNotMatch(css, /\.homepage \.footer-links/);
+});
+
+test("Option C+ promotes category names without changing stage-level titles", () => {
+  const links = read("js/catalogue-source-links.js");
+  assert.match(links, /title: "Early Learning", tagline: "Books for little learners\."/);
+  assert.match(links, /title: "School Learning", tagline: "Books for every school year\."/);
+  assert.match(links, /title: "College & University", tagline: "Continue your academic journey\."/);
+  assert.match(links, /document\.documentElement\.classList\.add\("stage-level-page"\)/);
+  const competitive = read("js/competitive-exams-refinement.js");
+  assert.match(competitive, /category-heading-group/);
+  assert.match(competitive, /<h1>Competitive Exams<\/h1>/);
+  assert.doesNotMatch(competitive, /<h1>Prepare with purpose\.<\/h1>/);
 });

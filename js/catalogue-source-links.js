@@ -73,11 +73,47 @@
     meta.append(link, separator, note);
     footer.appendChild(meta);
   }
+  function refineOptionCHeaders() {
+    const pathname = location.pathname;
+    const category = pathname.endsWith("/early-learning.html")
+      ? { title: "Early Learning", tagline: "Books for little learners." }
+      : pathname.endsWith("/school-education.html")
+        ? { title: "School Learning", tagline: "Books for every school year." }
+        : pathname.endsWith("/college-university.html")
+          ? { title: "College & University", tagline: "Continue your academic journey." }
+          : null;
+    if (category) {
+      const centre = document.querySelector(".stage-center");
+      const title = centre && centre.querySelector("h1");
+      const description = centre && centre.querySelector(".stage-intro");
+      if (title && description && !centre.querySelector(".category-heading-group")) {
+        const group = document.createElement("div");
+        const accent = document.createElement("span");
+        const copy = document.createElement("div");
+        const tagline = document.createElement("p");
+        group.className = "category-heading-group";
+        accent.className = "heading-accent";
+        accent.setAttribute("aria-hidden", "true");
+        copy.className = "heading-copy";
+        tagline.className = "category-tagline";
+        tagline.textContent = category.tagline;
+        title.textContent = category.title;
+        copy.append(title, tagline);
+        group.append(accent, copy, description);
+        centre.querySelector(".eyebrow")?.remove();
+        centre.prepend(group);
+      }
+    }
+    if (/\/(early-learning-level|school-learning|college-books)\.html$/.test(pathname)) {
+      document.documentElement.classList.add("stage-level-page");
+    }
+  }
   function apply() {
     const bootstrap = global.CambridgeCatalogueBootstrap;
     addRefinementStyles();
     addBrandLink(bootstrap);
     addPrivacyLink(bootstrap);
+    refineOptionCHeaders();
     refineCompetitiveExamsLink(bootstrap);
     if (document.getElementById("homeSearch") || document.getElementById("browseSearch")) addSearchAssets();
     if (document.getElementById("kitName")) addRefinementAsset("js/kit-builder-refinement.js?v=ux2", "kit-builder-refinement");

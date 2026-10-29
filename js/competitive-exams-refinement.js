@@ -7,7 +7,7 @@
     const hero = document.querySelector(".stage-hero");
     if (!hero || document.getElementById("competitiveResults")) return null;
     hero.className = "page-hero competitive-exams-page";
-    hero.innerHTML = '<div class="hero-inner"><nav class="context-nav" aria-label="Catalogue navigation"><a href="index.html">⌂ Home</a></nav><p class="eyebrow">EXAM PREPARATION RESOURCES</p><h1>Competitive Exams</h1><p class="hero-description">Explore Cambridge publications for competitive exam preparation.</p></div>';
+    hero.innerHTML = '<div class="hero-inner"><nav class="context-nav" aria-label="Catalogue navigation"><a href="index.html">⌂ Home</a></nav><div class="category-heading-group"><span class="heading-accent" aria-hidden="true"></span><div class="heading-copy"><h1>Competitive Exams</h1></div><p class="hero-description">Explore Cambridge publications for competitive exam preparation.</p></div></div>';
     const content = document.createElement("section");
     content.className = "catalogue-section competitive-exams-page";
     content.innerHTML = '<div class="results-summary" id="competitiveSummary" hidden><h2>Publications</h2><p class="results-count" id="competitiveCount"></p></div><div id="competitiveResults"></div>';
