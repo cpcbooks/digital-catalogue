@@ -75,14 +75,12 @@ body.cambridge-floating-selection-active {
 
 @media (max-width: 768px) {
   .cambridge-floating-selection {
-    left: max(10px, env(safe-area-inset-left)) !important;
+    left: auto !important;
     right: max(10px, env(safe-area-inset-right)) !important;
     bottom: max(10px, env(safe-area-inset-bottom)) !important;
-    width: calc(100% - 20px) !important;
-    box-sizing: border-box !important;
-    max-width: none !important;
-    justify-content: space-between !important;
-    gap: 12px !important;
+    width: auto !important;
+    max-width: calc(100% - 20px) !important;
+    gap: 8px !important;
     min-height: 44px !important;
     padding: 6px 7px 6px 10px !important;
   }

@@ -121,7 +121,8 @@ test("choice cards have no desktop decoration and the floating selection summary
   assert.match(selection, /new Intl\.NumberFormat\("en-IN"\)\.format\(count\)/);
   assert.match(selection, /separator\.textContent = " · ";/);
   assert.match(selection, /bar\.offsetHeight \+ \(mobile \? 20 : 16\)/);
-  assert.match(selection, /width:calc\(100% - 20px\);box-sizing:border-box/);
+  assert.match(selection, /left:auto;right:max\(10px,env\(safe-area-inset-right\)\);/);
+  assert.match(selection, /width:auto;max-width:calc\(100% - 20px\);gap:8px/);
   assert.match(pane, /\[data-role="counts"\]\s*\{\s*display: inline-flex/);
   assert.match(pane, /padding-bottom: var\(--cambridge-floating-selection-clearance, 0px\) !important/);
   assert.match(selection, /min-height:44px/);
@@ -129,12 +130,13 @@ test("choice cards have no desktop decoration and the floating selection summary
 
 test("mobile Book Details places publication identity before a compact gallery", () => {
   const css = read("css/inner-pages-refinement.css");
-  assert.match(css, /\.detail-wrap\{display:flex;flex-direction:column;gap:14px\}/);
+  assert.match(css, /\.detail-wrap\{display:flex;flex-direction:column;align-items:stretch;gap:14px\}/);
   assert.match(css, /\.detail-info\{display:contents\}/);
   assert.match(css, /\.detail-eyebrow\{order:1/);
   assert.match(css, /\.detail-info h1\{order:2;font-size:24px/);
-  assert.match(css, /\.gallery\{order:5;max-width:112px/);
+  assert.match(css, /\.gallery\{order:5;align-self:center;max-width:112px/);
   assert.match(css, /\.detail-action-wrap\{order:6;margin-top:0;padding:14px\}/);
+  assert.match(css, /\.detail-meta\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:10px\}/);
   assert.match(css, /catalogue-breadcrumbs__current\{display:none\}/);
 });
 
