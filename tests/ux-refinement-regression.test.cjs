@@ -112,12 +112,30 @@ test("mobile cards retain two columns with compact metadata and compact selectio
 test("choice cards have no desktop decoration and the floating selection summary stays compact", () => {
   const css = read("css/inner-pages-refinement.css");
   const selection = read("js/catalogue-selection.js");
+  const pane = read("css/selection-pane.css");
   assert.match(css, /\.choice-card::before\{display:none\}/);
   assert.match(css, /\.choice-card \.choice-label\{display:none\}/);
   assert.match(css, /\.card-link::after\{content:"›";position:absolute;right:18px;top:50%;display:none/);
   assert.match(css, /\.card-link::after\{display:block;right:16px;z-index:3;pointer-events:none\}/);
   assert.match(selection, /link\.textContent = "View Selection"/);
+  assert.match(selection, /new Intl\.NumberFormat\("en-IN"\)\.format\(count\)/);
+  assert.match(selection, /separator\.textContent = " · ";/);
+  assert.match(selection, /bar\.offsetHeight \+ \(mobile \? 20 : 16\)/);
+  assert.match(selection, /width:calc\(100% - 20px\);box-sizing:border-box/);
+  assert.match(pane, /\[data-role="counts"\]\s*\{\s*display: inline-flex/);
+  assert.match(pane, /padding-bottom: var\(--cambridge-floating-selection-clearance, 0px\) !important/);
   assert.match(selection, /min-height:44px/);
+});
+
+test("mobile Book Details places publication identity before a compact gallery", () => {
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(css, /\.detail-wrap\{display:flex;flex-direction:column;gap:14px\}/);
+  assert.match(css, /\.detail-info\{display:contents\}/);
+  assert.match(css, /\.detail-eyebrow\{order:1/);
+  assert.match(css, /\.detail-info h1\{order:2;font-size:24px/);
+  assert.match(css, /\.gallery\{order:5;max-width:112px/);
+  assert.match(css, /\.detail-action-wrap\{order:6;margin-top:0;padding:14px\}/);
+  assert.match(css, /catalogue-breadcrumbs__current\{display:none\}/);
 });
 
 test("Option C+ promotes category names without changing stage-level titles", () => {

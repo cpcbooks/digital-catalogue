@@ -83,8 +83,8 @@ test("media CSS preserves real-image ratios and uses a blank portrait fallback",
   const source = read("css/publication-browser.css");
   assert.match(source, /object-fit:contain/);
   assert.match(source, /width:auto;height:auto/);
-  assert.match(source, /height:200px/);
-  assert.match(source, /book-cover-placeholder\{display:block;width:94px;height:140px/);
+  assert.match(source, /height:184px/);
+  assert.match(source, /book-cover-placeholder\{display:block;width:86px;height:129px/);
   assert.match(source, /@media\(max-width:319px\)\{\.publication-grid\{grid-template-columns:1fr\}/);
   assert.doesNotMatch(source, /Cover image coming soon/);
 });
