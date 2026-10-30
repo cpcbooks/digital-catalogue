@@ -7,7 +7,7 @@
 .turnstile-widget{min-height:65px}.review-actions{display:grid;justify-items:end;gap:12px}@media(max-width:600px){.review-actions{justify-items:stretch}.turnstile-widget{overflow-x:auto}.review-actions .primary-button{width:100%}}
 </style></head>
 <body><header class="catalogue-header"><div class="brand"><div class="brand-name">CAMBRIDGE</div><div class="brand-company">PUBLISHING COMPANY PVT. LTD.</div></div><div class="catalogue-year">DIGITAL CATALOGUE · 2026–27</div></header>
-<section class="review-hero"><div class="review-wrap"><a href="request.html" class="back-link">← Back to Requirement Details</a><h1>Review Requirement</h1><p class="review-intro">Check your details and selected books before sending your requirement to Cambridge.</p></div></section><main class="review-section" id="reviewPage"></main>
+<section class="review-hero"><div class="review-wrap"><div class="workflow-breadcrumb"><a class="home" href="index.html">Home</a></div><a href="request.html" class="back-link">← Back to Requirement Details</a><h1>Review Requirement</h1><p class="review-intro">Check your details and selected books before sending your requirement to Cambridge.</p></div></section><main class="review-section" id="reviewPage"></main>
 <script src="js/catalogue-pilot-config.js"></script><script src="js/catalogue-bootstrap.js"></script><script src="js/catalogue-source-links.js"></script><script src="js/request-submission.js"></script>
 <script>
 const source=window.CambridgeCatalogueBootstrap,withSource=href=>source?source.withSource(href):href,ORDER_KEY="cambridgeOrder",REQUEST_KEY="cambridgeRequestDetails",MIN_QUANTITY=1,MAX_QUANTITY=10000;let order=[],requestDetails={},submitting=false;

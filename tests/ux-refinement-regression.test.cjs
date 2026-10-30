@@ -221,3 +221,27 @@ test("mobile Exam Preparation cards use the same transparent full-card link as S
   const css = read("css/inner-pages-refinement.css");
   assert.match(css, /\.card-link>a,\.catalogue-inner-page \.category-card\.exam-card a\{display:block;position:absolute;inset:0;z-index:2;padding:0;border:0;background:transparent;color:transparent\}/);
 });
+test("workflow actions keep their routes, summaries and fail-closed submission contract", () => {
+  const order = read("order.html");
+  const request = read("request.html");
+  const review = read("review-request.html");
+  const inner = read("css/inner-pages-refinement.css");
+  assert.match(order, /function requestHref\(\)/);
+  assert.match(order, /nav\.style\.display=order\.length\?"flex":"none"/);
+  assert.match(order, /Continue to Requirement Details/);
+  assert.doesNotMatch(order, /class="continue-button"/);
+  assert.match(order, /class="order-sticky-action"/);
+  assert.match(order, /const canContinue=order\.length>0&&\(counts\.copies>0\|\|counts\.kitSets>0\)/);
+  assert.match(order, /sticky&&mobile&&!sticky\.hidden\?sticky\.offsetHeight\+20/);
+  assert.match(order, /window\.addEventListener\("scroll",updateStickyClearance/);
+  assert.match(order, /order-sticky-clearance/);
+  assert.match(inner, /has\(\.request-section\) \.hero-nav>a:first-child/);
+  assert.match(inner, /has\(\.review-section\) \.review-hero \.back-link/);
+  assert.match(inner, /has\(\.order-section\) \.order-nav\{flex-direction:column;align-items:flex-start/);
+  assert.match(request, /← Back to Selection/);
+  assert.match(request, /workflow-breadcrumb[^>]*><a class="home" href="index\.html">Home<\/a>/);
+  assert.match(review, /← Back to Requirement Details/);
+  assert.match(review, /workflow-breadcrumb[^>]*><a class="home" href="index\.html">Home<\/a>/);
+  assert.match(review, /button\.disabled=true/);
+  assert.match(review, /Submission verification is unavailable/);
+});
