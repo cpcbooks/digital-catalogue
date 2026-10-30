@@ -4,6 +4,12 @@
 
 This focused document reconciles the accepted IM-12C production behaviour with the deployed IM-14A/A.1 work. It does not replace the historical specification retained in the previous development checkout. IM-14A/A.1 was deployed to `main` in `1857057` on 2026-10-23 13:14 IST (UTC+05:30).
 
+## Approved colour architecture
+
+Production CSS is authoritative. Shared catalogue workflows use `--navy` `#17365D`, `--navy-dark` `#102945`, the inner neutral accent `#183B63`, neutral wash `#F2F6FA`, neutral border `#DBE5EF`, and the floating-selection background `#12233F`. These values remain defined in `css/catalogue.css`, `css/inner-pages-refinement.css`, and the injected floating-selection style in `js/catalogue-selection.js`.
+
+Inner-page category tones are intentionally distinct from homepage category cards: Early Learning `#D88936` / `#FFF7ED` / `#F0D9BF`; School Learning `#2878B5` / `#EEF7FC` / `#CCE1F0`; Exam Preparation `#7853A6` / `#F6F1FB` / `#DFD1EE`; College & University `#198A7C` / `#EEF9F7` / `#C9E7E1`; Competitive Exams `#A66B42` / `#FCF4ED` / `#EAD5C4` (accent / wash / border). Homepage category cards retain their own palette: Early `#FFF4DF` / `#89540C`, School `#E6F3FF` / `#1463A8`, College `#F0E9FF` / `#7648BF`, Competitive `#E8F6ED` / `#21794C` (background / foreground). Do not normalise or migrate either palette.
+
 ## Publication listings
 
 - All Books and category listings use the shared vertical publication-card grid.
@@ -15,7 +21,7 @@ This focused document reconciles the accepted IM-12C production behaviour with t
 ## Inner-page navigation
 
 - Breadcrumbs stay at the top-left of the existing inner-page content container and retain the shared breadcrumb styling.
-- The contextual Back/return link sits immediately below the breadcrumb at left. Where an existing secondary link is useful, it shares that row at right; New Arrivals retains `View All Publications` there.
+- The contextual Back/return link sits immediately below the breadcrumb at left. Workflow-page Home breadcrumbs are not paired beside the Back action; New Arrivals retains its existing `View All Publications` secondary action where applicable.
 - Contextual destinations take precedence over an unconditional Home route. Page-specific heading alignment is unchanged: the School Learning category landing page remains centred, while class-specific publication listings remain left-aligned.
 
 ## Cover presentation
