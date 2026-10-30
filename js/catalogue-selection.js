@@ -94,7 +94,7 @@
   function floatingSelectionLabels(summary = floatingSelectionSummary()) {
     return [[summary.titles, "title"], [summary.books, "book"], [summary.kits, "kit"]]
       .filter(([count]) => count)
-      .map(([count, label]) => count + " " + label + (count === 1 ? "" : "s"));
+      .map(([count, label]) => new Intl.NumberFormat("en-IN").format(count) + " " + label + (count === 1 ? "" : "s"));
   }
 
   function isFloatingSelectionPage() {
@@ -243,16 +243,17 @@
     style.id = FLOATING_STYLE_ID;
     style.textContent = `
       .selection-bar{display:none!important}
-      .cambridge-floating-selection{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:9px 9px 9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:#12233f;color:#fff;box-shadow:0 10px 28px rgba(18,35,63,.22);font-family:inherit;cursor:pointer;touch-action:manipulation;text-decoration:none}
+      .cambridge-floating-selection{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:1000;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);padding:6px 7px 6px 10px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:#12233f;color:#fff;box-shadow:0 10px 28px rgba(18,35,63,.22);font-family:inherit;cursor:pointer;touch-action:manipulation;text-decoration:none}
       .cambridge-floating-selection[hidden]{display:none!important}
       .cambridge-floating-selection:focus-visible{outline:3px solid rgba(18,35,63,.28);outline-offset:3px}
-      .cambridge-floating-selection__summary{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;font-size:10px;line-height:1.3}
+      .cambridge-floating-selection__summary{display:flex;align-items:baseline;flex-wrap:nowrap;font-size:10px;line-height:1.3;white-space:nowrap}
+      .cambridge-floating-selection__summary [data-role="counts"]{display:inline-flex;align-items:baseline;gap:5px}
       .cambridge-floating-selection__count{white-space:nowrap}
       .cambridge-floating-selection__summary strong{font-size:11px;font-weight:800}
       .cambridge-floating-selection__separator{opacity:.6}
       .cambridge-floating-selection__link{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border-radius:7px;background:#fff;color:#12233f;text-decoration:none;font-size:9px;font-weight:800;white-space:nowrap}
-      body.cambridge-floating-selection-active{padding-bottom:max(68px,var(--cambridge-floating-selection-clearance,68px))}
-      @media(max-width:768px){.cambridge-floating-selection{right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:8px 8px 8px 10px;min-height:48px}.cambridge-floating-selection__summary{font-size:11px}.cambridge-floating-selection__summary strong{font-size:12px}.cambridge-floating-selection__link{min-height:30px;padding:0 9px;font-size:11px}body.cambridge-floating-selection-active{padding-bottom:max(62px,var(--cambridge-floating-selection-clearance,62px))}}
+      body.cambridge-floating-selection-active{padding-bottom:var(--cambridge-floating-selection-clearance,0px)}
+      @media(max-width:768px){.cambridge-floating-selection{left:auto;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:auto;max-width:calc(100% - 20px);gap:8px;padding:6px 7px 6px 10px;min-height:44px}.cambridge-floating-selection__summary{font-size:11px}.cambridge-floating-selection__summary strong{font-size:12px}.cambridge-floating-selection__link{min-height:32px;padding:0 9px;font-size:11px}body.cambridge-floating-selection-active{padding-bottom:var(--cambridge-floating-selection-clearance,0px)}}
     `;
     document.head.appendChild(style);
   }
@@ -362,7 +363,8 @@
     const className = classLabel(params.get("class"));
     if (["early-learning", "school-education", "college-university", "competitive-exams", "browse"].includes(page)) return home;
     if (["early-learning-level", "early-learning-books"].includes(page)) return { label: "← Back to Early Learning", href: "early-learning.html" };
-    if (["school-learning", "school-books"].includes(page)) return { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "school-learning") return { label: "← Back to School Learning", href: "school-education.html" };
+    if (page === "school-books") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "exam-preparation") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "college-books") return { label: "← Back to College & University", href: "college-university.html" };
     if (page === "competitive-exam-books") return { label: "← Back to Competitive Exams", href: "competitive-exams.html" };
@@ -453,7 +455,7 @@
     summary.className = "cambridge-floating-selection__summary";
     summary.setAttribute("aria-live", "polite");
     const counts = document.createElement("span"); counts.dataset.role = "counts";
-    const link = document.createElement("span"); link.className = "cambridge-floating-selection__link"; link.textContent = "View Selection →";
+    const link = document.createElement("span"); link.className = "cambridge-floating-selection__link"; link.textContent = "View Selection";
     summary.append(counts);
     bar.append(summary, link);
     bar.addEventListener("click", event => { event.preventDefault(); openSelection(); });
@@ -484,14 +486,14 @@
     if (countRoot) {
       countRoot.replaceChildren();
       floatingSelectionLabels(counts).forEach((label, index) => {
-        if (index) { const separator = document.createElement("span"); separator.className = "cambridge-floating-selection__separator"; separator.textContent = "·"; countRoot.appendChild(separator); }
+        if (index) { const separator = document.createElement("span"); separator.className = "cambridge-floating-selection__separator"; separator.textContent = " · "; countRoot.appendChild(separator); }
         const part = document.createElement("span"); part.className = "cambridge-floating-selection__count"; const [count, ...words] = label.split(" "); part.innerHTML = "<strong>" + count + "</strong> " + words.join(" "); countRoot.appendChild(part);
       });
     }
     bar.hidden = false;
     document.body.classList.add(BODY_ACTIVE_CLASS);
     const mobile = typeof window.matchMedia === "function" && window.matchMedia("(max-width:768px)").matches;
-    if (document.body.style && typeof document.body.style.setProperty === "function") document.body.style.setProperty("--cambridge-floating-selection-clearance", (bar.offsetHeight + (mobile ? 14 : 16)) + "px");
+    if (document.body.style && typeof document.body.style.setProperty === "function") document.body.style.setProperty("--cambridge-floating-selection-clearance", (bar.offsetHeight + (mobile ? 20 : 16)) + "px");
   }
 
   function updateBar() {
@@ -610,7 +612,13 @@
       sku.append(name, text);
       meta.appendChild(sku);
     }
-    info.append(title, meta);
+    const compactMeta = document.createElement("p");
+    compactMeta.className = "book-meta-compact";
+    const series = String(book.series || book.family || "").trim();
+    const compactValues = [classes.join(", "), book.type || book.bookType];
+    if (series && !String(book.title || "").toLocaleLowerCase().includes(series.toLocaleLowerCase())) compactValues.push(series);
+    compactMeta.textContent = compactValues.filter(value => value !== null && value !== undefined && String(value).trim() !== "").join(" · ");
+    info.append(title, meta, compactMeta);
     body.appendChild(info);
     const bottom = document.createElement("div");
     bottom.className = "book-card-bottom";
@@ -619,6 +627,12 @@
       price.className = "book-price";
       price.textContent = "MRP ₹" + Number(book.mrp);
       bottom.appendChild(price);
+    }
+    if (book.sku) {
+      const sku = document.createElement("p");
+      sku.className = "book-card-sku";
+      sku.textContent = book.sku;
+      bottom.appendChild(sku);
     }
     bottom.appendChild(actionNode(book));
     body.appendChild(bottom);
@@ -641,7 +655,10 @@
       const addButton = document.createElement("button");
       addButton.type = "button";
       addButton.className = "add-book";
-      addButton.textContent = "+ Add to Selection";
+      addButton.setAttribute("aria-label", "Add " + (book.title || "publication") + " to Selection");
+      const fullLabel = document.createElement("span"); fullLabel.className = "add-book-full"; fullLabel.textContent = "+ Add to Selection";
+      const shortLabel = document.createElement("span"); shortLabel.className = "add-book-short"; shortLabel.textContent = "+ Add";
+      addButton.append(fullLabel, shortLabel);
       addButton.onclick = () => { if (add(book, window.SELECTION_EXTRA || {})) { if (!isBookDetailsPage()) rememberBookReturn(book.id); emitChange(); } };
       actions.appendChild(addButton);
       return actions;

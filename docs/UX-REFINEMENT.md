@@ -12,3 +12,23 @@ The `codex/catalogue-ux-refinement` branch applies the approved catalogue-first 
 - The Early Learning Custom Kit still uses `CambridgeEarlyLearningKitConfig` and `CambridgeCustomKitState`. All four configured stages currently have an eight-title minimum, while the builder presents their eligible titles as one continuous grid.
 
 No publication master data, identifiers, Supabase schema, RLS, storage, Edge Functions, or deployment configuration are changed by this refinement.
+
+## Inner-page visual layer — 2026-10-29 18:20 IST (UTC+05:30)
+
+`css/inner-pages-refinement.css` is a scoped presentation layer for catalogue inner pages. It keeps the homepage and all catalogue behaviour unchanged while applying restrained banner washes, card borders, active navigation, focus states and category accents: Early Learning (`#D88936`), School Books (`#2878B5`), Exam Preparation (`#7853A6`), College & University (`#198A7C`) and Competitive Exams (`#A66B42`). The shared loader adds the layer only after the normal UX refinement stylesheet, and `catalogue-source-links.js` supplies page tone through a body data attribute. Publication card metadata, search/filter URL state, Selection, Custom Kit and requirement behaviour remain untouched.
+
+## Consistency correction — 2026-10-29 21:09 IST (UTC+05:30)
+
+Landing and selection cards use lightweight inline SVG icons through the shared source-link enhancement, with category-coloured icon containers rather than numeric labels or empty circles. Headings remain CPC navy; title accents and eyebrows use the page category tone. School Books now preserves a valid class parameter in its generated contextual Back control, matching Exam Preparation. Unconfigured Standard Kits remain non-actionable Coming Soon cards, Custom Kit progress is Early Learning orange, and the obsolete College & University development notice is removed at presentation time. No catalogue, selection, kit, Supabase or request contracts changed.
+
+## Mobile choice cards and detail fallback — 2026-10-29 22:15 IST (UTC+05:30)
+
+Early Learning and School Learning choice cards retain their desktop grids but become compact, whole-card links on mobile. Their existing anchors provide the single keyboard focus target; unavailable Standard Kits remain non-actionable and omit the navigation chevron. Book Details now keeps the desktop two-column presentation while reducing the title scale and presenting a compact mobile cover area. When no approved image is available, the gallery shows a small “Cover not yet available” placeholder and hides its caption, arrows and counter. Listing empty states use public copy: no published titles, no search match, and data-load failure are distinguished without exposing repository or implementation details. Read-only catalogue verification found 45 College & University records: 21 1st PUC, 24 2nd PUC and no Degree records; Degree therefore uses the public no-publications state rather than an internal-development message.
+
+## Final mobile-card and selection polish — 2026-10-29 IST (UTC+05:30)
+
+The shared listing renderer retains the approved desktop metadata rows. At the existing mobile breakpoint, it replaces them with concise Class / level, Book type and only non-duplicative Series text; MRP is followed by the permanent SKU, and the same accessible Add control uses a compact visible label. The shared two-column grid now remains in use through 320px (one column is reserved only below 320px). Cover areas, title reserve, bottom-pushed actions and quantity controls were reduced proportionately without changing publication data, selection state or quantity limits. The floating My Selection link is a compact, safe-area-aware navy summary and continues to measure its own required page clearance. Desktop Early Learning choice cards no longer render decorative empty circles, category labels or detached chevrons; their meaningful icons, actions and unavailable Standard Kit state remain intact.
+
+## Workflow-page refinement — 2026-10-30 IST (UTC+05:30)
+
+`order.html`, `request.html` and `review-request.html` use the compact workflow-page hierarchy and neutral card treatment already approved for catalogue inner pages. Their summaries distinguish selections, individual copies and kit sets without changing stored selection data or quantity calculations; kit contents remain independently expandable. On an empty Turnstile site-key configuration, the unused widget host is hidden while the existing verification message remains visible and Send Requirement remains disabled. Form fields, validation, draft persistence, request payloads, navigation, backend contracts and security behaviour are unchanged.

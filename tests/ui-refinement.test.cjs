@@ -51,7 +51,8 @@ test("listing cards do not expose ISBN metadata", () => {
   });
   assert.match(cards, /price\.textContent = "MRP ₹" \+ Number\(book\.mrp\)/);
   assert.match(cards, /view\.textContent = "View Book →"/);
-  assert.match(cards, /addButton\.textContent = "\+ Add to Selection"/);
+  assert.match(cards, /fullLabel\.textContent = "\+ Add to Selection"/);
+  assert.match(cards, /shortLabel\.textContent = "\+ Add"/);
   assert.match(read("js/book-details.js"), /\["ISBN",optionalText\(book\.isbn\)\]/);
 });
 
@@ -82,9 +83,9 @@ test("media CSS preserves real-image ratios and uses a blank portrait fallback",
   const source = read("css/publication-browser.css");
   assert.match(source, /object-fit:contain/);
   assert.match(source, /width:auto;height:auto/);
-  assert.match(source, /height:200px/);
-  assert.match(source, /book-cover-placeholder\{display:block;width:94px;height:140px/);
-  assert.match(source, /@media\(max-width:359px\)\{\.publication-grid\{grid-template-columns:1fr\}/);
+  assert.match(source, /height:184px/);
+  assert.match(source, /book-cover-placeholder\{display:block;width:86px;height:129px/);
+  assert.match(source, /@media\(max-width:319px\)\{\.publication-grid\{grid-template-columns:1fr\}/);
   assert.doesNotMatch(source, /Cover image coming soon/);
 });
 
