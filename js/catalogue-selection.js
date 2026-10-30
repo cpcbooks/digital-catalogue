@@ -362,7 +362,8 @@
     const level = stageLabel(params.get("level"));
     const className = classLabel(params.get("class"));
     if (["early-learning", "school-education", "college-university", "competitive-exams", "browse"].includes(page)) return home;
-    if (["early-learning-level", "early-learning-books"].includes(page)) return { label: "← Back to Early Learning", href: "early-learning.html" };
+    if (page === "early-learning-level") return { label: "← Back to Early Learning", href: "early-learning.html" };
+    if (page === "early-learning-books") return level ? { label: "← Back to " + level, href: "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) } : { label: "← Back to Early Learning", href: "early-learning.html" };
     if (page === "school-learning") return { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "school-books") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };
     if (page === "exam-preparation") return className ? { label: "← Back to " + className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) } : { label: "← Back to School Learning", href: "school-education.html" };

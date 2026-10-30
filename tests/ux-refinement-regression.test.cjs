@@ -191,6 +191,14 @@ test("School listing back controls retain their valid class context", () => {
   assert.match(selection, /page === "school-books"\).*Back to School Learning/s);
 });
 
+test("desktop catalogue headings use the approved shared scale and Early Learning listings retain level context", () => {
+  const css = read("css/ux-refinement.css");
+  const selection = read("js/catalogue-selection.js");
+  assert.match(css, /@media\(min-width:761px\)\{\.stage-level-page \.page-hero h1,\.browse-hero h1\{font-size:38px;line-height:45px\}\}/);
+  assert.match(selection, /page === "early-learning-level"\) return \{ label: "← Back to Early Learning", href: "early-learning\.html" \}/);
+  assert.match(selection, /page === "early-learning-books"\) return level \? \{ label: "← Back to " \+ level, href: "early-learning-level\.html\?level=" \+ encodeURIComponent\(params\.get\("level"\)\) \}/);
+});
+
 test("final consistency layer uses visible SVG card icons and approved contextual accents", () => {
   const links = read("js/catalogue-source-links.js");
   const css = read("css/inner-pages-refinement.css");
