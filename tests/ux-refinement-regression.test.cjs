@@ -229,7 +229,7 @@ test("mobile Exam Preparation cards use the same transparent full-card link as S
   const css = read("css/inner-pages-refinement.css");
   assert.match(css, /\.card-link>a,\.catalogue-inner-page \.category-card\.exam-card a\{display:block;position:absolute;inset:0;z-index:2;padding:0;border:0;background:transparent;color:transparent\}/);
 });
-test("workflow actions keep their routes, summaries and fail-closed submission contract", () => {
+test("workflow actions keep their routes, summaries and retryable submission contract", () => {
   const order = read("order.html");
   const request = read("request.html");
   const review = read("review-request.html");
@@ -250,6 +250,7 @@ test("workflow actions keep their routes, summaries and fail-closed submission c
   assert.match(request, /workflow-breadcrumb[^>]*><a class="home" href="index\.html">Home<\/a>/);
   assert.match(review, /← Back to Requirement Details/);
   assert.match(review, /workflow-breadcrumb[^>]*><a class="home" href="index\.html">Home<\/a>/);
-  assert.match(review, /button\.disabled=true/);
-  assert.match(review, /Submission verification is unavailable/);
+  assert.match(review, /id="sendRequestButton">Send Requirement/);
+  assert.match(review, /button\.disabled=false;submitting=false/);
+  assert.doesNotMatch(review, /turnstile|captcha/i);
 });
