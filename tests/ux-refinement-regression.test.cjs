@@ -254,3 +254,46 @@ test("workflow actions keep their routes, summaries and retryable submission con
   assert.match(review, /button\.disabled=false;submitting=false/);
   assert.doesNotMatch(review, /turnstile|captcha/i);
 });
+
+test("successful mocked submission renders the approved confirmation and copies its returned reference", async () => {
+  const review = read("review-request.html");
+  const script = review.match(/<script>\s*([\s\S]*?)<\/script>\s*<\/body>/)[1];
+  const reviewPage = { innerHTML: "", addEventListener() {} };
+  const sendButton = { disabled: false, textContent: "Send Requirement →" };
+  const submissionStatus = { textContent: "" };
+  const copyStatus = { textContent: "" };
+  const body = { classList: { add() {}, remove() {} } };
+  let cleared = 0;
+  let copied = "";
+  const document = {
+    body,
+    getElementById(id) {
+      return ({ reviewPage, sendRequestButton: sendButton, submissionStatus, copyReferenceStatus: copyStatus })[id] || null;
+    },
+    querySelector() { return null; }
+  };
+  const storage = { getItem() { return null; }, removeItem() {} };
+  const window = {
+    CambridgeCatalogueBootstrap: null,
+    CambridgeRequestSubmission: {
+      async submitLive() { return { reference: "CPC-TEST-REFERENCE" }; },
+      clearSubmittedDraft() { cleared += 1; }
+    }
+  };
+  const context = { window, document, localStorage: storage, sessionStorage: storage, navigator: { clipboard: { async writeText(value) { copied = value; } } }, JSON, String, Number, Array, Object, Promise, Error, RegExp, Boolean };
+  vm.runInNewContext(script, context);
+  await context.sendRequest();
+  assert.equal(cleared, 1);
+  assert.match(reviewPage.innerHTML, /Requirement Submitted Successfully/);
+  assert.match(reviewPage.innerHTML, /YOUR REQUIREMENT REFERENCE/);
+  assert.match(reviewPage.innerHTML, /CPC-TEST-REFERENCE/);
+  assert.match(reviewPage.innerHTML, /Copy Reference/);
+  assert.match(reviewPage.innerHTML, /Back to Catalogue/);
+  assert.doesNotMatch(reviewPage.innerHTML, /Review Requirement|REQUIREMENT RECEIVED/);
+  await context.copyReference("CPC-TEST-REFERENCE");
+  assert.equal(copied, "CPC-TEST-REFERENCE");
+  assert.equal(copyStatus.textContent, "Reference copied.");
+  context.navigator.clipboard = null;
+  await context.copyReference("CPC-TEST-REFERENCE");
+  assert.match(copyStatus.textContent, /Unable to copy automatically/);
+});
