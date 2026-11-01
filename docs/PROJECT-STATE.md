@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-11-01 23:42 IST (UTC+05:30)
+Last updated: 2026-11-02 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -79,7 +79,7 @@ The controlled-value lists are V1 approved values based on the current sample, n
 
 Migration `20260920103408_create_catalogue_publication_master_v1` created `public.publications` and `public.publication_assets`, constraints/indexes, automatic `updated_at`, RLS and read-only public catalogue policies.
 
-Approved pilot data: 33 Active publications total; 9 Early Learning; 22 School Learning; 2 College and University; 0 Competitive Exams; 6 deliberately class-unrestricted records represented by an empty `class_stage` array. This is pilot data, not the final production master. No full catalogue migration has occurred.
+The 33-publication/9-Early-Learning pilot count is historical and must not be used as the current catalogue count. The verified current Supabase catalogue contains 86 active Early Learning publications that are Custom Kit eligible. Other historical pilot totals remain reference data only; no full catalogue migration is implied by this record.
 
 The Supabase schema still contains some pilot-era fields/constraints such as Language Position/status assumptions. Do not treat every existing database constraint as the final master specification; align schema during the production migration phase after the complete master is reviewed.
 
@@ -135,13 +135,21 @@ Planned production migration flow:
 
 A Publication Master validator is planned but intentionally not the immediate blocker while the complete master is being prepared. It should be configuration-driven so approved controlled values can evolve after reviewing the full catalogue.
 
-## Standard Kit V1 — configured, accepted, pending commit/deployment
+## Standard Kit V1 — merged, configured and accepted
 
 Standard Kit V1 is configured in the approved Supabase catalogue project for four enabled Early Learning stages: Playgroup (11 publications), Nursery (8), LKG (12), and UKG (13), for 44 configured publications in total. The fixed CPC composition is ordered and has one copy of each included publication per kit set. The two Flash Card entries without valid SKU mappings remain deliberately deferred.
 
 Customers may add multiple complete kit sets through the existing My Selection quantity controls; Standard Kits remain distinct from individual publication selections and Custom Kits. Current Standard Kit desktop and mobile UI has been accepted by CPC. The reusable catalogue UI guidance is documented in `docs/06-catalogue-design-system.md` and `docs/07-ui-page-patterns.md`.
 
-Custom Kit cross-stage eligibility remains a separate future phase. The Standard Kit implementation is currently uncommitted and undeployed; no production release is implied by this checkpoint.
+Standard Kit V1 is merged into `main`; no production deployment is implied by this project-state record.
+
+## Custom Kit cross-stage V1 — configured, accepted, pending merge/deployment
+
+Custom Kit V1 has been configured in Supabase project `ysaxagxortpxyifyaydx`. Playgroup, Nursery, LKG and UKG are enabled for Custom Kit completion with a minimum of 8 distinct eligible titles. The 86 active Early Learning publications marked Custom Kit eligible are available across all four selected kit stages; the selected stage remains part of each kit's identity.
+
+Anonymous users have read-only access to enabled Early Learning kit rules through the dedicated SELECT policy; no anonymous write permission has been granted. The request RPC no longer requires a Custom Kit publication to match the selected kit stage, while active-publication, eligibility, duplicate, minimum-title, quantity, idempotency and Standard Kit composition validation remain in place. The four Standard Kits and their 44 configured components are preserved. The two historic Flash Card mapping deferrals apply only to Standard Kit composition.
+
+The Custom Kit frontend functionality, approved UI, and immediate stage rendering with asynchronous availability checks have been manually accepted on localhost. The implementation remains uncommitted and unmerged; no production website deployment is implied by this project-state record.
 
 ## Immediate next step
 

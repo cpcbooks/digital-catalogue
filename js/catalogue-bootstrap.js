@@ -87,6 +87,14 @@
       anonKey: config.publishableKey
     });
   }
+  async function earlyLearningKitRules() {
+    if (requestedSource !== "supabase") return [];
+    if (!global.CambridgeSupabaseCatalogue) throw new Error("Supabase catalogue adapter is not loaded.");
+    return global.CambridgeSupabaseCatalogue.loadEarlyLearningKitRules({
+      supabaseUrl: config.supabaseUrl,
+      anonKey: config.publishableKey
+    });
+  }
 
   // Keep an explicit compatibility choice through local catalogue navigation.
   // The default customer catalogue is Supabase and keeps ordinary URLs clean.
@@ -130,6 +138,7 @@
     requestedSource,
     ready,
     standardKitDefinitions,
+    earlyLearningKitRules,
     withSource,
     localReturnHref,
     clearCache: function () { try { sessionStorage.removeItem(CACHE_KEY); } catch (_) {} }

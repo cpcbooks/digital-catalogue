@@ -18,6 +18,7 @@ This file is intentionally opt-in while the pilot is validated.
   const ASSETS_PATH = "/rest/v1/publication_assets";
   const STANDARD_KITS_PATH = "/rest/v1/standard_kit_definitions";
   const STANDARD_KIT_PUBLICATIONS_PATH = "/rest/v1/standard_kit_publications";
+  const EARLY_LEARNING_KIT_RULES_PATH = "/rest/v1/early_learning_kit_rules";
   const PAGE_SIZE = 500;
 
   function text(value) { return value === null || value === undefined ? "" : String(value).trim(); }
@@ -103,11 +104,22 @@ This file is intentionally opt-in while the pilot is validated.
     const [definitions,mappings]=await Promise.all([request(`${STANDARD_KITS_PATH}?select=stage_code,display_name,enabled`,options),request(`${STANDARD_KIT_PUBLICATIONS_PATH}?select=stage_code,position,publication_id&order=stage_code.asc,position.asc`,options)]);
     return normalizeStandardKitDefinitions(definitions,mappings);
   }
+  function normalizeEarlyLearningKitRules(rules) {
+    const displayNames={playgroup:"Playgroup",nursery:"Nursery",lkg:"LKG",ukg:"UKG"};
+    return (rules||[]).map(rule=>{
+      const stageCode=text(rule.stage_code).toLowerCase();
+      return {stageCode,displayName:displayNames[stageCode]||stageCode,enabled:rule.enabled===true,completionEnabled:rule.completion_enabled===true,minimumDistinctTitles:rule.minimum_distinct_titles};
+    });
+  }
+  async function loadEarlyLearningKitRules(options) {
+    const rules=await request(`${EARLY_LEARNING_KIT_RULES_PATH}?select=stage_code,enabled,completion_enabled,minimum_distinct_titles&order=stage_code.asc`,options);
+    return normalizeEarlyLearningKitRules(rules);
+  }
   async function compareWithStatic(options) {
     const supabaseBooks=await load(options),staticBooks=Array.isArray(global.CAMBRIDGE_CATALOGUE)?global.CAMBRIDGE_CATALOGUE:[];
     const summarize=books=>({total:books.length,earlyLearning:books.filter(b=>b.category==="early-learning").length,school:books.filter(b=>b.category==="school").length,exam:books.filter(b=>b.category==="exam").length,collegeUniversity:books.filter(b=>b.category==="college-university").length,competitiveExams:books.filter(b=>b.category==="competitive-exams").length});
     return {static:summarize(staticBooks),supabase:summarize(supabaseBooks),supabaseBooks};
   }
   async function installPilot(options){const books=await load(options);global.CAMBRIDGE_CATALOGUE_SUPABASE_PILOT=books;return books}
-  global.CambridgeSupabaseCatalogue=Object.freeze({load,loadStandardKitDefinitions,normalizeStandardKitDefinitions,installPilot,compareWithStatic,toLegacyBook,categoryFor});
+  global.CambridgeSupabaseCatalogue=Object.freeze({load,loadStandardKitDefinitions,normalizeStandardKitDefinitions,loadEarlyLearningKitRules,normalizeEarlyLearningKitRules,installPilot,compareWithStatic,toLegacyBook,categoryFor});
 })(window);
