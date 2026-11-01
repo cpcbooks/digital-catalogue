@@ -7,29 +7,34 @@
   "use strict";
   const Bootstrap = window.CambridgeCatalogueBootstrap;
   if (!Bootstrap) throw new Error("Catalogue source bootstrap failed to load.");
-  try { await Bootstrap.ready(); }
+  let rules;
+  try { await Bootstrap.ready(); rules = await Bootstrap.earlyLearningKitRules(); }
   catch (error) {
     document.getElementById("review").innerHTML = '<div class="review-card empty-review"><h2>Catalogue unavailable</h2><p>The Supabase pilot catalogue could not be loaded. Please try again.</p></div>';
     return;
   }
   const DRAFT_KEY = "cambridgeCustomKitDraft", ORDER_KEY = "cambridgeOrder";
   const Query = window.CambridgeCatalogueQuery, KitState = window.CambridgeCustomKitState, KitConfig = window.CambridgeEarlyLearningKitConfig;
+  if (!Query || !KitState || !KitConfig) throw new Error("Catalogue modules failed to load.");
+  const provider = Bootstrap.requestedSource === "supabase" ? KitConfig.createProvider(Object.fromEntries(rules.map(rule => [rule.stageCode, rule]))) : KitConfig;
   const review = document.getElementById("review"), params = new URLSearchParams(location.search), earlyLearningUrl=Bootstrap.withSource("early-learning.html");
   const level = (params.get("level") || "").toLowerCase();
   let draft = null;
   try { draft = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null"); } catch (error) {}
-  if (!draft || draft.level !== level || (draft.source || "static") !== Bootstrap.requestedSource || !KitConfig.getStageConfig(level)) {
+  if (!draft || draft.level !== level || (draft.source || "static") !== Bootstrap.requestedSource || !provider.getStageConfig(level)) {
     review.innerHTML = '<div class="review-card empty-review"><h2>No working Kit to review</h2><p>Choose titles in the Kit builder, then return here to review them.</p><a class="edit-button" href="'+earlyLearningUrl+'">Browse Early Learning</a></div>';
     return;
   }
-  const config = KitConfig.getStageConfig(level);
-  const state = KitState.create({ minimum: config.minimumDistinctTitles, completionEnabled: config.completionEnabled, isEligible: book => KitConfig.isEligible(book, config.displayName) });
+  const config = provider.getStageConfig(level);
+  const state = KitState.create({ minimum: config.minimumDistinctTitles, completionEnabled: config.completionEnabled, isEligible: KitConfig.isEligible });
   const editUrl=Bootstrap.withSource("kit-builder.html?level="+encodeURIComponent(level));
   state.setName(draft.name);
   document.getElementById("editNav").href = editUrl;
   document.getElementById("pageTitle").textContent = "Review Your " + config.displayName + " Kit";
-  Query.byCategoryAndClass("early-learning", config.displayName).forEach(book => {
-    if (Array.isArray(draft.bookIds) && draft.bookIds.map(String).includes(String(book.id))) state.add(book);
+  const eligibleBooks = Query.byCategory("early-learning").filter(KitConfig.isEligible);
+  if (Array.isArray(draft.bookIds)) draft.bookIds.forEach(id => {
+    const book = eligibleBooks.find(item => String(item.id) === String(id));
+    if (book) state.add(book);
   });
   function saveDraft() {
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ level, source: Bootstrap.requestedSource, name: state.getName(), bookIds: state.selectedIds() }));

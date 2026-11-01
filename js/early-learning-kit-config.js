@@ -16,14 +16,9 @@
     return code === "nur" ? "nursery" : code;
   }
 
-  function belongsToStage(book, stage) {
-    const wanted = stageCode(stage);
-    return Boolean(wanted && book && Array.isArray(book.class) && book.class.some(value => stageCode(value) === wanted));
-  }
-
-  // Compatibility contract: an absent future flag preserves today's eligible Early Learning titles.
-  function isEligible(book, stage) {
-    return belongsToStage(book, stage) && book.customKitEligible !== false;
+  // A Custom Kit stage identifies the kit, not the eligible Early Learning pool.
+  function isEligible(book) {
+    return Boolean(book && book.category === "early-learning" && book.active !== false && book.customKitEligible !== false);
   }
 
   function groupBooksForDisplay(books) {
@@ -52,7 +47,6 @@
     ...createProvider(STAGES),
     createProvider,
     landingGuidance,
-    belongsToStage,
     isEligible,
     groupBooksForDisplay
   });
