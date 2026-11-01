@@ -90,6 +90,9 @@ test("shared cards render approved metadata rows and a shared bottom group", () 
   const css = read("css/ux-refinement.css");
   assert.match(css, /\.publication-card \.book-meta\{display:grid/);
   assert.match(css, /\.publication-card \.book-card-bottom\{margin-top:auto/);
+  assert.match(css, /\.publication-card \.qty-error:empty\{display:none\}/);
+  assert.match(css, /\.publication-card \.view-book,\.publication-card \.add-book,\.publication-card \.view,\.publication-card \.qty-control\{height:39px\}/);
+  assert.match(css, /\.publication-card \.qty-control\{grid-template-columns:30px minmax\(36px,1fr\) 30px;padding:0\}/);
   assert.doesNotMatch(css, /\.homepage \.footer-links/);
 });
 
