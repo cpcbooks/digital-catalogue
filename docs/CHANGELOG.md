@@ -2,6 +2,11 @@
 
 This is a concise functional changelog, not a commit-by-commit transcript.
 
+## Publication-card alignment fix
+
+- Kept shared publication-card MRP and action rows aligned when an Add control changes to the selected quantity control.
+- Restored the approved mobile three-column quantity control (`− 1 +`) while retaining equal touch-target heights and the empty validation-message collapse.
+
 ## Homepage imagery release
 
 - Replaced the superseded IM-15 presentation media with owner-approved desktop/mobile hero, category-card and New Arrivals artwork under `assets/homepage/`.

@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-09-20 22:40 IST (UTC+05:30)
+Last updated: 2026-11-01 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -165,6 +165,10 @@ Do not claim a feature is complete solely because code was written.
 ## 2026-10-23 13:14 IST (UTC+05:30) — IM-14A/A.1 deployed
 
 IM-14A/A.1 deployed to `main` in `1857057`: shared vertical cards, preserved cover proportions, compact media areas, and a blank portrait fallback for missing or failed covers. Production smoke testing passed. No Supabase update or homepage redesign occurred.
+
+## Publication-card alignment fix
+
+The shared vertical card action area reserves matching heights for the Add and selected quantity controls. Empty quantity-validation text does not consume layout space, and the mobile quantity grid remains the approved three-control layout: `− 1 +`. This is presentation-only; selection quantities, catalogue data, Supabase and navigation are unchanged.
 
 ## IM-15 deployed — `108c205421ffd0bd49a48cd60a2829755fb45505`
 
