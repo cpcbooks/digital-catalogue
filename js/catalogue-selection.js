@@ -12,6 +12,7 @@
   const BOOK_RETURN_KEY = "cambridgeBookReturn";
   const CHECKLIST_RETURN_KEY = "cambridgeChecklistReturn";
   let detailsVisitEditedBookId = "";
+  let standardKitAddIssue = "";
 
   function validQty(value) {
     const n = Number(value);
@@ -521,6 +522,46 @@
     return saved;
   }
 
+  function sameStandardKit(left, right) {
+    if (!left || !right || left.type !== "standard-kit" || right.type !== "standard-kit" || String(left.id || "") !== String(right.id || "") || String(left.level || "") !== String(right.level || "")) return false;
+    if (!Array.isArray(left.books) || !Array.isArray(right.books) || left.books.length !== right.books.length) return false;
+    return left.books.every((book, index) => String(book && book.id || "") === String(right.books[index] && right.books[index].id || ""));
+  }
+
+  function addStandardKit(kit) {
+    standardKitAddIssue = "";
+    if (!kit || kit.type !== "standard-kit" || !kit.id || !kit.level || !Array.isArray(kit.books) || !kit.books.length) return false;
+    const componentIds = kit.books.map(book => String(book && book.id || ""));
+    if (componentIds.some(id => !id) || new Set(componentIds).size !== componentIds.length) return false;
+    const items = readOrder();
+    const sameIdentity = items.filter(item => item.type === "standard-kit" && String(item.id || "") === String(kit.id));
+    if (sameIdentity.some(item => !sameStandardKit(item, kit))) {
+      standardKitAddIssue = "composition";
+      return false;
+    }
+    const existing = sameIdentity[0];
+    if (existing) {
+      const quantity = sameIdentity.reduce((total, item) => total + Number(item.quantity), 0);
+      if (quantity >= MAX_QUANTITY) {
+        standardKitAddIssue = "maximum";
+        return false;
+      }
+      existing.quantity = quantity + 1;
+      sameIdentity.slice(1).forEach(item => items.splice(items.indexOf(item), 1));
+    } else {
+      items.push({ ...kit, quantity: 1, books: kit.books.slice(), bookCount: kit.books.length });
+    }
+    const saved = saveOrder(items);
+    if (saved) emitChange();
+    return saved;
+  }
+
+  function standardKitAddMessage() {
+    if (standardKitAddIssue === "composition") return "This Standard Kit has changed since it was saved. Remove the older kit from My Selection before adding the current kit.";
+    if (standardKitAddIssue === "maximum") return "Maximum quantity is 10,000 complete kit sets.";
+    return "";
+  }
+
   function remove(book) {
     const items = readOrder();
     const index = indexOfBook(book, items);
@@ -730,7 +771,7 @@
   window.CambridgeSelection = Object.freeze({
     ORDER_KEY, MAX_QUANTITY, CHANGE_EVENT, CHECKLIST_RETURN_KEY,
     validQty, readOrder, saveOrder, reconcileCatalogue, itemKey, indexOfBook, selectedItem, selectedItems,
-    selectedCount, selectedQuantityTotal, floatingSelectionSummary, floatingSelectionLabels, isFloatingSelectionPage, updateBar, updateFloatingBar, add, remove, setQty,
+    selectedCount, selectedQuantityTotal, floatingSelectionSummary, floatingSelectionLabels, isFloatingSelectionPage, updateBar, updateFloatingBar, add, addStandardKit, standardKitAddMessage, remove, setQty,
     detailsUrl, coverNode, cardNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
   });
 })();
