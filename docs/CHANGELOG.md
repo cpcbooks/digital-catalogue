@@ -2,6 +2,13 @@
 
 This is a concise functional changelog, not a commit-by-commit transcript.
 
+## Homepage imagery release
+
+- Replaced the superseded IM-15 presentation media with owner-approved desktop/mobile hero, category-card and New Arrivals artwork under `assets/homepage/`.
+- Kept the desktop hero composition and category-card geometry; mobile hero artwork is a compact bottom-anchored background so its learning objects remain visible below search.
+- Kept the approved mobile New Arrivals JPEG, introduced the approved desktop New Arrivals PNG, and standardised its component accents on CPC Navy `#17365D` with a pale-blue wash.
+- Removed only verified superseded repository presentation images. Publication assets, Supabase data and source masters were not changed.
+
 ## IM-15 deployed — `108c205421ffd0bd49a48cd60a2829755fb45505`
 
 - Refined the homepage to the owner-approved hero, category-card and New Arrivals composition while retaining existing navigation and selection integration.
