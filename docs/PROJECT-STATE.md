@@ -1,6 +1,6 @@
 # CPC Digital Catalogue — Project State
 
-Last updated: 2026-11-01 IST (UTC+05:30)
+Last updated: 2026-11-01 23:42 IST (UTC+05:30)
 
 This is the primary recovery document for the project. Read this file before substantial development work, then inspect the current Git implementation before making changes.
 
@@ -134,6 +134,14 @@ Planned production migration flow:
 `Complete Excel master → validate/review → approve controlled-value additions → backup pilot → reset/replace pilot publication data → import clean full master → import/remap publication assets → verify catalogue sections/search/details/selection`
 
 A Publication Master validator is planned but intentionally not the immediate blocker while the complete master is being prepared. It should be configuration-driven so approved controlled values can evolve after reviewing the full catalogue.
+
+## Standard Kit V1 — configured, accepted, pending commit/deployment
+
+Standard Kit V1 is configured in the approved Supabase catalogue project for four enabled Early Learning stages: Playgroup (11 publications), Nursery (8), LKG (12), and UKG (13), for 44 configured publications in total. The fixed CPC composition is ordered and has one copy of each included publication per kit set. The two Flash Card entries without valid SKU mappings remain deliberately deferred.
+
+Customers may add multiple complete kit sets through the existing My Selection quantity controls; Standard Kits remain distinct from individual publication selections and Custom Kits. Current Standard Kit desktop and mobile UI has been accepted by CPC. The reusable catalogue UI guidance is documented in `docs/06-catalogue-design-system.md` and `docs/07-ui-page-patterns.md`.
+
+Custom Kit cross-stage eligibility remains a separate future phase. The Standard Kit implementation is currently uncommitted and undeployed; no production release is implied by this checkpoint.
 
 ## Immediate next step
 

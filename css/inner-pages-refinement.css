@@ -76,6 +76,7 @@
 @media (max-width:760px){.catalogue-inner-page[data-catalogue-tone="early"] .choice-grid .choice-card,.catalogue-inner-page[data-catalogue-tone="school"] .category-grid .category-card{min-height:0;padding:14px 46px 14px 68px}}
 @media (prefers-reduced-motion:reduce){.catalogue-inner-page *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
 /* Workflow pages reuse the existing outlined contextual-action treatment. */
+@media(min-width:761px){.catalogue-inner-page .review-hero.page-hero .catalogue-context-action+.eyebrow{margin-top:8px}}
 body.catalogue-inner-page:has(.order-section) .order-nav .back-link,body.catalogue-inner-page:has(.request-section) .hero-nav>a:first-child,body.catalogue-inner-page:has(.review-section) .review-hero .back-link{display:inline-flex;align-items:center;min-height:36px;padding:0 10px;border:1px solid var(--inner-border);border-radius:7px;background:#fff;text-decoration:none}
 body.catalogue-inner-page:has(.order-section) .order-nav .back-link:hover,body.catalogue-inner-page:has(.request-section) .hero-nav>a:first-child:hover,body.catalogue-inner-page:has(.review-section) .review-hero .back-link:hover{border-color:var(--navy);text-decoration:none}
 body.catalogue-inner-page:has(.order-section) .order-nav .back-link:focus-visible,body.catalogue-inner-page:has(.request-section) .hero-nav>a:first-child:focus-visible,body.catalogue-inner-page:has(.review-section) .review-hero .back-link:focus-visible{outline:2px solid var(--navy);outline-offset:2px}

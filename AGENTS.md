@@ -67,6 +67,10 @@ Preserve user context.
 - Publication listings use the shared responsive card system in `css/publication-browser.css`: cover-led multi-column cards on desktop and compact horizontal cards on mobile. Do not reintroduce one-book-per-full-width-row layouts without a specific reason.
 - Desktop may use richer discovery cards; mobile should prioritize compact, fast navigation.
 
+## UI change guardrail
+
+Before changing a user-facing page, read `docs/06-catalogue-design-system.md` and `docs/07-ui-page-patterns.md`, then inspect the applicable approved reference page. Reuse the existing containers and classes; preserve category tones, navy primary actions, navigation, and selection behaviour. Verify desktop and mobile structure, including breadcrumb, contextual Back action, and heading alignment. Do not introduce parallel layout systems or alter unrelated pages. If a design requirement is genuinely unresolved, stop and ask. UI change reports must name the reference pattern used and every intentional deviation.
+
 ## Selection behaviour
 
 - Shared selection logic lives in `js/catalogue-selection.js`.

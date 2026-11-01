@@ -36,7 +36,7 @@
   function setInnerPageTone() {
     const pathname = location.pathname;
     if (/(?:^|\/)index\.html$/.test(pathname)) return;
-    const tone = /early-learning|kit-/.test(pathname) ? "early"
+    const tone = /early-learning|standard-kit|kit-/.test(pathname) ? "early"
       : /exam-preparation|competitive-exam-books/.test(pathname) ? "exam"
         : /school-/.test(pathname) ? "school"
         : /college-/.test(pathname) ? "college"
@@ -121,9 +121,18 @@
         centre.prepend(group);
       }
     }
-    if (/\/(early-learning-level|early-learning-books|school-learning|school-books|exam-preparation|college-books)\.html$/.test(pathname)) {
+    if (/\/(early-learning-level|early-learning-books|standard-kit|kit-builder|kit-review|school-learning|school-books|exam-preparation|college-books)\.html$/.test(pathname)) {
       document.documentElement.classList.add("stage-level-page");
     }
+  }
+  function refineKitHeroes() {
+    [[".kit-hero", ".kit-wrap"], [".review-hero", ".review-wrap"]].forEach(([heroSelector, innerSelector]) => {
+      const hero = document.querySelector(heroSelector), inner = hero && hero.querySelector(innerSelector);
+      if (hero && inner) {
+        hero.classList.add("page-hero");
+        inner.classList.add("hero-inner");
+      }
+    });
   }
   const cardIcons = {
     shapes: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="7" r="3"></circle><rect x="12" y="4" width="7" height="7" rx="1"></rect><path d="m7 14 4 6H3z"></path></svg>',
@@ -207,6 +216,7 @@
     addBrandLink(bootstrap);
     addPrivacyLink(bootstrap);
     refineOptionCHeaders();
+    refineKitHeroes();
     refineLandingCards();
     refineListingEmptyStates();
     refineCompetitiveExamsLink(bootstrap);
