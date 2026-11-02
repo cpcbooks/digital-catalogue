@@ -189,6 +189,7 @@ test("Early Learning keeps unavailable Standard Kits non-actionable while preser
   assert.match(source, /COMING SOON/);
   assert.match(source, /standard\.classList\.add\("is-unavailable"\)/);
   assert.match(source, /Build My Kit →/);
+  assert.match(source, /custom\.appendChild\(customLink\); window\.CambridgeInnerPageRefinement\?\.activateCard\(custom\)/);
   assert.match(css, /\.choice-card\.custom-kit\{background:#fff/);
 });
 
