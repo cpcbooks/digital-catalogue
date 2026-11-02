@@ -1,4 +1,6 @@
-# Cambridge Digital Catalogue — Product Data Model (V1)
+# Cambridge Digital Catalogue — Historical Product Data Model (V1)
+
+> **Historical design reference, not the current approved master.** Publication Master **V1.1** is approved with 427 records, 20 columns including Catalogue Category and permanent CPC00001–CPC00427 SKUs. Use `docs/DATA-MODEL.md` for current business rules. Do not apply pilot-era classification or identity assumptions from this file to production.
 
 This document records the current architecture decisions for catalogue product data. It is intentionally flexible because the complete product master, SKU convention and verified commercial data are not yet available.
 

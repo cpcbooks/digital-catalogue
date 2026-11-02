@@ -1,152 +1,43 @@
-# CPC Digital Catalogue — Roadmap
+# CPC Digital Catalogue — Current Roadmap
 
-Last updated: 2026-09-20 22:40 IST (UTC+05:30)
+Last reconciled: 2026-11-02 IST (UTC+05:30)
 
-## Completed / verified
+## Completed: public functional implementation and acceptance
 
-- Early Learning browsing
-- School Education browsing
-- School book lists
-- Book Details
-- Build Your Own Kit
-- shared selection/cart-like request selection
-- quantity UX/validation fixes
-- Request Details
-- Review Request
-- Supabase request database
-- internal fulfilment mapping structure
-- custom-kit component snapshot/mapping structure
-- secure Edge Function submission
-- successful real end-to-end request (`CPC-20260816-5645CC`)
-- canonical array-based Class/Stage model
-- corrected subject/medium semantics
-- shared universal Browse/Search structure
-- Supabase Publication Master pilot with 33 records
-- Supabase Storage publication-asset pilot
-- front/back cover gallery verified for two pilot publications
-- portrait and landscape Browse/Book Details image rendering without cropping
-- optional publication Description field and Book Details `About this book` support
-- future sample-page asset sequence supported
-- Publication Master V1 data-entry rules refined and documented for CPC team
-- image preparation/naming rules prepared for CPC team
+- Catalogue browsing, category/class navigation, shared Browse/Search and Book Details.
+- Individual book selection, Standard Kits, Custom Kits, mixed selections, quantities and persistence.
+- Requirement Details, review, anonymous submission, confirmation, idempotent replay and friendly failure/retry UX.
+- Production integration and final acceptance: **37/37 mobile checks**, **5/5 final smoke checks**, **8/9 integration scenarios** (actual live 429 not tested; mocked frontend handling passed).
+- PR #33 mobile Custom Kit navigation fix and PR #34 network/retry UX deployed.
+- Approved Publication Master V1.1: **427 publications**, **20 columns**, permanent **CPC00001–CPC00427** SKUs; production `publications` count verified at 427.
+- Test submissions and related attempts removed: zero requests/items/kit components/rate-limit attempts at verification.
 
-## Current milestone — Prepare and prove the full catalogue dataset
+## Current milestone: launch content and presentation
 
-The customer request journey is already implemented. Do not rebuild it. The current priority is completing the catalogue using verified CPC publication data while keeping the working request system stable.
+1. Prepare and associate original **front covers** with the correct permanent SKU/publication; add back covers where available.
+2. Prepare and upload **sample pages/PDFs** selected for launch; check access, ordering and display.
+3. Review homepage/category banners and desktop/mobile appearance; preserve approved design and book cover fidelity.
+4. Perform **business data sign-off** for titles, classes, categories, MRPs, descriptions and kit compositions.
+5. Conduct a **focused media/content smoke check** after uploads. Do not repeat the entire functional suite unless a regression or implementation change warrants it.
 
-### 1. Complete Publication Master — team/data task in progress
+## Current approved business classification
 
-CPC team prepares the full master using the current V1 rules.
+| Category | Count |
+| --- | ---: |
+| Early Learning | 86 |
+| School Books | 180 |
+| Exam Preparation | 116 |
+| College & University | 45 |
+| Competitive Exams | 0 |
 
-Current master fields:
+The approved master includes **Catalogue Category**. Class 10 Internal Assessment and five Class 10 workbooks belong in Exam Preparation. PUC/Degree classification is optional. Do not confuse the business category names with older navigation labels or database schema fields.
 
-`Catalogue Section, Series, Book Title, Class/Stage, Subject, Medium, Book Type, Description, SKU ID, MRP, ISBN, Author, Co Author, Pages, Length, Breadth, Thickness, Weight, Status`
+## After public launch (separate decisions)
 
-Category and Language Position are excluded. SKU convention is parked.
+- CPC Admin Portal V1: planned as an independent implementation, not required for launch.
+- Additional digital assets, enhancements and optional catalogue-only mode require separate approval.
+- Do not introduce checkout, payments, customer login, speculative ERP features or a second catalogue/search architecture as part of launch preparation.
 
-Controlled lists are V1 approved values, not permanent closed taxonomies. Review legitimate additions when the complete data reveals them.
+## Retired milestones (historical only)
 
-### 2. Prepare publication assets — team/data task in progress
-
-For each publication, prepare a folder matching the Book Title with:
-
-- `front` — intended required live cover
-- `back` — recommended
-- `sample-01`, `sample-02`, ... — optional useful inside pages
-
-Preserve original aspect ratio; do not crop/stretch to a fixed portrait shape.
-
-### 3. Publication Master validator — planned
-
-Build a configuration-driven validator when useful against the incoming full dataset.
-
-It should check required fields, controlled values, class-stage formatting, ISBN-13/check digit, numeric fields and duplicates, and distinguish errors from review warnings. It must not modify Supabase during validation.
-
-The validator should make approved additions to Subject/Series/Book Type/etc. easy without rewriting the validation engine.
-
-### 4. Review full-data taxonomy
-
-Use the complete real dataset to confirm whether any V1 additions are needed, especially:
-
-- new Book Types
-- new Subjects
-- genuine Series
-- Degree/college stages
-- Competitive Exam taxonomy
-
-Do not invent speculative fields before the real data demonstrates the need.
-
-### 5. Controlled pilot-to-production publication migration
-
-Once the complete master passes review:
-
-1. export/back up the 33-record pilot dataset and current pilot asset mappings;
-2. intentionally clear/replace the pilot publication dataset;
-3. align Supabase schema/constraints with the final approved V1 rules;
-4. import the clean full Publication Master;
-5. remap/import publication assets to the new publication UUIDs;
-6. verify record counts and representative publications before switching catalogue reliance fully to the production dataset.
-
-Because SKU is parked, this reset is preferred over building complex update matching around disposable pilot records. A permanent business identifier/matching strategy must be resolved before repeated production update cycles.
-
-### 6. Complete College and University
-
-Structure already exists. Use the full verified data to populate/test 1st PUC, 2nd PUC, Degree and other college/university publications. Keep them under the combined `College and University` top-level section for V1 unless full catalogue volume proves a split is necessary.
-
-### 7. Complete Competitive Exams
-
-Structure already exists. Use verified real titles to establish the actual exam taxonomy and populate/test the section. Avoid taxonomy based only on assumptions or placeholders.
-
-### 8. Universal Browse/Search verification
-
-The shared discovery page already serves homepage search/Browse All and related filtering. Verify it against the full production dataset and extend filters only where the real data establishes a need.
-
-### 9. Full regression pass
-
-Verify desktop/mobile and cross-module behaviour after the production dataset is loaded:
-
-- navigation/back
-- Browse/Search/filtering
-- Book Details and image galleries
-- portrait/landscape/sample pages
-- selection persistence
-- add/remove and quantities
-- custom kits
-- floating My Selection entry
-- request details/review
-- Supabase submission
-
-## After full catalogue migration
-
-### Permanent publication/SKU update strategy
-
-Decide CPC's SKU convention and production master update/matching workflow. Do not rely on title matching for long-term repeated imports.
-
-### Product master mapping
-
-Populate verified operational mappings as required:
-
-- SKU
-- ISBN/reference
-- Tally Item Name
-- optional Tally stock item identifier
-- future ERP identifier
-
-### Staff operations
-
-- staff request dashboard
-- new-request notifications
-- request statuses/workflow
-- later ERP/Zoho integration as operational requirements are finalized
-
-## Explicitly deferred
-
-Do not introduce without a concrete requirement:
-
-- customer login
-- payment checkout
-- live stock deduction
-- complex CRM inside the catalogue
-- duplicated search systems
-- speculative Higher Education/competitive-exam fields
-- arbitrary SKU generation merely to unblock catalogue migration
+The 33-publication pilot, unresolved SKU policy, full-master preparation/import, and pending Custom Kit deployment were **superseded by completed production work**. Do not follow obsolete pilot migration/reset instructions.

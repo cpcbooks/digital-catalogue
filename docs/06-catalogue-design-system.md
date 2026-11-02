@@ -4,6 +4,8 @@ Last updated: 2026-11-01 23:09 IST (UTC+05:30)
 
 ## Purpose and authority
 
+**Current acceptance (2026-11-02):** Public catalogue functional testing is closed (37/37 mobile; 5/5 final smoke). Maintain the approved design system while completing cover/sample media and visual content; do not use launch-content work to introduce a competing layout system. See `PROJECT-STATE.md` for production status.
+
 This is the reusable description of the approved catalogue language already implemented in the repository. It preserves, rather than replaces, `docs/04-ui-ux-specification.md`. Where the documents differ, inspected production CSS and the approved page pattern govern the implementation; escalate a material conflict instead of silently normalising it.
 
 The catalogue remains catalogue-first: primary buttons may support My Selection or a requirement workflow, but must not turn the pages into checkout surfaces.

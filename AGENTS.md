@@ -37,15 +37,16 @@ Optional secondary flow:
 Top-level catalogue taxonomy:
 
 - **Early Learning** — Playgroup, Nursery, LKG, UKG
-- **School Learning** — Classes 1–10
+- **School Learning** — Classes 1–10, with School Books and Exam Preparation discovery/navigation
 - **College and University** — 1st PUC, 2nd PUC, Degree
 - **Competitive Exams** — exam-specific categories
 
-School Exam Preparation (Honest Success, LBA, etc.) is part of School Learning and is distinct from Competitive Exams.
+**Exam Preparation** is an approved separate Publication Master V1.1 Catalogue Category (116 records), even where the website groups its navigation under School Learning. It is distinct from Competitive Exams (0 approved master records). Class 10 Internal Assessment and five Class 10 workbooks belong to Exam Preparation.
 
 ## Critical data rules
 
-- `js/catalogue-data.js` is the current central catalogue dataset; long-term architecture is moving toward a maintainable catalogue product master rather than code being the permanent source of truth.
+- **Current production catalogue:** Supabase contains 427 approved publications; `js/catalogue-data.js` is a legacy/static compatibility path, not the current approved master. Inspect actual source selection before changing it.
+- **Approved Publication Master V1.1:** 20 columns including Catalogue Category; permanent SKUs CPC00001–CPC00427; counts Early Learning 86, School Books 180, Exam Preparation 116, College & University 45, Competitive Exams 0. Preserve existing UUIDs and SKUs. Do not rerun pilot/full-master migration.
 - For Nursery–Class 10, use **`class`**, not a separate `level` data field. `class` is array-based in catalogue records.
 - Subject and medium are separate concepts. A Kannada subject does not imply Kannada medium.
 - Do not invent CPC titles, SKU, ISBN, MRP, Tally item names, covers or other product data.
@@ -81,7 +82,7 @@ Before changing a user-facing page, read `docs/06-catalogue-design-system.md` an
 
 ## Backend
 
-Supabase is used for submitted request persistence/integration and is the planned backend foundation for a maintainable catalogue product master. Follow the existing backend architecture and inspect current implementation before changing it.
+Supabase is the current production publication catalogue source and the submitted-request backend. Anonymous requests go through the deployed Edge Function, not direct public table writes. Standard Kits and Custom Kits are deployed and accepted. PR #33 and #34 are merged; public functional testing is closed (37/37 mobile, 5/5 final smoke). Follow the existing backend architecture and inspect current implementation before changing it.
 
 Never expose service-role or secret credentials in client-side code.
 

@@ -6,6 +6,9 @@ These rules exist to prevent regressions, duplicate implementations and loss of 
 
 ## Before changing code
 
+Current-state checkpoint (2026-11-02): read `PROJECT-STATE.md` before interpreting older pilot documents. The 427-publication V1.1 master, permanent CPC SKUs, deployed Standard/Custom Kits and completed functional testing supersede historical pilot migration instructions. Do not reset production publication data or reopen accepted workflows without explicit CPC approval.
+
+
 1. Read `docs/PROJECT-STATE.md`.
 2. Read the relevant architecture/data/decision document.
 3. Inspect the current Git implementation of the affected feature.

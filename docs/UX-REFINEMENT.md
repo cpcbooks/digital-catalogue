@@ -1,5 +1,7 @@
 # Catalogue UX refinement
 
+> **Status (2026-11-02):** Accepted historical refinement record. Public functionality passed 37/37 mobile checks and 5/5 final production smoke checks. Do not treat older branch/implementation descriptions below as pending work; use `PROJECT-STATE.md`, `06-catalogue-design-system.md` and `07-ui-page-patterns.md` for current behavior.
+
 The `codex/catalogue-ux-refinement` branch applies the approved catalogue-first refinements without changing publication data or Supabase.
 
 - The footer retains its original shared layout. `js/catalogue-source-links.js` continues to add only the existing source-aware Privacy Notice link.

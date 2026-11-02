@@ -19,7 +19,7 @@ The final submission step is the backend boundary. The frontend must continue to
 
 Supabase project: **CPC Digital Catalogue**.
 
-Supabase/Postgres will store submitted requests. The catalogue may continue using its current static product source while verified master data is incomplete; backend request storage must not depend on moving the full catalogue master to Supabase immediately.
+Supabase/Postgres will store submitted requests. The current production catalogue has 427 Supabase publications. The request backend is already deployed and must remain independent of any legacy/static catalogue compatibility path.
 
 ## Core principles
 
@@ -34,6 +34,7 @@ Therefore request items store snapshot fields from the submitted selection. They
 A request can contain:
 
 - individual catalogue titles
+- Standard Early Learning kits
 - custom Early Learning kits
 
 A custom kit has its own requested quantity and a snapshot of the books contained in that kit.
@@ -61,23 +62,21 @@ The final `Send Request` action should call one controlled submission endpoint (
 
 This avoids exposing writable request tables directly to arbitrary browser operations and leaves a clean place for future anti-spam/rate-limit/CAPTCHA controls.
 
-## Proposed database model
+## Current database model (implemented; field names below are authoritative at high level)
 
 ### `requests`
 
-One row per submitted customer request.
-
-Recommended fields:
+One row per submitted customer request. Implemented columns include:
 
 - `id uuid primary key`
-- `reference_no text unique not null`
+- `reference text` (customer-facing CPC reference)
 - `status text not null default 'new'`
 - `customer_type text not null`
-- `contact_name text not null`
-- `organisation_name text null`
-- `mobile text not null`
-- `whatsapp text null`
-- `city text not null`
+- `customer_name text`
+- `customer_organisation text`
+- `customer_phone text`
+- `whatsapp_phone text`
+- `customer_place text`
 - `district text null`
 - `state text null`
 - `pincode text null`
@@ -85,9 +84,9 @@ Recommended fields:
 - `existing_customer text null`
 - `preferred_contact text not null`
 - `notes text null`
-- `selection_count integer not null`
+- `item_count integer`
 - `total_quantity integer not null`
-- `source text not null default 'digital-catalogue'`
+- `idempotency_key uuid` (replay protection)
 - `created_at timestamptz not null default now()`
 
 V1 status values should remain simple, for example:
@@ -102,39 +101,31 @@ Do not build a full ERP/order-status workflow into this catalogue table yet.
 
 ### `request_items`
 
-One row for every top-level selection in a request.
-
-Recommended fields:
+One row for every top-level selection in a request. Implemented columns include:
 
 - `id uuid primary key`
 - `request_id uuid not null references requests(id) on delete cascade`
-- `line_no integer not null`
-- `item_type text not null` — `book` or `custom-kit`
-- `catalogue_id text null` — permanent catalogue ID where applicable
-- `title_snapshot text not null`
-- `sku_snapshot text null`
-- `isbn_snapshot text null`
-- `series_snapshot text null`
-- `class_snapshot text null`
-- `level_snapshot text null`
-- `subject_snapshot text null`
-- `medium_snapshot text null`
+- `position integer`
+- `item_type text` — book, Standard Kit or Custom Kit
+- `product_id text` — catalogue reference where applicable
+- `title text` and `snapshot jsonb`
+- `sku text`
+- `isbn text`
+- `series text`
+- `class_code text`
+- `subject text`
+- `medium text`
 - `quantity integer not null`
-- `kit_book_count integer null`
-- `kit_books_snapshot jsonb null`
+- `kit_books jsonb` (compatibility snapshot)
 - `created_at timestamptz not null default now()`
 
 Constraints should enforce quantity `1..10000`, valid item type, unique `(request_id, line_no)`, and sensible kit/non-kit combinations.
 
-### Why kit contents are JSON in V1
+### Kit component storage
 
 Current custom-kit selections already store the selected catalogue books as an array inside the kit object. For request history, those component titles are a snapshot of one top-level requested kit rather than independently priced/requested lines.
 
-Keeping the kit component snapshot as `jsonb` in V1:
-
-- preserves the exact submitted kit
-- avoids unnecessary third-table complexity before operational requirements demand component-level reporting
-- can later be migrated to a normalized `request_kit_items` table if stock/ERP workflows need component-level querying
+The production schema **already includes normalized `request_kit_components`** linked to `request_items` with `ON DELETE CASCADE`, alongside JSON snapshots for compatibility/history. Do not revert to a JSON-only model. Preserve original submitted kit compositions and quantities.
 
 ## Reference numbers
 
@@ -144,7 +135,7 @@ Recommended format:
 
 `CPC-YYYYMMDD-XXXXXX`
 
-The database UUID remains the true technical identity. `reference_no` is the customer/business reference and must be unique.
+The database UUID remains the true technical identity. `requests.reference` is the customer/business reference and must be unique.
 
 Reference generation must happen server-side/database-side, never be trusted from the browser.
 
@@ -181,7 +172,7 @@ The backend should reject malformed/oversized requests instead of silently corre
 
 The public website calls only the controlled submission endpoint.
 
-For V1 the endpoint must perform its own validation and should be designed so rate limiting / CAPTCHA / abuse prevention can be added without redesigning the database.
+The deployed endpoint performs server-side validation and rate limiting; frontend `Retry-After` messaging is implemented. Do not reintroduce CAPTCHA or other dependencies without an approved security change.
 
 Any elevated database credential used by the endpoint stays server-side only.
 
@@ -221,16 +212,15 @@ Do not add these merely because Supabase is now available:
 - ERP/Tally synchronization
 - staff CRM workflow
 - complex request status history
-- complete catalogue master migration
 
 Those can be designed later around actual operational requirements.
 
-## Next implementation sequence
+## Current maintenance direction
 
-1. Create `requests` and `request_items` schema with constraints, grants and RLS.
-2. Create the atomic database submission function.
-3. Create the public submission Edge Function with server-side validation.
-4. Connect `review-request.html` `Send Request` to that endpoint.
-5. Add a submission success page/state with reference number.
-6. Test normal books, custom kits, mixed selections, validation failures, duplicate/retry behaviour and network failure.
-7. Run Supabase Security Advisor and Performance Advisor after the schema/function changes.
+Submission implementation and functional testing are complete. Preserve existing validation, idempotency, atomic writes, rate-limit protections, privacy boundaries and retry-safe local state. Do not reimplement the backend as a launch task. Any future security or schema changes require separate impact review and testing.
+
+## 2026-11-02 — Production acceptance addendum
+
+The anonymous request workflow is deployed and functionally accepted. PR #34's friendly network error and `Retry-After` frontend handling are live. Production integration verified a successful submission, same-key replay returning the same reference without another row, and invalid payload rejection without a write. Mocked production-page checks verified 429 messaging, network recovery, duplicate-click protection and preservation of Standard/Custom Kits. **An actual production HTTP 429 was not triggered.** Production Edge Function `submit-catalogue-request` v10 was active at last verification.
+
+A focused permission check found `private.catalogue_request_attempts` has RLS disabled but neither `anon` nor `authenticated` has schema/table access; both submission RPCs deny those roles EXECUTE. This is not a blanket security certification. Following explicit confirmation that all requests were test data, seven requests, 22 items, 29 kit components and three rate-limit attempts were cleared; all four tables were verified empty, while 427 publications remained.
