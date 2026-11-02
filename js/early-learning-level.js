@@ -26,7 +26,7 @@
     const provider = Bootstrap.requestedSource === "supabase" ? KitConfig.createProvider(Object.fromEntries(rules.map(rule => [rule.stageCode, rule]))) : KitConfig;
     const guidance = KitConfig && KitConfig.landingGuidance(provider.getStageConfig(level));
     custom.querySelector(".kit-rule").textContent = guidance ? guidance.text : "Custom Kit is unavailable for this level.";
-    if (guidance && guidance.available) { const customLink = document.createElement("a"); customLink.href = Bootstrap.withSource("kit-builder.html?level=" + encodeURIComponent(level)); customLink.textContent = "Build My Kit →"; custom.appendChild(customLink); }
+    if (guidance && guidance.available) { const customLink = document.createElement("a"); customLink.href = Bootstrap.withSource("kit-builder.html?level=" + encodeURIComponent(level)); customLink.textContent = "Build My Kit →"; custom.appendChild(customLink); window.CambridgeInnerPageRefinement?.activateCard(custom); }
   }).catch(() => {
     if (location.href !== pageUrl) return;
     custom.querySelector(".kit-rule").textContent = "Custom Kit is unavailable for this level.";
