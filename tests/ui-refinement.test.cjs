@@ -30,8 +30,6 @@ test("shared card renderer keeps cover placeholders blank and accessible", () =>
 test("publication cards share a vertical renderer and preserve MRP/SKU metadata", () => {
   const source = read("js/catalogue-selection.js");
   assert.match(source, /function cardNode\(book, metadata\)/);
-  assert.match(source, /name\.textContent = "SKU:"/);
-  assert.match(source, /text\.textContent = book\.sku/);
   assert.match(source, /Number\.isFinite\(Number\(book\.mrp\)\)/);
   assert.match(read("js/catalogue-browse.js"), /selection\.cardNode\(book/);
   assert.match(read("browse.html"), /publication-browser\.css\?v=im14a/);
@@ -81,12 +79,16 @@ test("Browse uses the shared breadcrumb and contextual-return row", () => {
 
 test("media CSS preserves real-image ratios and uses a blank portrait fallback", () => {
   const source = read("css/publication-browser.css");
+  const inner = read("css/inner-pages-refinement.css");
   assert.match(source, /object-fit:contain/);
   assert.match(source, /width:auto;height:auto/);
-  assert.match(source, /height:184px/);
-  assert.match(source, /book-cover-placeholder\{display:block;width:86px;height:129px/);
+  assert.match(source, /height:200px/);
+  assert.match(source, /height:165px/);
+  assert.match(source, /book-cover-placeholder\{display:block;width:94px;height:140px/);
   assert.match(source, /@media\(max-width:319px\)\{\.publication-grid\{grid-template-columns:1fr\}/);
   assert.doesNotMatch(source, /Cover image coming soon/);
+  assert.match(inner, /\.publication-card \.book-cover,.catalogue-inner-page \.publication-card-cover\{background:#fff\}/);
+  assert.match(inner, /\.publication-card \.book-cover-placeholder\{background:#fff\}/);
 });
 
 test("Book Details retains safe optional metadata handling and a blank missing-cover label", () => {
@@ -97,6 +99,14 @@ test("Book Details retains safe optional metadata handling and a blank missing-c
   assert.match(source, /\["Dimensions",dimensionText\]/);
   assert.match(source, /label\.textContent=""/);
   assert.doesNotMatch(source, /Cover image coming soon/);
+});
+
+test("Book Details hides gallery controls when only one image exists", () => {
+  const source = read("js/book-details.js");
+  assert.match(source, /caption\.hidden=images\.length<2/);
+  assert.match(source, /nav\.hidden=images\.length<2/);
+  assert.match(source, /count\.textContent=images\.length\?\(imageIndex\+1\)\+" \/ "\+images\.length:""/);
+  assert.match(source, /if\(images\.length<2\|\|Math\.abs\(dx\)<45/);
 });
 
 test("New Arrivals stays within the curated Browse mode", () => {

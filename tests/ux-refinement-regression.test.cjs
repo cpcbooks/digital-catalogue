@@ -79,37 +79,42 @@ test("Competitive Exams selects only its future category records for the shared 
   assert.match(read("js/competitive-exams-refinement.js"), /selection\.cardNode/);
 });
 
-test("shared cards render approved metadata rows and a shared bottom group", () => {
+test("shared cards retain only the Class/Level, SKU, MRP and action regions", () => {
   const source = read("js/catalogue-selection.js");
-  assert.match(source, /const values = \[\["Class \/ level", classes\.join\(", "\)\], \["Series", book\.series \|\| book\.family\], \["Book type", book\.type \|\| book\.bookType\]\]/);
-  assert.doesNotMatch(source, /const values = .*\["Category"/);
-  assert.doesNotMatch(source, /const values = .*\["Subject"/);
-  assert.match(source, /name\.className = "book-meta-label"/);
-  assert.match(source, /text\.className = "book-meta-value"/);
+  assert.match(source, /meta\.className = "book-card-meta-row"/);
+  assert.match(source, /classValue\.className = "book-card-class"/);
+  assert.match(source, /classValue\.textContent = classes\.join\(", "\)/);
+  assert.match(source, /sku\.className = "book-card-sku"/);
+  assert.doesNotMatch(source, /book-meta-compact/);
+  assert.doesNotMatch(source, /\["Series"/);
+  assert.doesNotMatch(source, /\["Book type"/);
   assert.match(source, /bottom\.className = "book-card-bottom"/);
+  assert.match(source, /sku\.textContent = book\.sku \|\| ""/);
   const css = read("css/ux-refinement.css");
-  assert.match(css, /\.publication-card \.book-meta\{display:grid/);
-  assert.match(css, /\.publication-card \.book-card-bottom\{margin-top:auto/);
   assert.match(css, /\.publication-card \.qty-error:empty\{display:none\}/);
   assert.match(css, /\.publication-card \.view-book,\.publication-card \.add-book,\.publication-card \.view,\.publication-card \.qty-control\{height:39px\}/);
   assert.match(css, /\.publication-card \.qty-control\{grid-template-columns:30px minmax\(36px,1fr\) 30px;padding:0\}/);
+  assert.match(css, /\.publication-card h3\{display:-webkit-box;height:calc\(3 \* 1.35em\);margin:0;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3;font-size:16px;font-weight:700;line-height:1.35/);
+  assert.match(css, /\.publication-card \.book-card-meta-row\{display:grid;grid-template-columns:minmax\(0,1fr\) auto;align-items:center;gap:8px;min-height:16px;margin-top:10px;color:var\(--muted\);font-size:12px/);
+  assert.match(css, /\.publication-card \.book-price\{min-height:22px;margin:4px 0 0;color:var\(--navy\);font-size:16px;font-weight:700;line-height:1.35\}/);
   assert.doesNotMatch(css, /\.homepage \.footer-links/);
 });
 
-test("mobile cards retain two columns with compact metadata and compact selection controls", () => {
+test("mobile cards retain the three-line title, Class/SKU row and compact controls", () => {
   const source = read("js/catalogue-selection.js");
   const css = read("css/ux-refinement.css");
   const browserCss = read("css/publication-browser.css");
-  assert.match(source, /compactMeta\.className = "book-meta-compact"/);
   assert.match(source, /sku\.className = "book-card-sku"/);
   assert.match(source, /shortLabel\.textContent = "\+ Add"/);
   assert.match(source, /aria-label", "Add " \+ \(book\.title \|\| "publication"\) \+ " to Selection"/);
-  assert.match(css, /\.publication-card \.book-meta\{display:none\}/);
-  assert.match(css, /\.publication-card \.book-meta-compact\{display:block/);
+  assert.match(css, /\.publication-card h3\{height:calc\(3 \* 1.35em\);font-size:14px;font-weight:700;line-height:1.35\}/);
+  assert.match(css, /\.publication-card \.book-card-meta-row\{min-height:15px;margin-top:8px;font-size:11px;line-height:1.35\}/);
+  assert.match(css, /\.publication-card \.book-price\{min-height:19px;margin-top:3px;font-size:14px;font-weight:700;line-height:1.35\}/);
   assert.match(css, /\.publication-card \.add-book-short\{display:inline/);
   assert.match(css, /\.add-book-short\{display:none\}/);
   assert.match(browserCss, /@media\(max-width:319px\)\{\.publication-grid\{grid-template-columns:1fr/);
   assert.doesNotMatch(browserCss, /@media\(max-width:359px\)\{\.publication-grid\{grid-template-columns:1fr/);
+  assert.match(browserCss, /\.publication-grid\{display:grid;grid-template-columns:repeat\(4,minmax\(0,1fr\)\);gap:18px\}/);
 });
 
 test("choice cards have no desktop decoration and the floating selection summary stays compact", () => {
@@ -137,7 +142,12 @@ test("mobile Book Details places publication identity before a compact gallery",
   assert.match(css, /\.detail-info\{display:contents\}/);
   assert.match(css, /\.detail-eyebrow\{order:1/);
   assert.match(css, /\.detail-info h1\{order:2;font-size:24px/);
-  assert.match(css, /\.gallery\{order:5;align-self:center;max-width:112px/);
+  assert.match(css, /\.gallery\{order:5;align-self:center;margin:0\}/);
+  const details = read("book-details.html");
+  assert.match(details, /\.gallery\{position:static;max-width:330px;margin:auto;width:100%\}/);
+  assert.match(details, /\.gallery-frame img\{display:block;max-width:100%;max-height:min\(70vh,620px\)/);
+  assert.doesNotMatch(css, /max-width:112px/);
+  assert.doesNotMatch(css, /gallery-frame\{min-height:0;aspect-ratio:2 \/ 3\}/);
   assert.match(css, /\.detail-action-wrap\{order:6;margin-top:0;padding:14px\}/);
   assert.match(css, /\.detail-meta\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:10px\}/);
   assert.match(css, /catalogue-breadcrumbs__current\{display:none\}/);
@@ -192,6 +202,11 @@ test("School listing back controls retain their valid class context", () => {
     assert.match(read("exam-preparation.html"), /Class "\+c/);
   });
   assert.match(selection, /page === "school-books"\).*Back to School Learning/s);
+});
+
+test("School Books reuses the Browse desktop card container width", () => {
+  const css = read("css/inner-pages-refinement.css");
+  assert.match(css, /@media\(min-width:761px\)\{body\.catalogue-inner-page\[data-catalogue-tone="school"\]:has\(#list\) \.catalogue-section\{max-width:1180px\}\}/);
 });
 
 test("desktop catalogue headings use the approved shared scale and Early Learning listings retain level context", () => {

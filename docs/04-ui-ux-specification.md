@@ -13,10 +13,12 @@ Inner-page category tones are intentionally distinct from homepage category card
 ## Publication listings
 
 - All Books and category listings use the shared vertical publication-card grid.
-- A card places its cover, title, metadata, MRP, View Book action and Selection action in that order. Text is left aligned; covers are centred.
-- The grid uses four columns where the content width supports it, three at medium desktop widths, two through 390px mobile widths, and one at 359px and below. Cards keep actions at their bottom without clipping content.
+- A card places its cover, title, Class/Level and permanent SKU on one metadata row, MRP, View Book action, and Selection action in that order. Class/Level is left-aligned; SKU is right-aligned. Series, Book Type and ISBN are not listing-card metadata.
+- The title reserves exactly three lines using the active title type scale and clamps beyond that limit. This gives every card in a row the same title, metadata, MRP and action positions regardless of title length.
+- Desktop content uses 16px horizontal padding, 16px title type at 1.35 line height, 10px from title to metadata, 4px from metadata to MRP, and 12px before actions. Mobile preserves the approved compact two-column presentation at 390px and 450px: 12px padding, 14px title type at 1.35 line height, and 8px, 3px and 10px at those same boundaries. Both actions remain full-width with an 8px gap.
+- The grid uses four columns where the content width supports it, three at medium desktop widths, two through 390px mobile widths, and one at 319px and below. School Books uses the same approved desktop content width as Browse/New Arrivals, so complete and incomplete rows retain equal card dimensions.
 - Existing search, filters, subject grouping, URL state, selection state and return behaviour remain unchanged.
-- Listing-card metadata remains compact: category/class, series where applicable, subject/book type, permanent SKU and MRP. ISBN is displayed on Book Details, not on listing cards.
+- Listing-card metadata remains compact: Class/Level and permanent SKU, followed by MRP. ISBN is displayed on Book Details, not on listing cards.
 
 ## Inner-page navigation
 
@@ -27,8 +29,8 @@ Inner-page category tones are intentionally distinct from homepage category card
 ## Cover presentation
 
 - Real front covers preserve their own aspect ratio with contained rendering; they are never cropped, stretched or rotated.
-- A missing or failed cover is a blank light-grey portrait placeholder, centred inside the compact media region. It carries no SKU, caption, icon or substitute artwork. Listing media regions are 200px desktop, 180px medium desktop/tablet, 165px mobile, and 150px at narrow mobile; the placeholder is 140px desktop and 110px mobile.
-- Book Details retains its gallery and uses the same blank placeholder rule. IM-12B.1 optional-metadata handling remains: absent optional values are omitted and valid values remain visible.
+- Listing-card cover regions and their missing-cover placeholders are plain white (`#FFFFFF`), centered and contained with no separate tinted media panel. They carry no SKU, caption, icon or substitute artwork. Listing media regions are 200px desktop, 180px medium desktop/tablet, 165px mobile, and 150px at narrow mobile; the image maximums are 180px desktop, 165px medium desktop/tablet and 150px mobile, while the portrait placeholder is 140px desktop and 110px mobile.
+- Book Details retains its existing gallery behaviour and optional-metadata handling; absent optional values are omitted and valid values remain visible.
 
 ## Scope boundary
 
