@@ -16,6 +16,6 @@ test("transitional endpoint accepts legacy and simplified CORS requests without 
 test("request payload and idempotent replay behaviour remain in the database RPC contract",async()=>{
   const source=await readFile(resolve(root,"supabase/functions/submit-catalogue-request/index.ts"),"utf8");
   assert.match(source,/validPayload\(payload,key\)/);
-  assert.match(source,/supabase\.rpc\("submit_catalogue_request",\{payload\}\)/);
+  assert.match(source,/supabase\.rpc\("submit_catalogue_request_with_rate_limit",\{payload,p_client_hash:hash,p_short_limit:shortLimit,p_long_limit:longLimit\}\)/);
   assert.match(source,/data\.replayed\?200:201/);
 });

@@ -57,7 +57,7 @@ test("strict eligibility preserves existing Custom Kit validation boundaries", (
   assert.equal(validCustomKit(valid, "degree"), false);
   assert.equal(validCustomKit(valid, "lkg", 0), false);
   assert.equal(validCustomKit(valid, "lkg", 10001), false);
-  assert.match(read("supabase/functions/submit-catalogue-request/index.ts"), /supabase\.rpc\("submit_catalogue_request",\{payload\}\)/);
+  assert.match(read("supabase/functions/submit-catalogue-request/index.ts"), /supabase\.rpc\("submit_catalogue_request_with_rate_limit",\{payload,p_client_hash:hash,p_short_limit:shortLimit,p_long_limit:longLimit\}\)/);
   assert.match(read("supabase/functions/submit-catalogue-request/index.ts"), /data\.replayed\?200:201/);
   assert.match(read("supabase/functions/submit-catalogue-request/index.ts"), /item\.type==="standard-kit"/);
   assert.match(read("supabase/functions/submit-catalogue-request/index.ts"), /item\.type==="book"/);
