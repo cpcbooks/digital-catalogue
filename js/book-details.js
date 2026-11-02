@@ -147,7 +147,7 @@
       frame.appendChild(img);
       label.textContent=item.label;
       help.textContent=images.length>1?"Swipe or use arrows to view more":"";
-      caption.hidden=false;
+      caption.hidden=images.length<2;
       nav.hidden=images.length<2
     }
     count.textContent=images.length?(imageIndex+1)+" / "+images.length:"";
