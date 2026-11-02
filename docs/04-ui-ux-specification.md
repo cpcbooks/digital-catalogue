@@ -2,6 +2,8 @@
 
 ## Status
 
+**2026-11-02 acceptance:** The current public UI passed 37/37 mobile functional checks and 5/5 final production smoke checks, including homepage, navigation, publication details, kit entry points and selection-to-review. Existing UI patterns are accepted; remaining covers, sample media and homepage artwork are **content/presentation** tasks. PR #33 fixed mobile Custom Kit navigation and PR #34 deployed submission error/retry messaging. This file documents approved patterns, not a request to redesign them.
+
 This focused document reconciles the accepted IM-12C production behaviour with the deployed IM-14A/A.1 work. It does not replace the historical specification retained in the previous development checkout. IM-14A/A.1 was deployed to `main` in `1857057` on 2026-10-23 13:14 IST (UTC+05:30).
 
 ## Approved colour architecture
