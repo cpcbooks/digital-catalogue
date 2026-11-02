@@ -162,3 +162,12 @@ See `request-backend-architecture.md` for details.
 ## 2026-10-23 00:00 IST (UTC+05:30) — IM-15 homepage direction
 
 **Decision:** implement the owner-approved homepage composition in Development without changing catalogue data, Supabase, selection, or IM-14A/A.1 publication cards. New Arrivals is a curated mode of the existing Browse page and uses stable publication identifiers only. Its initial approved list is Wondera Computational Thinking & AI Classes 1–8, ordered by permanent SKUs `CPC00252`–`CPC00259`; it adds no database-maintained arrival flag, separate page, ordering flow or cover substitute.
+
+## 2026-11-02 — Public catalogue functional acceptance and launch scope
+
+- CPC accepted the production public catalogue functional workflow after 37/37 mobile checks and 5/5 final smoke checks. PR #33 fixed mobile Custom Kit navigation; PR #34 network/retry UX was verified live.
+- Final integration report: successful production submission, same-key idempotent replay, invalid payload rejection; mocked frontend tests for 429 message, network failure, duplicate click and kit preservation. Actual HTTP 429 was deliberately **not** tested against the live quota.
+- Publication Master V1.1 is approved: 427 publications, 20 columns including Catalogue Category, permanent SKUs CPC00001–CPC00427; category counts Early Learning 86, School Books 180, Exam Preparation 116, College & University 45, Competitive Exams 0. This supersedes earlier provisional SKU/category decisions.
+- The seven test requests and their 22 items, 29 kit components, and three rate-limit attempts were deleted after confirmation; the 427 publication rows remained.
+- Launch content remains to be completed: covers, intended samples/PDFs, final visuals and business data approval. Admin Portal V1 is not a launch prerequisite.
+- This is a documentation-only reconciliation of verified outcomes; no new product behavior, schema or security policy is approved here.
