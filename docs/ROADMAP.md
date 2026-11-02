@@ -150,3 +150,15 @@ Do not introduce without a concrete requirement:
 - duplicated search systems
 - speculative Higher Education/competitive-exam fields
 - arbitrary SKU generation merely to unblock catalogue migration
+
+## 2026-11-02 — Current launch readiness (supersedes pilot-era roadmap)
+
+**Public catalogue functionality: complete and accepted.** The user confirmed 37/37 mobile checks and 5/5 final production smoke checks. Production submission, idempotent replay, invalid payload handling, and deployed PR #34 error messaging were verified; actual production 429 was intentionally not exercised. The seven test submissions and associated rows/rate-limit attempts were cleaned, with 427 publications preserved.
+
+**Approved data:** Publication Master V1.1 contains 427 titles with permanent CPC00001–CPC00427 SKUs and approved Catalogue Category allocation (Early Learning 86; School Books 180; Exam Preparation 116; College & University 45; Competitive Exams 0). The old full-master import/pilot replacement is no longer an upcoming task.
+
+**Remaining before launch announcement:** (1) prepare/upload/verify publication covers, (2) add/verify sample pages or PDFs intended for launch, (3) review homepage visuals and mobile rendering, and (4) obtain CPC's final business-content sign-off for metadata, MRP, classifications and kit compositions. These are content/presentation tasks, not an invitation to rebuild accepted workflows.
+
+**Separate future work:** Admin Portal V1 planning/implementation is independent of the public catalogue launch. Do not merge these scopes.
+
+This section takes precedence over older roadmap statements describing pilot data, incomplete Custom Kit deployment, or an outstanding full-master migration.
