@@ -8,15 +8,7 @@ Prefer one shared catalogue architecture over page-specific implementations. Pag
 
 ## Catalogue data ownership direction
 
-Current production source:
-
-`js/catalogue-data.js → catalogue UI`
-
-Target direction:
-
-`Supabase Publication Master → shared catalogue query/adapter → catalogue UI`
-
-The static source remains production truth until the Supabase pilot is verified. Do not perform a big-bang replacement.
+Current verified production catalogue has **427 Supabase publication records**. The Supabase catalogue adapter is in use for verified live catalogue browsing; `js/catalogue-data.js` remains a legacy/static compatibility path, not the approved business master. Inspect the actual deployed source selector before changing routing or retiring compatibility code.
 
 See `DATA-MODEL.md` and `SUPABASE-CATALOGUE-ARCHITECTURE.md`.
 
@@ -37,15 +29,14 @@ Customer-visible labels, ISBN, SKU and internal operational names must not be tr
 
 V1 uses a lean set of independent dimensions validated against real CPC data:
 
-- Catalogue Section
+- Approved **Catalogue Category** (Publication Master V1.1)
 - Series
 - Class/Stage
 - Subject
 - Medium
-- Language Position
 - Book Type
 
-`Category` is intentionally excluded from canonical V1 because the sample master showed it overlapping inconsistently with Subject and Book Type. Add it later only if a real catalogue-discovery requirement cannot be represented by the existing dimensions.
+The approved 427-publication V1.1 master includes Catalogue Category and permanent CPC SKUs. Historical Catalogue Section/navigation labels and database fields may differ from business master labels. `Language Position` is not an approved standalone V1.1 master field; preserve language detail in official titles where applicable.
 
 ## Class / stage
 
@@ -88,7 +79,7 @@ Publication metadata and publication assets are separate concerns.
 
 `publication_assets` owns covers, back covers, sample PDFs and digital-resource references.
 
-Existing GitHub cover paths may remain during the pilot. Full Supabase Storage migration is intentionally deferred.
+Supabase Storage bucket `publication-assets` and the `publication_assets` relation are the supported asset path. Actual covers and sample assets are still being prepared for launch. Preserve exact original cover art and aspect ratio.
 
 ## Internal product mapping
 
@@ -111,7 +102,7 @@ The Supabase-backed discovery layer should query the same canonical publication 
 - series
 - subject
 - medium
-- language position
+- approved catalogue category (through existing adapter/mapping)
 - book type
 - title/search text
 
@@ -127,7 +118,7 @@ The initial list is Wondera Computational Thinking & AI Classes 1–8 (`CPC00252
 
 Selections remain shared across catalogue sections through the existing `cambridgeOrder` contract.
 
-Both normal books and custom kits are valid top-level selections. Custom kits contain component book snapshots.
+Individual books, Standard Kits and Custom Kits are valid top-level selections. Kits contain component snapshots, including normalized `request_kit_components` in submitted requests.
 
 During backend migration, adapt canonical Supabase publication records into the existing frontend contract rather than rewriting selection UI at the same time.
 
@@ -137,7 +128,7 @@ A customer submission is a request, not a confirmed sales order.
 
 Supabase stores immutable request snapshots. Internal fulfilment mapping is separate from customer-facing catalogue terminology.
 
-The existing request system is working and should remain largely frozen during the catalogue pilot.
+The production request system is accepted and should remain stable during launch-content work. PR #34 added network recovery and `Retry-After` UX. Actual production HTTP 429 was deliberately not exercised.
 
 ## Security boundary
 
@@ -154,16 +145,7 @@ Future staff catalogue management requires authenticated roles/RLS; do not weake
 
 ## Migration principle
 
-Use a strangler/pilot migration rather than a big-bang rewrite:
-
-1. create canonical Supabase catalogue tables
-2. import curated pilot rows
-3. keep `catalogue-data.js` live
-4. build a shared Supabase-to-current-contract adapter
-5. test representative catalogue journeys and search/filtering
-6. compare against static behaviour
-7. migrate verified master data in batches
-8. retire static source only after regression verification
+**Historical migration complete for current public scope.** Do not re-run pilot replacement or recreate publication UUIDs. Future data updates must preserve permanent CPC SKUs and UUIDs, validate against approved V1.1, check kit/asset dependencies and receive CPC approval. Admin Portal V1 remains a separate future implementation.
 
 ## Navigation principle
 
