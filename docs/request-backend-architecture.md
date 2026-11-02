@@ -234,3 +234,9 @@ Those can be designed later around actual operational requirements.
 5. Add a submission success page/state with reference number.
 6. Test normal books, custom kits, mixed selections, validation failures, duplicate/retry behaviour and network failure.
 7. Run Supabase Security Advisor and Performance Advisor after the schema/function changes.
+
+## 2026-11-02 — Production acceptance addendum
+
+The anonymous request workflow is deployed and functionally accepted. PR #34's friendly network error and `Retry-After` frontend handling are live. Production integration verified a successful submission, same-key replay returning the same reference without another row, and invalid payload rejection without a write. Mocked production-page checks verified 429 messaging, network recovery, duplicate-click protection and preservation of Standard/Custom Kits. **An actual production HTTP 429 was not triggered.** Production Edge Function `submit-catalogue-request` v10 was active at last verification.
+
+A focused permission check found `private.catalogue_request_attempts` has RLS disabled but neither `anon` nor `authenticated` has schema/table access; both submission RPCs deny those roles EXECUTE. This is not a blanket security certification. Following explicit confirmation that all requests were test data, seven requests, 22 items, 29 kit components and three rate-limit attempts were cleared; all four tables were verified empty, while 427 publications remained.
