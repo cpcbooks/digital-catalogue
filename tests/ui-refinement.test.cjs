@@ -103,6 +103,8 @@ test("Book Details retains safe optional metadata handling and a blank missing-c
 
 test("Book Details hides gallery controls when only one image exists", () => {
   const source = read("js/book-details.js");
+  assert.match(source, /<button id="prev" type="button" aria-label="Previous image">←<\/button>/);
+  assert.match(source, /<button id="next" type="button" aria-label="Next image">→<\/button>/);
   assert.match(source, /caption\.hidden=images\.length<2/);
   assert.match(source, /nav\.hidden=images\.length<2/);
   assert.match(source, /count\.textContent=images\.length\?\(imageIndex\+1\)\+" \/ "\+images\.length:""/);
