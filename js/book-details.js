@@ -85,8 +85,37 @@
     if(!values.length)return"";
     return values.length===1?"Class "+values[0]:"Classes "+values.join(", ")
   }
+  function listingBreadcrumbs(book,current) {
+    const returnTo=safeReturnTo();
+    if(!returnTo)return null;
+    const target=new URL(returnTo,location.href),params=target.searchParams,path=target.pathname;
+    const home={label:"Home",href:"index.html"};
+    if(book.category==="early-learning"&&path.endsWith("/early-learning-books.html")) {
+      const key=params.get("level"),labels={playgroup:"Playgroup",nursery:"Nursery",lkg:"LKG",ukg:"UKG"},level=labels[key];
+      return level?[home,{label:"Early Learning",href:"early-learning.html"},{label:level,href:"early-learning-level.html?level="+encodeURIComponent(key)},{label:"Individual Books",href:returnTo},current]:null
+    }
+    if(book.category==="school"&&path.endsWith("/school-books.html")) {
+      const value=params.get("class"),label=/^(?:[1-9]|10)$/.test(value)?"Class "+value:"";
+      return label?[home,{label:"School Learning",href:"school-education.html"},{label,href:"school-learning.html?class="+encodeURIComponent(value)},{label:"School Books",href:returnTo},current]:null
+    }
+    if(book.category==="exam"&&path.endsWith("/exam-preparation.html")) {
+      const value=params.get("class"),label=/^(?:[5-9]|10)$/.test(value)?"Class "+value:"";
+      return label?[home,{label:"School Learning",href:"school-education.html"},{label,href:"school-learning.html?class="+encodeURIComponent(value)},{label:"Exam Preparation",href:returnTo},current]:null
+    }
+    if(book.category==="college-university"&&path.endsWith("/college-books.html")) {
+      const labels={"1st-puc":"1st PUC","2nd-puc":"2nd PUC",degree:"Degree"},stage=params.get("stage");
+      return labels[stage]?[home,{label:"College & University",href:"college-university.html"},{label:labels[stage],href:returnTo},current]:null
+    }
+    if(book.category==="competitive-exams"&&path.endsWith("/competitive-exam-books.html")) {
+      const labels={vao:"VAO","land-surveyor":"Land Surveyor",other:"Other Exams"},exam=params.get("exam");
+      return labels[exam]?[home,{label:"Competitive Exams",href:"competitive-exams.html"},{label:labels[exam],href:returnTo},current]:null
+    }
+    return null
+  }
   function detailBreadcrumbs(book) {
     const home={label:"Home",href:"index.html"},classes=Query.classValues(book),current={label:String(book.title||"").trim()||"Book Details"};
+    const listing=listingBreadcrumbs(book,current);
+    if(listing)return listing;
     if(book.category==="early-learning") {
       const c=detailEarlyClass(book),key=earlyKey(c);
       return [home].concat(key?[{label:"Early Learning",href:"early-learning.html"},{label:c,href:"early-learning-level.html?level="+encodeURIComponent(key)}]:[{label:"Early Learning",href:"early-learning.html"}]).concat(current)

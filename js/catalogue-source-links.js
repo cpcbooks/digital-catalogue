@@ -37,10 +37,10 @@
     const pathname = location.pathname;
     if (/(?:^|\/)index\.html$/.test(pathname)) return;
     const tone = /early-learning|standard-kit|kit-/.test(pathname) ? "early"
-      : /exam-preparation|competitive-exam-books/.test(pathname) ? "exam"
+      : /exam-preparation/.test(pathname) ? "exam"
         : /school-/.test(pathname) ? "school"
         : /college-/.test(pathname) ? "college"
-          : /competitive-exams/.test(pathname) ? "competitive" : "catalogue";
+          : /competitive-exams|competitive-exam-books/.test(pathname) ? "competitive" : "catalogue";
     document.body.classList.add("catalogue-inner-page");
     document.body.dataset.catalogueTone = tone;
   }

@@ -150,7 +150,7 @@ test("mobile Book Details places publication identity before a compact gallery",
   assert.doesNotMatch(css, /gallery-frame\{min-height:0;aspect-ratio:2 \/ 3\}/);
   assert.match(css, /\.detail-action-wrap\{order:6;margin-top:0;padding:14px\}/);
   assert.match(css, /\.detail-meta\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);gap:10px\}/);
-  assert.match(css, /catalogue-breadcrumbs__current\{display:none\}/);
+  assert.doesNotMatch(css, /catalogue-breadcrumbs__current\{display:none\}/);
 });
 
 test("Option C+ promotes category names without changing stage-level titles", () => {

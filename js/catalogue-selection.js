@@ -345,8 +345,10 @@
     if (page === "school-education") return [home, { label: "School Learning" }];
     if (page === "college-university") return [home, { label: "College & University" }];
     if (page === "competitive-exams") return [home, { label: "Competitive Exams" }];
-    if (page === "early-learning-level" || page === "early-learning-books") return [home, early, { label: level || "Early Learning" }];
-    if (page === "school-learning" || page === "school-books") return [home, school, { label: className || "School Publications" }];
+    if (page === "early-learning-level") return [home, early, { label: level || "Early Learning" }];
+    if (page === "early-learning-books") return [home, early].concat(level ? [{ label: level, href: "early-learning-level.html?level=" + encodeURIComponent(params.get("level")) }] : []).concat({ label: "Individual Books" });
+    if (page === "school-learning") return [home, school, { label: className || "School Publications" }];
+    if (page === "school-books") return [home, school].concat(className ? [{ label: className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) }] : []).concat({ label: "School Books" });
     if (page === "exam-preparation") return [home, school].concat(className ? [{ label: className, href: "school-learning.html?class=" + encodeURIComponent(params.get("class")) }] : []).concat({ label: "Exam Preparation" });
     if (page === "college-books") return [home, college, { label: stageBreadcrumb(params) }];
     if (page === "competitive-exam-books") return [home, competitive, { label: examBreadcrumb(params) }];
@@ -741,6 +743,6 @@
     ORDER_KEY, MAX_QUANTITY, CHANGE_EVENT, CHECKLIST_RETURN_KEY,
     validQty, readOrder, saveOrder, reconcileCatalogue, itemKey, indexOfBook, selectedItem, selectedItems,
     selectedCount, selectedQuantityTotal, floatingSelectionSummary, floatingSelectionLabels, isFloatingSelectionPage, updateBar, updateFloatingBar, add, addStandardKit, standardKitAddMessage, remove, setQty,
-    detailsUrl, coverNode, cardNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs
+    detailsUrl, coverNode, cardNode, actionNode, rememberBookReturn, restoreBookReturn, rememberChecklistReturn, setBreadcrumbs, breadcrumbItems
   });
 })();
