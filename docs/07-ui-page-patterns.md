@@ -4,6 +4,10 @@ Last updated: 2026-11-01 23:17 IST (UTC+05:30)
 
 Read this with `docs/06-catalogue-design-system.md` and `docs/04-ui-ux-specification.md`. The listed classes are inspected implementation references, not a new component API.
 
+## Production acceptance (2026-11-02)
+
+All five final smoke checks passed, including homepage/navigation, catalogue categories, book detail/fallback media, mobile Standard/Custom Kit entry and My Selection → Requirement Details → Review Requirement. Preserve accepted structures and only retest affected pages after media/content changes. PR #33 resolved mobile kit navigation; PR #34 improved network/retry messages.
+
 ## 1. Homepage
 
 - **Pages:** `index.html`.
