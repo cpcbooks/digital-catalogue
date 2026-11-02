@@ -26,7 +26,7 @@
     const provider = Bootstrap.requestedSource === "supabase" ? KitConfig.createProvider(Object.fromEntries(rules.map(rule => [rule.stageCode, rule]))) : KitConfig;
     const guidance = KitConfig && KitConfig.landingGuidance(provider.getStageConfig(level));
     custom.querySelector(".kit-rule").textContent = guidance ? guidance.text : "Custom Kit is unavailable for this level.";
-    if (guidance && guidance.available) { const customLink = document.createElement("a"); customLink.href = Bootstrap.withSource("kit-builder.html?level=" + encodeURIComponent(level)); customLink.textContent = "Build My Kit →"; custom.appendChild(customLink); window.CambridgeInnerPageRefinement?.activateCard(custom); }
+    if (guidance && guidance.available) { const customLink = document.createElement("a"); customLink.href = Bootstrap.withSource("kit-builder.html?level=" + encodeURIComponent(level)); customLink.textContent = "Build My Kit →"; custom.appendChild(customLink); custom.classList.add("is-clickable"); custom.tabIndex = 0; custom.setAttribute("role", "link"); custom.addEventListener("click", event => { if (!event.target.closest("a")) location.assign(customLink.href); }); custom.addEventListener("keydown", event => { if (event.target === custom && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); location.assign(customLink.href); } }); }
   }).catch(() => {
     if (location.href !== pageUrl) return;
     custom.querySelector(".kit-rule").textContent = "Custom Kit is unavailable for this level.";
