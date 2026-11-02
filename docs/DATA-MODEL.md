@@ -223,3 +223,7 @@ Front cover is required for the intended live catalogue; back cover is recommend
 ## Submitted request snapshots
 
 Selection/Submit Request is an add-on to the catalogue. Submitted requests preserve customer-visible product data as immutable snapshots. Internal fulfilment mappings are resolved separately server-side and also snapshotted when available.
+
+## 2026-11-02 — Approved Publication Master V1.1 reconciliation
+
+The current approved business master contains **427 publications**, **20 columns including Catalogue Category**, and permanent SKUs **CPC00001–CPC00427**. Approved category counts: Early Learning 86, School Books 180, Exam Preparation 116, College & University 45, Competitive Exams 0. Class 10 Internal Assessment and five Class 10 workbooks belong to Exam Preparation; PUC and Degree do not require a classification. This supersedes older draft/pilot statements that Catalogue Category is absent or SKU allocation is undecided. Do not infer that all historical field names in this file exactly match the approved Excel; check the approved V1.1 master before changing import/schema logic. The production `public.publications` count was independently verified as 427 after test-data cleanup.
