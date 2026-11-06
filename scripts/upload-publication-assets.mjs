@@ -96,10 +96,19 @@ export async function prepareInput(input) {
 export class SupabaseClient {
   constructor({ url, key, bucket = "publication-assets", fetchFn = fetch }) { this.url = url.replace(/\/$/, ""); this.key = key; this.bucket = bucket; this.fetch = fetchFn; }
   headers(extra = {}) { return { apikey: this.key, Authorization: `Bearer ${this.key}`, ...extra }; }
-  async request(url, options = {}, allow404 = false) { const response = await this.fetch(url, options), body = await response.text(); if (allow404 && response.status === 404) return null; if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${body}`); return body ? JSON.parse(body) : null; }
+  async request(url, options = {}) { const response = await this.fetch(url, options), body = await response.text(); if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${body}`); return body ? JSON.parse(body) : null; }
   publicationsForSkus(skus) { return skus.length ? this.request(`${this.url}/rest/v1/publications?sku=in.(${skus.map(encodeURIComponent).join(",")})&select=id,sku,title`, { headers: this.headers({ Accept: "application/json" }) }) : []; }
   assetsForPublication(id) { return this.request(`${this.url}/rest/v1/publication_assets?publication_id=eq.${encodeURIComponent(id)}&select=id,asset_type,storage_path,is_primary,active,sort_order`, { headers: this.headers({ Accept: "application/json" }) }); }
-  storageInfo(storagePath) { return this.request(`${this.url}/storage/v1/object/info/${this.bucket}/${encodePath(storagePath)}`, { headers: this.headers() }, true); }
+  async storageInfo(storagePath) {
+    const response = await this.fetch(`${this.url}/storage/v1/object/info/${this.bucket}/${encodePath(storagePath)}`, { headers: this.headers() });
+    const body = await response.text();
+    if (response.status === 404) return null;
+    let payload;
+    try { payload = body ? JSON.parse(body) : null; } catch { payload = null; }
+    if (response.status === 400 && (payload?.code === "NoSuchKey" || (payload?.error === "not_found" && /object not found/i.test(payload?.message || "")))) return null;
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${body}`);
+    return payload;
+  }
   async download(storagePath) { const response = await this.fetch(`${this.url}/storage/v1/object/${this.bucket}/${encodePath(storagePath)}`, { headers: this.headers() }); if (!response.ok) throw new Error(`Download verification failed for ${storagePath}: ${response.status} ${await response.text()}`); return Buffer.from(await response.arrayBuffer()); }
   upload(storagePath, bytes, mime) { return this.request(`${this.url}/storage/v1/object/${this.bucket}/${encodePath(storagePath)}`, { method: "POST", headers: this.headers({ "Content-Type": mime, "cache-control": "3600", "x-upsert": "false" }), body: bytes }); }
   register(payload) { return this.request(`${this.url}/rest/v1/publication_assets`, { method: "POST", headers: this.headers({ "Content-Type": "application/json", Prefer: "return=representation" }), body: JSON.stringify(payload) }); }

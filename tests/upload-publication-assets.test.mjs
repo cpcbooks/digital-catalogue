@@ -6,7 +6,7 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import test from "node:test";
-import { applyPlan, discoverImages, parseArgs, planUpload, prepareInput, writeReport } from "../scripts/upload-publication-assets.mjs";
+import { applyPlan, discoverImages, parseArgs, planUpload, prepareInput, SupabaseClient, writeReport } from "../scripts/upload-publication-assets.mjs";
 
 const id = "11111111-1111-4111-8111-111111111111";
 const sha = value => crypto.createHash("sha256").update(value).digest("hex");
@@ -19,6 +19,10 @@ function client({ assets = [], object = null, publications = [{ id, sku: "CPC000
     register: async payload => { registrations += 1; rows.push({ storage_path: payload.storage_path, asset_type: payload.asset_type, active: true }); }, state: () => ({ stored, rows, registrations })
   };
 }
+function response(status, body) { return { status, statusText: "Test", ok: status >= 200 && status < 300, text: async () => body }; }
+test("treats a Storage HTTP 400 NoSuchKey payload as absent", async () => { const remote = new SupabaseClient({ url: "https://example.test", key: "test", fetchFn: async () => response(400, JSON.stringify({ statusCode: "404", error: "not_found", message: "Object not found", code: "NoSuchKey" })) }); assert.equal(await remote.storageInfo("id/front.jpg"), null); });
+test("treats a Storage HTTP 404 as absent", async () => { const remote = new SupabaseClient({ url: "https://example.test", key: "test", fetchFn: async () => response(404, JSON.stringify({ code: "NoSuchKey" })) }); assert.equal(await remote.storageInfo("id/front.jpg"), null); });
+test("does not hide unrelated Storage or authentication errors", async () => { const invalid = new SupabaseClient({ url: "https://example.test", key: "test", fetchFn: async () => response(400, JSON.stringify({ code: "InvalidKey", message: "Invalid key" })) }); const denied = new SupabaseClient({ url: "https://example.test", key: "test", fetchFn: async () => response(401, JSON.stringify({ code: "InvalidJWT", message: "Invalid JWT" })) }); await assert.rejects(() => invalid.storageInfo("id/front.jpg"), /400 Test/); await assert.rejects(() => denied.storageInfo("id/front.jpg"), /401 Test/); });
 test("discovers a cover in a SKU Title folder and retains its extension", async () => { const root = await fixture(); try { const images = await discoverImages(root); assert.equal(images[0].sku, "CPC00015"); assert.equal(images[0].assetType, "cover"); assert.match(images[0].hash, /^[a-f0-9]{64}$/); } finally { await fs.rm(root, { recursive: true, force: true }); } });
 test("reports unsupported image formats as blocking errors", async () => { const root = await fixture(); try { await fs.writeFile(path.join(root, "CPC00015 A Book", "sample.gif"), "gif"); const plan = await planUpload({ candidates: await discoverImages(root), client: client() }); assert.ok(plan.some(row => row.status === "ERROR_UNSUPPORTED_FILE_TYPE")); } finally { await fs.rm(root, { recursive: true, force: true }); } });
 test("extracts ZIP inputs with the platform tar tool", async () => { const root = await fixture(), archive = `${root}.zip`; try { await promisify(execFile)("tar", ["-a", "-c", "-f", archive, "-C", root, "."]); const input = await prepareInput(archive); try { assert.equal((await discoverImages(input.root))[0].sku, "CPC00015"); } finally { await input.cleanup(); } } finally { await fs.rm(root, { recursive: true, force: true }); await fs.rm(archive, { force: true }); } });
