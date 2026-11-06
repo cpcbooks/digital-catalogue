@@ -39,6 +39,8 @@ node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Pub
 
 The applied CSV includes `failure_phase`: `upload`, `storage verification`, `registration`, `registration verification`, or `pre-write validation`. A failure is still safe to rerun only after a new dry run. In particular, `RECOVER_REGISTRATION` requires the existing destination object to be downloaded and SHA-256 matched again before a row is inserted.
 
+The 2026-11-06 batch used this procedure for CPC00258, CPC00281, and CPC00282 after a transport interruption. CPC00258 was registration-recovered only after its existing Storage object matched its source SHA-256; CPC00281 and CPC00282 were uploaded on the scoped retry. Do not rerun those commands unless a new, separately approved incident requires them.
+
 ## Approved pilot execution
 
 Only after CPC approves the dry-run CSV, execute the same command with both write guards:
@@ -55,4 +57,6 @@ Keep the dry-run and applied CSV files with the branch/release record and append
 
 ## Full batch
 
-After the pilot is accepted, omit `--pilot` and run another dry run first. Use `--apply --confirm-upload` only with explicit approval. ZIP extraction uses the Windows-provided `tar` command and happens in a temporary directory that is removed when the command completes.
+The completed 2026-11-06 batch is recorded in `PUBLICATION-IMAGE-UPLOAD-HISTORY.md`, with the full and recovery applied CSVs retained under `reports/`. Independent production verification confirmed 101 active primary covers with 101 matching Storage objects and no missing objects. CPC00428–CPC00430 remain explicitly excluded because they are not registered publications; do not add them to an upload until the corresponding publication records have been separately approved and created.
+
+For a future batch, omit `--pilot` and run another dry run first. Use `--apply --confirm-upload` only with explicit approval. ZIP extraction uses the Windows-provided `tar` command and happens in a temporary directory that is removed when the command completes.
