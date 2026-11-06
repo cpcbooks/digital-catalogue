@@ -2,7 +2,7 @@
 
 `scripts/upload-publication-assets.mjs` is an internal bulk tool. It reads folders named `SKU Book Title` from a directory or ZIP and supports JPG, JPEG, PNG and WebP. It never creates a publication, changes publication metadata, deletes an object, overwrites an object, or patches an existing asset record.
 
-New front covers use `<publication-UUID>/front.<original-extension>`. Explicitly named `back`/`rear` images use `back.<original-extension>`; explicitly named `sample`, `inside`, or `page` images use `samples/01.<original-extension>`, etc. A folder containing exactly one supported image treats that image as its front cover. Multiple unlabelled images are reported instead of guessed.
+New front covers use `<publication-UUID>/front.<original-extension>`. Explicitly named `back`/`rear` images use `back.<original-extension>`; explicitly named `sample`, `inside`, or `page` images retain a normalized source filename under `samples/` (for example `sample-01.jpg` becomes `samples/sample-01.jpg`). This makes sample paths stable across repeated batches. Numbered sample names determine `sort_order`; use unique `sample-01`, `sample-02`, … names. A folder containing exactly one supported image treats that image as its front cover. Multiple unlabelled images are reported instead of guessed.
 
 ## Credentials
 
@@ -14,10 +14,10 @@ Dry runs are the default and make read-only requests for SKU-to-UUID mapping, ex
 
 ```powershell
 $env:SUPABASE_SERVICE_ROLE_KEY = "<secure service-role key>"
-node scripts/upload-publication-assets.mjs --input C:\secure\CPC_Cover_Uploader_Pilot.zip --pilot --report reports\cpc00015-cpc00019-dry-run.csv
+node scripts/upload-publication-assets.mjs --input E:\Digital Catalogue\CPC_Publication_Images.zip --pilot --report reports\cpc00015-cpc00019-dry-run.csv
 ```
 
-`--pilot` selects only front covers for CPC00015 through CPC00019. The report includes SKU, UUID, SHA-256, source, destination, collision result, and proposed Storage/database operation. A missing mapping—for example CPC00428–CPC00430—produces `ERROR_PUBLICATION_NOT_FOUND`; it is never inserted.
+`--pilot` selects only front covers for CPC00015 through CPC00019 and fails if any of those five is missing. The report includes SKU, UUID, SHA-256, source, destination, collision result, and proposed Storage/database operation. Full batches explicitly skip the currently unregistered CPC00428–CPC00430 with `SKIP_EXCLUDED_UNREGISTERED_SKU`; any other missing SKU, invalid image, ambiguous image, or duplicate front/back input is a blocking error and is never inserted.
 
 Review every row before proceeding. `READY` means the tool proposes `UPLOAD` plus `INSERT`; `SKIP_*` means it found an existing object or active asset and will leave it unchanged; `ERROR_*` requires source or data correction.
 
@@ -26,14 +26,14 @@ Review every row before proceeding. `READY` means the tool proposes `UPLOAD` plu
 Only after CPC approves the dry-run CSV, execute the same command with both write guards:
 
 ```powershell
-node scripts/upload-publication-assets.mjs --input C:\secure\CPC_Cover_Uploader_Pilot.zip --pilot --report reports\cpc00015-cpc00019-pilot.csv --apply --confirm-upload
+node scripts/upload-publication-assets.mjs --input E:\Digital Catalogue\CPC_Publication_Images.zip --pilot --report reports\cpc00015-cpc00019-pilot.csv --apply --confirm-upload
 ```
 
-The uploader posts Storage objects with `x-upsert: false`, verifies the object exists and its SHA-256 matches the source, inserts one `publication_assets` row, then verifies registration. Re-running it is idempotent: it sees the registered path and reports `SKIP_REGISTERED`. It does not overwrite or repair conflicting pre-existing files/records.
+The uploader rechecks Storage and `publication_assets` immediately before each write, posts Storage objects with `x-upsert: false`, verifies the object exists and its SHA-256 matches the source, inserts one `publication_assets` row, then verifies registration. If upload verification succeeds but registration fails, the applied CSV records `ERROR_REGISTRATION_FAILED_RECOVERABLE`. A rerun can register only that exact unlinked object after hashing it again; mismatched bytes remain a blocking error. Existing linked assets—including the original eight Storage files and four linked asset rows—are skipped and never changed.
 
 ## Audit history and rollback
 
-Keep the dry-run and applied CSV files with the branch/release record and append the run to `PUBLICATION-IMAGE-UPLOAD-HISTORY.md`: date/time, input archive identity, SKU counts, skips, failures, verification result, approval reference, and report path. Do not log credentials. No automatic rollback exists, because deleting an object or record risks removing an established asset. If an approved upload must be reverted, first identify the report row and current linked asset, then perform a separately approved manual Storage/metadata change and record it in the history ledger.
+Keep the dry-run and applied CSV files with the branch/release record and append the run to `PUBLICATION-IMAGE-UPLOAD-HISTORY.md`: date/time, input archive identity, SKU counts, skips, failures, verification result, approval reference, and report path. The CSV is written after the final per-row state, including partial failures. Do not log credentials. No automatic rollback exists, because deleting an object or record risks removing an established asset. If an approved upload must be reverted, first identify the report row and current linked asset, then perform a separately approved manual Storage/metadata change and record it in the history ledger.
 
 ## Full batch
 

@@ -51,7 +51,7 @@ Top-level catalogue taxonomy:
 - For Nursery–Class 10, use **`class`**, not a separate `level` data field. `class` is array-based in catalogue records.
 - Subject and medium are separate concepts. A Kannada subject does not imply Kannada medium.
 - Do not invent CPC titles, SKU, ISBN, MRP, Tally item names, covers or other product data.
-- Publication image imports are an admin-only, approval-gated operation. Use `scripts/upload-publication-assets.mjs` in dry-run mode first; never overwrite a Storage object, replace an existing asset record, create a missing SKU, or put service-role credentials in code, reports, or Git.
+- Publication image imports are an admin-only, approval-gated operation. Use `scripts/upload-publication-assets.mjs` in dry-run mode first; never overwrite a Storage object, replace an existing asset record, create a missing SKU, or put service-role credentials in code, reports, or Git. Registration recovery is permitted only after the destination object SHA-256 matches the source.
 - Preserve internal operational identifiers for backend/team use, but do not trust browser-submitted internal identifiers as authoritative.
 - Design publication data primarily for catalogue discovery, filtering, product presentation, editions and digital resources; request fields are references/snapshots, not the publication model's organizing principle.
 
