@@ -21,6 +21,24 @@ node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Pub
 
 Review every row before proceeding. `READY` means the tool proposes `UPLOAD` plus `INSERT`; `SKIP_*` means it found an existing object or active asset and will leave it unchanged; `ERROR_*` requires source or data correction.
 
+## Scoped recovery
+
+`--skus` restricts planning and writes to an explicit comma-separated set, for example `--skus CPC00258,CPC00281,CPC00282`. It is intentionally incompatible with `--pilot`, whose scope is fixed. Each value must be a unique `CPC#####` SKU. An unregistered selection reports `ERROR_SELECTED_SKU_UNKNOWN`; a registered selection with no image folder reports `ERROR_SELECTED_SKU_NOT_FOUND_IN_INPUT`. Both are blocking errors. Omitting `--skus` preserves the normal pilot or full-batch scope.
+
+For a previously interrupted batch, run a scoped dry run and review it before an approved apply:
+
+```powershell
+node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Publication_Images.zip" --skus CPC00258,CPC00281,CPC00282 --report reports\cpc-recovery-preflight.csv
+```
+
+Only after that report is approved, use the same scope for the recovery apply:
+
+```powershell
+node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Publication_Images.zip" --skus CPC00258,CPC00281,CPC00282 --report reports\cpc-recovery-applied.csv --apply --confirm-upload
+```
+
+The applied CSV includes `failure_phase`: `upload`, `storage verification`, `registration`, `registration verification`, or `pre-write validation`. A failure is still safe to rerun only after a new dry run. In particular, `RECOVER_REGISTRATION` requires the existing destination object to be downloaded and SHA-256 matched again before a row is inserted.
+
 ## Approved pilot execution
 
 Only after CPC approves the dry-run CSV, execute the same command with both write guards:

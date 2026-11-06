@@ -11,7 +11,7 @@ export const PILOT_SKUS = ["CPC00015", "CPC00016", "CPC00017", "CPC00018", "CPC0
 export const EXCLUDED_UNREGISTERED_SKUS = new Set(["CPC00428", "CPC00429", "CPC00430"]);
 export const IMAGE_TYPES = new Map([[".jpg", "image/jpeg"], [".jpeg", "image/jpeg"], [".png", "image/png"], [".webp", "image/webp"]]);
 const IMAGE_LIKE_EXTENSIONS = new Set([...IMAGE_TYPES.keys(), ".gif", ".bmp", ".tif", ".tiff"]);
-const field = { publication_id: "publicationId", asset_type: "assetType", storage_path: "storagePath", sort_order: "sortOrder", storage_action: "storageAction", database_action: "databaseAction" };
+const field = { publication_id: "publicationId", asset_type: "assetType", storage_path: "storagePath", sort_order: "sortOrder", storage_action: "storageAction", database_action: "databaseAction", failure_phase: "failurePhase" };
 const text = value => String(value ?? "");
 const encodePath = value => value.split("/").map(encodeURIComponent).join("/");
 const hash = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
@@ -19,21 +19,28 @@ const publicUrl = (url, bucket, storagePath) => `${url}/storage/v1/object/public
 const csv = value => `"${text(value).replaceAll('"', '""')}"`;
 
 export function parseArgs(args) {
-  const options = { input: "", report: "", pilot: false, apply: false, confirm: false };
+  const options = { input: "", report: "", pilot: false, apply: false, confirm: false, skus: null };
   for (let i = 0; i < args.length; i += 1) {
     if (args[i] === "--input") options.input = args[++i] || "";
     else if (args[i] === "--report") options.report = args[++i] || "";
     else if (args[i] === "--pilot") options.pilot = true;
     else if (args[i] === "--apply") options.apply = true;
     else if (args[i] === "--confirm-upload") options.confirm = true;
+    else if (args[i] === "--skus") {
+      const values = (args[++i] || "").split(",").map(value => value.trim().toUpperCase());
+      if (!values.length || values.some(value => !/^CPC\d{5}$/.test(value))) throw new Error("--skus must be a comma-separated list of CPC##### SKUs.");
+      if (new Set(values).size !== values.length) throw new Error("--skus must not contain duplicate SKUs.");
+      options.skus = values;
+    }
     else if (args[i] === "--help" || args[i] === "-h") options.help = true;
     else throw new Error(`Unknown argument: ${args[i]}`);
   }
   if (!options.help && !options.input) throw new Error("Pass --input <folders-or-zip>.");
   if (options.apply && !options.confirm) throw new Error("--apply requires --confirm-upload.");
+  if (options.pilot && options.skus) throw new Error("--skus cannot be combined with --pilot.");
   return options;
 }
-export function usage() { return "Usage: SUPABASE_SERVICE_ROLE_KEY=... node scripts/upload-publication-assets.mjs --input CPC_Publication_Images.zip [--pilot] [--report report.csv] [--apply --confirm-upload]"; }
+export function usage() { return "Usage: SUPABASE_SERVICE_ROLE_KEY=... node scripts/upload-publication-assets.mjs --input CPC_Publication_Images.zip [--pilot | --skus CPC00001,CPC00002] [--report report.csv] [--apply --confirm-upload]"; }
 
 async function walk(root) {
   const entries = await fs.readdir(root, { withFileTypes: true });
@@ -114,7 +121,7 @@ export class SupabaseClient {
   register(payload) { return this.request(`${this.url}/rest/v1/publication_assets`, { method: "POST", headers: this.headers({ "Content-Type": "application/json", Prefer: "return=representation" }), body: JSON.stringify(payload) }); }
 }
 
-function baseRow(candidate, publication) { return { sku: candidate.sku, title: publication?.title || "", publicationId: publication?.id || "", source: candidate.relative, sha256: candidate.hash, assetType: candidate.assetType || "", storagePath: "", sortOrder: "", collision: "", storageAction: "", databaseAction: "", status: "", detail: "" }; }
+function baseRow(candidate, publication) { return { sku: candidate.sku, title: publication?.title || "", publicationId: publication?.id || "", source: candidate.relative, sha256: candidate.hash, assetType: candidate.assetType || "", storagePath: "", sortOrder: "", collision: "", storageAction: "", databaseAction: "", status: "", failurePhase: "", detail: "" }; }
 function skip(row, status, collision) { row.status = status; row.collision = collision; row.storageAction = "SKIP"; row.databaseAction = "SKIP"; return row; }
 async function matchingObject(client, row) { return (await client.storageInfo(row.storagePath)) && hash(await client.download(row.storagePath)) === row.sha256; }
 
@@ -132,7 +139,7 @@ export async function planUpload({ candidates, client, skus, requiredSkus = [] }
     else if (!candidate.assetType) { row.status = "ERROR_UNCLASSIFIED_IMAGE"; row.collision = "NOT_CHECKED"; }
     else if (duplicate.has(key)) { row.status = "ERROR_DUPLICATE_INPUT"; row.collision = "DUPLICATE_INPUT"; }
     else if (EXCLUDED_UNREGISTERED_SKUS.has(candidate.sku)) skip(row, "SKIP_EXCLUDED_UNREGISTERED_SKU", "UNREGISTERED_SKU");
-    else if (!publication) { row.status = "ERROR_PUBLICATION_NOT_FOUND"; row.collision = "PUBLICATION_NOT_FOUND"; }
+    else if (!publication) { row.status = skus?.includes(candidate.sku) ? "ERROR_SELECTED_SKU_UNKNOWN" : "ERROR_PUBLICATION_NOT_FOUND"; row.collision = "PUBLICATION_NOT_FOUND"; }
     else {
       const samples = selected.filter(item => item.sku === candidate.sku && item.assetType === "sample_page");
       row.storagePath = storagePath(publication.id, candidate, samples); row.sortOrder = candidate.assetType === "sample_page" ? sampleOrder(candidate, samples) : candidate.assetType === "back_cover" ? 1 : 0;
@@ -146,6 +153,7 @@ export async function planUpload({ candidates, client, skus, requiredSkus = [] }
     }
     plan.push(row);
   }
+  for (const sku of skus || []) if (!requiredSkus.includes(sku) && !selected.some(candidate => candidate.sku === sku)) plan.push({ sku, title: bySku.get(sku)?.title || "", publicationId: bySku.get(sku)?.id || "", source: "", sha256: "", assetType: "", storagePath: "", sortOrder: "", collision: "NOT_CHECKED", storageAction: "SKIP", databaseAction: "SKIP", status: bySku.has(sku) ? "ERROR_SELECTED_SKU_NOT_FOUND_IN_INPUT" : "ERROR_SELECTED_SKU_UNKNOWN", failurePhase: "", detail: bySku.has(sku) ? "Selected SKU has no image folder in the input." : "Selected SKU is not registered in Supabase." });
   for (const sku of requiredSkus) if (!selected.some(candidate => candidate.sku === sku && candidate.assetType === "cover")) plan.push({ sku, title: bySku.get(sku)?.title || "", publicationId: bySku.get(sku)?.id || "", source: "", sha256: "", assetType: "cover", storagePath: "", sortOrder: 0, collision: "NOT_CHECKED", storageAction: "SKIP", databaseAction: "SKIP", status: "ERROR_MISSING_PILOT_COVER", detail: "Pilot requires one front cover for this SKU." });
   return plan.sort((a, b) => a.sku.localeCompare(b.sku) || a.source.localeCompare(b.source));
 }
@@ -166,26 +174,32 @@ export async function applyPlan(plan, candidates, client) {
   const sources = new Map(candidates.map(candidate => [candidate.relative, candidate]));
   for (const row of plan.filter(item => item.status === "READY" || item.status === "RECOVER_REGISTRATION")) {
     const candidate = sources.get(row.source);
+    let phase = "pre-write validation";
     try {
-      if (!await revalidate(row, candidate, client) || row.status === "SKIP_REGISTERED" || row.status === "SKIP_ASSET_TYPE_EXISTS") continue;
+      if (!await revalidate(row, candidate, client) || row.status === "SKIP_REGISTERED" || row.status === "SKIP_ASSET_TYPE_EXISTS") { if (row.status.startsWith("ERROR_")) row.failurePhase = phase; continue; }
       if (row.status === "READY") {
+        phase = "upload";
         await client.upload(row.storagePath, await fs.readFile(candidate.file), IMAGE_TYPES.get(path.extname(candidate.file).toLowerCase()));
+        phase = "storage verification";
         if (!await client.storageInfo(row.storagePath) || !await matchingObject(client, row)) throw new Error("Uploaded object is missing or checksum differs.");
       }
+      phase = "registration";
       await client.register({ publication_id: row.publicationId, asset_type: row.assetType, storage_path: row.storagePath, url: publicUrl(client.url, client.bucket, row.storagePath), is_primary: row.assetType === "cover", sort_order: Number(row.sortOrder), active: true });
+      phase = "registration verification";
       if (!(await client.assetsForPublication(row.publicationId)).some(asset => asset.storage_path === row.storagePath)) throw new Error("Inserted asset row was not returned by verification.");
       row.status = "UPLOADED_AND_REGISTERED"; row.detail = "Storage SHA-256 and publication_assets registration verified.";
     } catch (error) {
       let recoverable = false;
       try { recoverable = Boolean(await client.storageInfo(row.storagePath)) && await matchingObject(client, row); } catch { /* The original failure is the reportable outcome. */ }
       row.status = recoverable ? "ERROR_REGISTRATION_FAILED_RECOVERABLE" : "ERROR_UPLOAD_OR_VERIFICATION";
+      row.failurePhase = phase;
       row.detail = error.message;
     }
   }
   return plan;
 }
 export async function writeReport(reportPath, plan) {
-  const columns = ["sku", "publication_id", "title", "source", "sha256", "asset_type", "storage_path", "sort_order", "collision", "storage_action", "database_action", "status", "detail"];
+  const columns = ["sku", "publication_id", "title", "source", "sha256", "asset_type", "storage_path", "sort_order", "collision", "storage_action", "database_action", "status", "failure_phase", "detail"];
   const body = [columns.join(","), ...plan.map(row => columns.map(column => csv(row[field[column] || column] ?? "")).join(","))].join("\n") + "\n";
   await fs.mkdir(path.dirname(path.resolve(reportPath)), { recursive: true }); await fs.writeFile(reportPath, body, "utf8");
 }
@@ -195,8 +209,9 @@ async function main() {
   const client = new SupabaseClient({ url: process.env.SUPABASE_URL || "https://ysaxagxortpxyifyaydx.supabase.co", key, bucket: process.env.SUPABASE_ASSET_BUCKET || "publication-assets" });
   const input = await prepareInput(options.input);
   try {
-    const all = await discoverImages(input.root), candidates = options.pilot ? all.filter(item => PILOT_SKUS.includes(item.sku) && (item.assetType === "cover" || !item.assetType)) : all;
-    const plan = await planUpload({ candidates, client, skus: options.pilot ? PILOT_SKUS : null, requiredSkus: options.pilot ? PILOT_SKUS : [] });
+    const all = await discoverImages(input.root), pilotCandidates = options.pilot ? all.filter(item => PILOT_SKUS.includes(item.sku) && (item.assetType === "cover" || !item.assetType)) : all;
+    const selectedSkus = options.skus || (options.pilot ? PILOT_SKUS : null), candidates = selectedSkus ? pilotCandidates.filter(item => selectedSkus.includes(item.sku)) : pilotCandidates;
+    const plan = await planUpload({ candidates, client, skus: selectedSkus, requiredSkus: options.pilot ? PILOT_SKUS : [] });
     if (!plan.length) throw new Error("No supported images were found in SKU Book Title folders.");
     if (options.apply && plan.some(row => row.status.startsWith("ERROR_"))) throw new Error("Refusing to apply a plan containing validation errors.");
     if (options.apply) await applyPlan(plan, candidates, client);
