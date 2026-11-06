@@ -46,6 +46,8 @@ Publication media is separate from the master, stored in Supabase Storage `publi
 
 Keep provided cover artwork, typography, logo, original orientation and aspect ratio unchanged. Images may be missing while launch content is prepared; the public UI uses fallbacks. SKU-based folder naming is **`SKU Title`** under the approved image preparation workflow. Confirm actual uploader paths/manifest format before batch upload; folder names alone do not define storage URLs.
 
+The folder SKU is a lookup key, not a database identity: the uploader must resolve it to the already-registered publication UUID. Front, back and sample images remain separate `publication_assets` rows, with their storage paths based on that UUID. Existing Storage files and active asset rows win over a new source file and are skipped, never replaced. A source folder for an unregistered future SKU is a validation error and must not create catalogue data. See `PUBLICATION-IMAGE-UPLOADER.md` for the operational rules and `PUBLICATION-IMAGE-UPLOAD-HISTORY.md` for the audit ledger.
+
 ## Early Learning kits and requests
 
 Four Standard Kits: Playgroup (11 configured publications), Nursery (8), LKG (12), UKG (13). Custom Kit is enabled for Playgroup/Nursery/LKG/UKG with a minimum of **8 distinct eligible titles**; the accepted configuration recorded **86 eligible Early Learning publications**. Keep Standard and Custom Kits separate selection types and preserve kit component snapshots.

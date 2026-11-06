@@ -81,6 +81,8 @@ Publication metadata and publication assets are separate concerns.
 
 Supabase Storage bucket `publication-assets` and the `publication_assets` relation are the supported asset path. Actual covers and sample assets are still being prepared for launch. Preserve exact original cover art and aspect ratio.
 
+Operational uploads resolve the permanent SKU to the existing `publications.id` UUID before writing. New files use `<publication-UUID>/front.<extension>`, `<publication-UUID>/back.<extension>`, or `<publication-UUID>/samples/<position>.<extension>`; the source extension is retained. `docs/PUBLICATION-IMAGE-UPLOADER.md` defines the approval, collision, verification and audit process. This boundary prevents the public catalogue from receiving privileged credentials or gaining an upload path.
+
 ## Internal product mapping
 
 Internal operational identifiers remain private and separate from public catalogue data.
