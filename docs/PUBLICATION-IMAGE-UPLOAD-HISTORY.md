@@ -6,5 +6,7 @@ Append one row for every dry run and every approved apply run. Do not record cre
 | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
 | 2026-11-06 | Dry run — pilot | `CPC_Publication_Images.zip`, CPC00015–CPC00019 | 5 | 5 ready / 0 uploaded | 0 | 0 | UUID mappings, active-asset checks and public object-existence checks passed; SHA-256 recorded | `reports/cpc00015-cpc00019-dry-run.csv` | Phase A only; production pilot not approved or executed |
 | 2026-11-06 | Revised dry run — pilot | `CPC_Publication_Images.zip`, CPC00015–CPC00019 | 5 | 5 ready / 0 uploaded | 0 | 0 | Required-pilot, collision, source hash and destination checks passed after recovery/sample handling review | `reports/cpc00015-cpc00019-dry-run.csv` | Phase A only; production pilot not approved or executed |
+| 2026-11-06 21:40 IST | Production pilot | `CPC_Publication_Images.zip`, CPC00015–CPC00019 | 5 | 5 uploaded | 0 | 0 | Storage SHA-256 and `publication_assets` registration verified for every row | `reports/cpc00015-cpc00019-pilot-applied.csv` | Approved pilot completed; no replacements or deletes |
+| 2026-11-06 | Full-batch dry run | `CPC_Publication_Images.zip` | 104 | 92 ready / 0 uploaded | 12 | 0 | Nine linked covers skipped; CPC00428–CPC00430 explicitly excluded; no duplicate SKU/asset inputs | `reports/cpc-publication-images-full-dry-run.csv` | Full production upload remains unapproved |
 
 For an apply run, retain the applied CSV, record the post-upload Storage and `publication_assets` verification result, and note any separately approved rollback here.
