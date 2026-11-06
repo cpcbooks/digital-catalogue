@@ -14,7 +14,7 @@ Dry runs are the default and make read-only requests for SKU-to-UUID mapping, ex
 
 ```powershell
 $env:SUPABASE_SERVICE_ROLE_KEY = "<secure service-role key>"
-node scripts/upload-publication-assets.mjs --input E:\Digital Catalogue\CPC_Publication_Images.zip --pilot --report reports\cpc00015-cpc00019-dry-run.csv
+node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Publication_Images.zip" --pilot --report reports\cpc00015-cpc00019-dry-run.csv
 ```
 
 `--pilot` selects only front covers for CPC00015 through CPC00019 and fails if any of those five is missing. The report includes SKU, UUID, SHA-256, source, destination, collision result, and proposed Storage/database operation. Full batches explicitly skip the currently unregistered CPC00428–CPC00430 with `SKIP_EXCLUDED_UNREGISTERED_SKU`; any other missing SKU, invalid image, ambiguous image, or duplicate front/back input is a blocking error and is never inserted.
@@ -26,7 +26,7 @@ Review every row before proceeding. `READY` means the tool proposes `UPLOAD` plu
 Only after CPC approves the dry-run CSV, execute the same command with both write guards:
 
 ```powershell
-node scripts/upload-publication-assets.mjs --input E:\Digital Catalogue\CPC_Publication_Images.zip --pilot --report reports\cpc00015-cpc00019-pilot.csv --apply --confirm-upload
+node scripts/upload-publication-assets.mjs --input "E:\Digital Catalogue\CPC_Publication_Images.zip" --pilot --report reports\cpc00015-cpc00019-pilot.csv --apply --confirm-upload
 ```
 
 The uploader rechecks Storage and `publication_assets` immediately before each write, posts Storage objects with `x-upsert: false`, verifies the object exists and its SHA-256 matches the source, inserts one `publication_assets` row, then verifies registration. If upload verification succeeds but registration fails, the applied CSV records `ERROR_REGISTRATION_FAILED_RECOVERABLE`. A rerun can register only that exact unlinked object after hashing it again; mismatched bytes remain a blocking error. Existing linked assets—including the original eight Storage files and four linked asset rows—are skipped and never changed.
